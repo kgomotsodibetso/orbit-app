@@ -123,9 +123,10 @@ export default function ISBNScanner({
             decoder: {
               readers: ['ean_reader', 'ean_8_reader'],
             },
-            // locate: false skips the expensive frame-wide barcode search.
-            // The user just needs to centre the barcode in the frame.
-            locate: false,
+            // locate: true finds the barcode anywhere in the crop area.
+            // Required — locate: false decodes the whole frame blindly and
+            // picks up text/patterns on the book cover as false reads.
+            locate: true,
             numOfWorkers: 0, // avoids Next.js worker bundling issues
           },
           (err: unknown) => {
