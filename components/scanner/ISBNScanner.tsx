@@ -103,15 +103,28 @@ export default function ISBNScanner({
               type: 'LiveStream',
               target: videoRef.current!,
               constraints: {
-                facingMode: 'environment', // rear camera on mobile
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
+                facingMode: 'environment',
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+              },
+              // Process at most 15 frames/sec — reduces CPU without missing scans
+              frequency: 15,
+              // Crop to a narrow horizontal strip where the barcode will be
+              area: {
+                top: '25%',
+                right: '0%',
+                left: '0%',
+                bottom: '25%',
               },
             },
             decoder: {
               readers: ['ean_reader', 'ean_8_reader'],
+              // Require 2 consecutive identical reads before firing — cuts false positives
+              multiple: false,
             },
-            locate: true,
+            // locate: false skips the expensive frame-wide barcode search.
+            // The user just needs to centre the barcode in the frame.
+            locate: false,
             numOfWorkers: 0, // avoids Next.js worker bundling issues
           },
           (err: unknown) => {
@@ -245,17 +258,23 @@ export default function ISBNScanner({
             Always keep it in the DOM when in camera mode so Quagga can target it.
             Hide canvases — we just want the clean video feed on mobile.
           */}
-          <div
-            ref={videoRef}
-            className={`w-full rounded-xl overflow-hidden bg-black [&_video]:w-full [&_video]:object-cover [&_canvas]:hidden ${
-              cameraState === 'active' ? 'block' : 'hidden'
-            }`}
-            style={{ height: 240 }}
-          />
+          <div className={`relative w-full rounded-xl overflow-hidden bg-black ${cameraState === 'active' ? 'block' : 'hidden'}`} style={{ height: 240 }}>
+            <div
+              ref={videoRef}
+              className="w-full h-full [&_video]:w-full [&_video]:h-full [&_video]:object-cover [&_canvas]:hidden"
+            />
+            {/* Aim guide — matches the 25%/25% crop area */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute left-0 right-0" style={{ top: '25%', bottom: '25%' }}>
+                <div className="absolute inset-0 border-2 border-steel/70 rounded" />
+                <div className="absolute left-0 right-0 top-1/2 -translate-y-px h-0.5 bg-steel/80 shadow-[0_0_6px_2px_rgba(75,142,186,0.6)] scan-line" />
+              </div>
+            </div>
+          </div>
 
           {cameraState === 'active' && (
             <div className="flex items-center justify-between mt-2 px-1">
-              <p className="text-xs text-slate/50">Align the ISBN barcode in the frame</p>
+              <p className="text-xs text-slate/50">Centre the ISBN barcode in the middle strip</p>
               <button
                 type="button"
                 onClick={stopCamera}
