@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { sendSMS } from '@/lib/sms/panacea';
+import { sendSMS } from '@/lib/sms/twilio';
 
 export async function GET(request: NextRequest) {
   // Protect with CRON_SECRET header
