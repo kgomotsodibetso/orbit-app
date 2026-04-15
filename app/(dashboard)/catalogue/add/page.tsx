@@ -44,6 +44,32 @@ export default function AddBookPage() {
     setLookingUp(true);
     setError('');
     try {
+      // Check for duplicate within this institution's catalogue first
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('institution_id')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.institution_id) {
+          const { data: existing } = await supabase
+            .from('books')
+            .select('id, title')
+            .eq('institution_id', profile.institution_id)
+            .eq('isbn_13', isbn)
+            .maybeSingle();
+
+          if (existing) {
+            setError(`"${existing.title}" is already in your catalogue.`);
+            setForm((f) => ({ ...f, isbn_13: isbn }));
+            return;
+          }
+        }
+      }
+
       const res = await fetch(`/api/isbn/${isbn}`);
       if (!res.ok) throw new Error('Book not found in Open Library');
       const data = await res.json();

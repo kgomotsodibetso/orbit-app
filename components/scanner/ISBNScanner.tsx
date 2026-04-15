@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { ScanLine, Keyboard, X } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { ScanLine, Keyboard, Camera, X, RefreshCw } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 interface ISBNScannerProps {
@@ -9,14 +9,27 @@ interface ISBNScannerProps {
   placeholder?: string;
 }
 
-export default function ISBNScanner({ onScan, placeholder = 'Scan barcode or type ISBN…' }: ISBNScannerProps) {
-  const [mode, setMode] = useState<'hid' | 'manual'>('hid');
+type Mode = 'hid' | 'camera' | 'manual';
+type CameraState = 'idle' | 'starting' | 'active' | 'error';
+
+export default function ISBNScanner({
+  onScan,
+  placeholder = 'Scan barcode or type ISBN…',
+}: ISBNScannerProps) {
+  const [mode, setMode] = useState<Mode>('hid');
   const [manualValue, setManualValue] = useState('');
   const [buffer, setBuffer] = useState('');
-  const [lastKey, setLastKey] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [cameraState, setCameraState] = useState<CameraState>('idle');
+  const [cameraError, setCameraError] = useState('');
+  const [lastScanned, setLastScanned] = useState('');
 
-  // HID barcode scanner: listens for rapid keystrokes ending with Enter
+  const inputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const quaggaRef = useRef<any>(null);
+  const lastDetectedRef = useRef('');
+
+  // ── HID barcode scanner ───────────────────────────────────────────────────
   useEffect(() => {
     if (mode !== 'hid') return;
 
@@ -37,7 +50,6 @@ export default function ISBNScanner({ onScan, placeholder = 'Scan barcode or typ
         return;
       }
 
-      // HID scanners type very fast (<30ms between keys)
       if (gap < 50 && /^\d$/.test(e.key)) {
         localBuffer += e.key;
       } else if (gap >= 50) {
@@ -45,13 +57,123 @@ export default function ISBNScanner({ onScan, placeholder = 'Scan barcode or typ
       }
 
       setBuffer(localBuffer);
-      setLastKey(now);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mode, onScan]);
 
+  // ── Camera / Quagga2 ──────────────────────────────────────────────────────
+  const stopCamera = useCallback(() => {
+    if (quaggaRef.current) {
+      try { quaggaRef.current.stop(); } catch { /* ignore */ }
+      quaggaRef.current = null;
+    }
+    lastDetectedRef.current = '';
+    setCameraState('idle');
+  }, []);
+
+  const startCamera = useCallback(async () => {
+    if (!videoRef.current) return;
+
+    // Stop any existing instance first
+    if (quaggaRef.current) {
+      try { quaggaRef.current.stop(); } catch { /* ignore */ }
+      quaggaRef.current = null;
+    }
+
+    // Camera requires HTTPS (or localhost)
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraError('Camera not supported. This requires HTTPS. Use Manual mode instead.');
+      setCameraState('error');
+      return;
+    }
+
+    setCameraState('starting');
+    setCameraError('');
+    lastDetectedRef.current = '';
+
+    try {
+      const Quagga = (await import('@ericblade/quagga2')).default;
+
+      await new Promise<void>((resolve, reject) => {
+        Quagga.init(
+          {
+            inputStream: {
+              type: 'LiveStream',
+              target: videoRef.current!,
+              constraints: {
+                facingMode: 'environment', // rear camera on mobile
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+              },
+            },
+            decoder: {
+              readers: ['ean_reader', 'ean_8_reader'],
+            },
+            locate: true,
+            numOfWorkers: 0, // avoids Next.js worker bundling issues
+          },
+          (err: unknown) => {
+            if (err) reject(err instanceof Error ? err : new Error(String(err)));
+            else resolve();
+          }
+        );
+      });
+
+      quaggaRef.current = Quagga;
+      Quagga.start();
+      setCameraState('active');
+
+      Quagga.onDetected((result: { codeResult?: { code?: string | null } }) => {
+        const code = result.codeResult?.code;
+        if (!code) return;
+        // Accept EAN-13 (books) and EAN-8 (older editions)
+        if (!/^\d{8}$/.test(code) && !/^\d{13}$/.test(code)) return;
+        // Debounce — ignore same code within 3 s
+        if (code === lastDetectedRef.current) return;
+
+        lastDetectedRef.current = code;
+        const isbn13 = code.length === 13 ? code : code.padStart(13, '0');
+
+        try { Quagga.stop(); } catch { /* ignore */ }
+        quaggaRef.current = null;
+        setCameraState('idle');
+        setLastScanned(isbn13);
+        onScan(isbn13);
+
+        setTimeout(() => { lastDetectedRef.current = ''; }, 3000);
+      });
+    } catch (err) {
+      const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+      setCameraError(
+        msg.includes('permission') || msg.includes('denied') || msg.includes('notallowed')
+          ? 'Camera permission denied. Please allow camera access and try again.'
+          : 'Could not start camera. Try Manual mode instead.'
+      );
+      setCameraState('error');
+    }
+  }, [onScan]);
+
+  // Stop camera when switching away
+  useEffect(() => {
+    if (mode !== 'camera') stopCamera();
+  }, [mode, stopCamera]);
+
+  // Cleanup on unmount
+  useEffect(() => () => {
+    if (quaggaRef.current) {
+      try { quaggaRef.current.stop(); } catch { /* ignore */ }
+    }
+  }, []);
+
+  const switchMode = (m: Mode) => {
+    setMode(m);
+    setBuffer('');
+    if (m === 'manual') setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  // ── Manual submit ─────────────────────────────────────────────────────────
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const digits = manualValue.replace(/\D/g, '');
@@ -61,37 +183,38 @@ export default function ISBNScanner({ onScan, placeholder = 'Scan barcode or typ
     }
   };
 
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="rounded-2xl border-2 border-dashed border-steel/30 p-6 bg-steel/5">
-      {/* Mode toggle */}
-      <div className="flex gap-2 mb-5">
-        <button
-          onClick={() => setMode('hid')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-            mode === 'hid' ? 'bg-steel text-white' : 'bg-white text-slate/60 border border-slate/20'
-          }`}
-        >
-          <ScanLine className="w-3.5 h-3.5" />
-          Scanner
-        </button>
-        <button
-          onClick={() => { setMode('manual'); setTimeout(() => inputRef.current?.focus(), 50); }}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-            mode === 'manual' ? 'bg-steel text-white' : 'bg-white text-slate/60 border border-slate/20'
-          }`}
-        >
-          <Keyboard className="w-3.5 h-3.5" />
-          Manual
-        </button>
+      {/* Mode tabs */}
+      <div className="flex gap-2 mb-5 flex-wrap">
+        {([
+          { key: 'hid' as const, icon: ScanLine, label: 'Scanner' },
+          { key: 'camera' as const, icon: Camera, label: 'Camera' },
+          { key: 'manual' as const, icon: Keyboard, label: 'Manual' },
+        ]).map(({ key, icon: Icon, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => switchMode(key)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+              mode === key
+                ? 'bg-steel text-white'
+                : 'bg-white text-slate/60 border border-slate/20 hover:border-steel/40'
+            }`}
+          >
+            <Icon className="w-3.5 h-3.5" />
+            {label}
+          </button>
+        ))}
       </div>
 
-      {mode === 'hid' ? (
+      {/* ── HID mode ────────────────────────────────────────────────────── */}
+      {mode === 'hid' && (
         <div className="text-center py-4">
-          {/* Animated scan line */}
           <div className="relative w-48 h-24 mx-auto mb-4 rounded-xl overflow-hidden bg-slate/5 border border-steel/20">
             <div
               className="absolute left-0 right-0 h-0.5 bg-steel/70 shadow-[0_0_8px_2px_rgba(75,142,186,0.5)] scan-line"
-              style={{ position: 'absolute' }}
             />
             <ScanLine className="w-8 h-8 text-steel/30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
@@ -99,16 +222,91 @@ export default function ISBNScanner({ onScan, placeholder = 'Scan barcode or typ
             {buffer ? (
               <span className="text-steel font-mono text-lg tracking-widest">{buffer}</span>
             ) : (
-              'Point barcode scanner at the ISBN…'
+              'Point USB barcode scanner at the ISBN…'
             )}
           </p>
           {buffer && (
-            <button onClick={() => setBuffer('')} className="mt-2 text-xs text-slate/40 hover:text-slate flex items-center gap-1 mx-auto">
+            <button
+              type="button"
+              onClick={() => setBuffer('')}
+              className="mt-2 text-xs text-slate/40 hover:text-slate flex items-center gap-1 mx-auto"
+            >
               <X className="w-3 h-3" /> Clear
             </button>
           )}
         </div>
-      ) : (
+      )}
+
+      {/* ── Camera mode ─────────────────────────────────────────────────── */}
+      {mode === 'camera' && (
+        <div>
+          {/*
+            Quagga injects <video> + <canvas> elements into this div.
+            Always keep it in the DOM when in camera mode so Quagga can target it.
+            Hide canvases — we just want the clean video feed on mobile.
+          */}
+          <div
+            ref={videoRef}
+            className={`w-full rounded-xl overflow-hidden bg-black [&_video]:w-full [&_video]:object-cover [&_canvas]:hidden ${
+              cameraState === 'active' ? 'block' : 'hidden'
+            }`}
+            style={{ height: 240 }}
+          />
+
+          {cameraState === 'active' && (
+            <div className="flex items-center justify-between mt-2 px-1">
+              <p className="text-xs text-slate/50">Align the ISBN barcode in the frame</p>
+              <button
+                type="button"
+                onClick={stopCamera}
+                className="text-xs text-slate/40 hover:text-red-500 flex items-center gap-1 transition-colors"
+              >
+                <X className="w-3 h-3" /> Stop
+              </button>
+            </div>
+          )}
+
+          {cameraState === 'idle' && (
+            <div className="text-center py-4">
+              <Camera className="w-10 h-10 text-steel/30 mx-auto mb-3" />
+              {lastScanned && (
+                <p className="text-xs text-green-600 font-semibold mb-2">
+                  ✓ Scanned {lastScanned}
+                </p>
+              )}
+              <p className="text-sm text-slate/60 mb-3">
+                {lastScanned
+                  ? 'Tap to scan another barcode'
+                  : 'Use your phone camera to scan the ISBN barcode'}
+              </p>
+              <Button type="button" onClick={startCamera} size="sm">
+                <Camera className="w-3.5 h-3.5 mr-1.5" />
+                {lastScanned ? 'Scan Again' : 'Start Camera'}
+              </Button>
+            </div>
+          )}
+
+          {cameraState === 'starting' && (
+            <div className="text-center py-6">
+              <span className="w-5 h-5 border-2 border-steel/30 border-t-steel rounded-full animate-spin inline-block mb-2" />
+              <p className="text-sm text-slate/60">Starting camera…</p>
+            </div>
+          )}
+
+          {cameraState === 'error' && (
+            <div className="text-center py-4">
+              <p className="text-sm text-red-500 mb-3">{cameraError}</p>
+              <Button type="button" variant="secondary" onClick={startCamera} size="sm">
+                <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                Try Again
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Manual mode ─────────────────────────────────────────────────── */}
+      {mode === 'manual' && (
         <form onSubmit={handleManualSubmit} className="flex gap-2">
           <input
             ref={inputRef}
