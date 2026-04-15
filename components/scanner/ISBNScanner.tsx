@@ -28,6 +28,8 @@ export default function ISBNScanner({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const quaggaRef = useRef<any>(null);
   const lastDetectedRef = useRef('');
+  // Consecutive-read counter — code must appear twice in a row before firing
+  const consecutiveRef = useRef({ code: '', count: 0 });
 
   // ── HID barcode scanner ───────────────────────────────────────────────────
   useEffect(() => {
@@ -70,6 +72,7 @@ export default function ISBNScanner({
       quaggaRef.current = null;
     }
     lastDetectedRef.current = '';
+    consecutiveRef.current = { code: '', count: 0 };
     setCameraState('idle');
   }, []);
 
@@ -139,12 +142,35 @@ export default function ISBNScanner({
       Quagga.onDetected((result: { codeResult?: { code?: string | null } }) => {
         const code = result.codeResult?.code;
         if (!code) return;
-        // Accept EAN-13 (books) and EAN-8 (older editions)
-        if (!/^\d{8}$/.test(code) && !/^\d{13}$/.test(code)) return;
+
+        // Must be exactly 13 digits (EAN-13) or 8 digits (EAN-8)
+        if (!/^\d{13}$/.test(code) && !/^\d{8}$/.test(code)) return;
+
+        // Book ISBNs always start with 978 or 979
+        if (code.length === 13 && !code.startsWith('978') && !code.startsWith('979')) return;
+
+        // Validate EAN-13 check digit — rejects garbage partial reads
+        if (code.length === 13) {
+          const sum = code.split('').slice(0, 12).reduce((acc, d, i) => acc + parseInt(d) * (i % 2 === 0 ? 1 : 3), 0);
+          const check = (10 - (sum % 10)) % 10;
+          if (check !== parseInt(code[12])) return;
+        }
+
+        // Require the same code twice in a row before accepting
+        const cons = consecutiveRef.current;
+        if (cons.code === code) {
+          cons.count += 1;
+        } else {
+          cons.code = code;
+          cons.count = 1;
+        }
+        if (cons.count < 2) return;
+
         // Debounce — ignore same code within 3 s
         if (code === lastDetectedRef.current) return;
 
         lastDetectedRef.current = code;
+        consecutiveRef.current = { code: '', count: 0 };
         const isbn13 = code.length === 13 ? code : code.padStart(13, '0');
 
         try { Quagga.stop(); } catch { /* ignore */ }
