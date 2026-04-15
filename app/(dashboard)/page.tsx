@@ -41,16 +41,16 @@ export default async function MissionControlPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate">Mission Control</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate">Mission Control</h1>
           <p className="text-slate/50 text-sm mt-1">
             {new Date().toLocaleDateString('en-ZA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
 
         {/* Quick action buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           <Link href="/loans/checkout">
             <Button size="sm" className="gap-2">
               <ScanLine className="w-3.5 h-3.5" />
@@ -100,14 +100,14 @@ export default async function MissionControlPage() {
 
       {/* Overdue alert banner */}
       {stats.overdueLoans > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl px-5 py-4 flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+        <div className="bg-red-50 border border-red-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+          <div className="flex items-start sm:items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5 sm:mt-0" />
             <p className="text-sm font-semibold text-red-700">
               {stats.overdueLoans} book{stats.overdueLoans > 1 ? 's are' : ' is'} overdue — SMS alerts will be sent automatically tonight.
             </p>
           </div>
-          <Link href="/loans?filter=overdue">
+          <Link href="/loans?filter=overdue" className="shrink-0 self-start sm:self-auto">
             <Button variant="danger" size="sm">View</Button>
           </Link>
         </div>

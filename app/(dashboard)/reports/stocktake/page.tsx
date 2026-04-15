@@ -74,16 +74,16 @@ export default async function StocktakePage({
   return (
     <div className="max-w-5xl">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <Link
             href="/reports"
-            className="text-slate/40 hover:text-slate transition-colors"
+            className="text-slate/40 hover:text-slate transition-colors shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-slate">Annual Stock-take</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate">Annual Stock-take</h1>
             <p className="text-slate/50 text-sm mt-0.5">
               DBE asset register · {today}
             </p>
@@ -93,18 +93,20 @@ export default async function StocktakePage({
         <div className="flex items-center gap-2 shrink-0">
           <a
             href="/api/reports/stocktake"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl bg-cream text-slate border border-slate/20 hover:bg-cream/80 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl bg-cream text-slate border border-slate/20 hover:bg-cream/80 transition-all"
           >
             <Download className="w-4 h-4" />
-            Download CSV
+            <span className="hidden sm:inline">Download CSV</span>
+            <span className="sm:hidden">CSV</span>
           </a>
           <form action={generateStocktakeReport}>
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl bg-steel text-white hover:bg-steel/90 shadow-sm transition-all"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl bg-steel text-white hover:bg-steel/90 shadow-sm transition-all"
             >
               <FileText className="w-4 h-4" />
-              Generate Report
+              <span className="hidden sm:inline">Generate Report</span>
+              <span className="sm:hidden">Generate</span>
             </button>
           </form>
         </div>
@@ -148,7 +150,8 @@ export default async function StocktakePage({
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 mb-4 bg-slate/5 rounded-xl p-1 w-fit">
+      <div className="overflow-x-auto mb-4">
+      <div className="flex gap-1 bg-slate/5 rounded-xl p-1 w-fit">
         <FilterTab
           href="/reports/stocktake"
           active={condition === 'all'}
@@ -167,6 +170,7 @@ export default async function StocktakePage({
           ) : null
         )}
       </div>
+      </div>
 
       {/* Book table */}
       {books.length === 0 ? (
@@ -176,6 +180,7 @@ export default async function StocktakePage({
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate/10 overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate/10 bg-cream/60">
@@ -272,6 +277,7 @@ export default async function StocktakePage({
               })}
             </tbody>
           </table>
+          </div>
 
           {allBooks.length >= 2000 && (
             <div className="px-5 py-3 border-t border-slate/10 bg-cream/40 text-center">

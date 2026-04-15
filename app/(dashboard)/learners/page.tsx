@@ -30,12 +30,12 @@ export default async function LearnersPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate">Learners</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate">Learners</h1>
           <p className="text-slate/50 text-sm mt-1">{members?.length ?? 0} members</p>
         </div>
-        <Link href="/learners/new">
+        <Link href="/learners/new" className="shrink-0">
           <Button>
             <Plus className="w-4 h-4" />
             Add Learner
@@ -59,6 +59,7 @@ export default async function LearnersPage({
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate/10 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate/10 bg-cream/60">
@@ -99,6 +100,7 @@ export default async function LearnersPage({
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

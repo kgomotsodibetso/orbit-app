@@ -75,22 +75,22 @@ export default async function LoansPage({
   return (
     <div className="max-w-5xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate">Loans</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate">Loans</h1>
           <p className="text-slate/50 text-sm mt-0.5">Track active checkouts and overdue returns</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             href="/loans/return"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl bg-cream text-slate border border-slate/20 hover:bg-cream/80 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl bg-cream text-slate border border-slate/20 hover:bg-cream/80 transition-all"
           >
             <CheckCircle2 className="w-4 h-4" />
-            Return Book
+            Return
           </Link>
           <Link
             href="/loans/checkout"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl bg-steel text-white hover:bg-steel/90 shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl bg-steel text-white hover:bg-steel/90 shadow-sm transition-all"
           >
             <Plus className="w-4 h-4" />
             Check Out
@@ -99,7 +99,7 @@ export default async function LoansPage({
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
         <div className="bg-white rounded-2xl border border-slate/10 p-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-steel/10 flex items-center justify-center shrink-0">
@@ -136,7 +136,8 @@ export default async function LoansPage({
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 mb-4 bg-slate/5 rounded-xl p-1 w-fit">
+      <div className="overflow-x-auto mb-4">
+      <div className="flex gap-1 bg-slate/5 rounded-xl p-1 w-fit min-w-full sm:min-w-0">
         {tabs.map(({ key, label, count }) => (
           <Link
             key={key}
@@ -164,6 +165,7 @@ export default async function LoansPage({
           </Link>
         ))}
       </div>
+      </div>
 
       {/* Loans table */}
       {filtered.length === 0 ? (
@@ -176,6 +178,7 @@ export default async function LoansPage({
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate/10 overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate/10 bg-cream/60">
@@ -289,6 +292,7 @@ export default async function LoansPage({
               })}
             </tbody>
           </table>
+          </div>
 
           {filtered.length >= 200 && (
             <div className="px-5 py-3 border-t border-slate/10 bg-cream/40 text-center">

@@ -152,7 +152,7 @@ export default function AddBookPage() {
           {field('isbn_13', 'ISBN-13', { placeholder: '9780000000000' })}
           {field('title', 'Title')}
           {field('authors', 'Authors', { placeholder: 'Comma-separated' })}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {field('publisher', 'Publisher')}
             {field('published_year', 'Year', { type: 'number', placeholder: '2024' })}
           </div>
@@ -161,7 +161,7 @@ export default function AddBookPage() {
 
         <div className="bg-white rounded-2xl border border-slate/10 p-5 space-y-4">
           <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest">Library Details</p>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {field('location_shelf', 'Shelf Location', { placeholder: 'e.g. A-12' })}
             {field('total_copies', 'Copies', { type: 'number' })}
           </div>
