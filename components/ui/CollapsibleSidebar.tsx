@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   BookOpen,
@@ -15,7 +15,9 @@ import {
   Rocket,
   GraduationCap,
   ExternalLink,
+  LogOut,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 const navItems = [
   { href: '/',                label: 'Mission Control', icon: LayoutDashboard },
@@ -29,6 +31,14 @@ const navItems = [
 export default function CollapsibleSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
 
   return (
     <aside
@@ -88,6 +98,18 @@ export default function CollapsibleSidebar() {
             </span>
           )}
         </a>
+      </div>
+
+      {/* Sign out */}
+      <div className="px-2 pb-2">
+        <button
+          onClick={handleSignOut}
+          title={collapsed ? 'Sign out' : undefined}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-cream/50 hover:bg-white/10 hover:text-red-400 transition-colors"
+        >
+          <LogOut className="w-4 h-4 shrink-0" />
+          {!collapsed && <span className="truncate">Sign out</span>}
+        </button>
       </div>
 
       {/* Collapse toggle */}
