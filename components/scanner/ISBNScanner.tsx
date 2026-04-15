@@ -107,8 +107,6 @@ export default function ISBNScanner({
                 width: { ideal: 640 },
                 height: { ideal: 480 },
               },
-              // Process at most 15 frames/sec — reduces CPU without missing scans
-              frequency: 15,
               // Crop to a narrow horizontal strip where the barcode will be
               area: {
                 top: '25%',
@@ -117,10 +115,10 @@ export default function ISBNScanner({
                 bottom: '25%',
               },
             },
+            // Process at most 15 frames/sec — reduces CPU without missing scans
+            frequency: 15,
             decoder: {
               readers: ['ean_reader', 'ean_8_reader'],
-              // Require 2 consecutive identical reads before firing — cuts false positives
-              multiple: false,
             },
             // locate: false skips the expensive frame-wide barcode search.
             // The user just needs to centre the barcode in the frame.
