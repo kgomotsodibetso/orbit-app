@@ -1,0 +1,107 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  LayoutDashboard,
+  BookOpen,
+  ArrowLeftRight,
+  Users,
+  FileText,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+  Rocket,
+  GraduationCap,
+  ExternalLink,
+} from 'lucide-react';
+
+const navItems = [
+  { href: '/',                label: 'Mission Control', icon: LayoutDashboard },
+  { href: '/catalogue',       label: 'Catalogue',        icon: BookOpen },
+  { href: '/loans',           label: 'Loans',            icon: ArrowLeftRight },
+  { href: '/learners',        label: 'Learners',         icon: Users },
+  { href: '/reports',         label: 'Reports',          icon: FileText },
+  { href: '/settings',        label: 'Settings',         icon: Settings },
+];
+
+export default function CollapsibleSidebar() {
+  const [collapsed, setCollapsed] = useState(false);
+  const pathname = usePathname();
+
+  return (
+    <aside
+      className={[
+        'flex flex-col bg-slate text-cream transition-all duration-300 ease-in-out shrink-0',
+        collapsed ? 'w-16' : 'w-56',
+      ].join(' ')}
+    >
+      {/* Logo */}
+      <div className="flex items-center gap-3 px-4 py-5 border-b border-white/10">
+        <div className="w-8 h-8 rounded-lg bg-steel flex items-center justify-center shrink-0">
+          <Rocket className="w-4 h-4 text-white" />
+        </div>
+        {!collapsed && (
+          <span className="font-bold text-sm tracking-wide truncate">Orbit Tech</span>
+        )}
+      </div>
+
+      {/* Nav items */}
+      <nav className="flex-1 py-4 space-y-1 px-2" aria-label="Main navigation">
+        {navItems.map(({ href, label, icon: Icon }) => {
+          const isActive =
+            href === '/' ? pathname === '/' : pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              title={collapsed ? label : undefined}
+              className={[
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-steel text-white'
+                  : 'text-cream/70 hover:bg-white/10 hover:text-cream',
+              ].join(' ')}
+            >
+              <Icon className="w-4 h-4 shrink-0" />
+              {!collapsed && <span className="truncate">{label}</span>}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Learner portal link */}
+      <div className="px-2 pb-3 border-t border-white/10 pt-3">
+        <a
+          href="/learner/login"
+          target="_blank"
+          rel="noopener noreferrer"
+          title={collapsed ? 'Learner Portal' : undefined}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-lavender/70 hover:bg-white/10 hover:text-lavender transition-colors"
+        >
+          <GraduationCap className="w-4 h-4 shrink-0" />
+          {!collapsed && (
+            <span className="truncate flex items-center gap-1.5">
+              Learner Portal
+              <ExternalLink className="w-3 h-3 opacity-60" />
+            </span>
+          )}
+        </a>
+      </div>
+
+      {/* Collapse toggle */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="flex items-center justify-center p-3 border-t border-white/10 text-cream/50 hover:text-cream transition-colors"
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        {collapsed ? (
+          <ChevronRight className="w-4 h-4" />
+        ) : (
+          <ChevronLeft className="w-4 h-4" />
+        )}
+      </button>
+    </aside>
+  );
+}

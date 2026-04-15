@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="#2C3A47"/>
+
+  <!-- Orbit ring (ellipse) -->
+  <ellipse cx="256" cy="256" rx="160" ry="80" stroke="#4B8EBA" stroke-width="14" fill="none" stroke-dasharray="0"/>
+
+  <!-- Orbit ring tilted (second ring) -->
+  <ellipse cx="256" cy="256" rx="160" ry="80" stroke="#A29FEC" stroke-width="8" fill="none" opacity="0.5"
+    transform="rotate(60 256 256)"/>
+
+  <!-- Planet / book core -->
+  <circle cx="256" cy="256" r="60" fill="#4B8EBA"/>
+
+  <!-- Book pages on planet -->
+  <rect x="226" y="238" width="60" height="38" rx="4" fill="#F0E5DF"/>
+  <line x1="256" y1="238" x2="256" y2="276" stroke="#4B8EBA" stroke-width="3"/>
+
+  <!-- Satellite body -->
+  <rect x="376" y="220" width="28" height="20" rx="4" fill="#F6B93B"/>
+  <!-- Satellite solar panels -->
+  <rect x="350" y="225" width="24" height="10" rx="2" fill="#4B8EBA" opacity="0.9"/>
+  <rect x="406" y="225" width="24" height="10" rx="2" fill="#4B8EBA" opacity="0.9"/>
+
+  <!-- Stars -->
+  <circle cx="120" cy="100" r="4" fill="#F6B93B"/>
+  <circle cx="390" cy="130" r="3" fill="white" opacity="0.7"/>
+  <circle cx="80" cy="380" r="3" fill="white" opacity="0.6"/>
+  <circle cx="430" cy="400" r="4" fill="#A29FEC" opacity="0.8"/>
+  <circle cx="160" cy="420" r="2.5" fill="white" opacity="0.5"/>
+  <circle cx="340" cy="90" r="2.5" fill="white" opacity="0.6"/>
+</svg>
