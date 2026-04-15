@@ -1,15 +1,27 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, Satellite } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
-export default function LoginPage() {
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.1 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.5 7.1 29 5 24 5 12.9 5 4 13.9 4 25s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
+    <path fill="#FF3D00" d="M6.3 15.2l6.6 4.8C14.5 16.5 18.9 14 24 14c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.5 7.1 29 5 24 5 16.3 5 9.7 9.1 6.3 15.2z"/>
+    <path fill="#4CAF50" d="M24 45c4.9 0 9.4-1.9 12.8-4.9l-6.2-5.1C28.7 36.6 26.4 37.5 24 37.5c-5.2 0-9.6-3.5-11.2-8.2l-6.5 5C9.5 40.7 16.2 45 24 45z"/>
+    <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.9 2.4-2.5 4.5-4.6 5.9l6.2 5.1C40.4 36.2 44 31 44 25c0-1.3-.1-2.6-.4-3.9z"/>
+  </svg>
+);
+
+function LoginPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const oauthError = searchParams.get('error');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,6 +45,16 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+      },
+    });
+  };
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-slate px-4">
       <div className="w-full max-w-sm">
@@ -49,6 +71,12 @@ export default function LoginPage() {
         {/* Card */}
         <div className="bg-white rounded-3xl shadow-xl p-8">
           <h2 className="text-lg font-bold text-slate mb-6">Sign in to your library</h2>
+
+          {oauthError === 'oauth_failed' && (
+            <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
+              <p className="text-sm text-red-600">Google sign-in failed. Please try again.</p>
+            </div>
+          )}
 
           {error && (
             <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
@@ -89,6 +117,26 @@ export default function LoginPage() {
             </Button>
           </form>
 
+          {/* OR divider */}
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate/10" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white px-3 text-xs text-slate/40">or continue with</span>
+            </div>
+          </div>
+
+          {/* Google button */}
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="w-full flex items-center justify-center gap-3 rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm font-semibold text-slate hover:bg-cream/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-steel"
+          >
+            <GoogleIcon />
+            Continue with Google
+          </button>
+
           <p className="text-center text-sm text-slate/50 mt-6">
             New school?{' '}
             <Link href="/register" className="text-steel font-semibold hover:underline">
@@ -102,5 +150,13 @@ export default function LoginPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginPageInner />
+    </Suspense>
   );
 }
