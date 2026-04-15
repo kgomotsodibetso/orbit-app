@@ -52,7 +52,7 @@ export default function AddBookPage() {
           .from('profiles')
           .select('institution_id')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
         if (profile?.institution_id) {
           const { data: existing } = await supabase
@@ -100,13 +100,19 @@ export default function AddBookPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('institution_id')
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (profileError || !profile) {
+        throw new Error(
+          profileError
+            ? `Profile lookup failed: ${profileError.message} (code: ${profileError.code})`
+            : 'Profile not found — your account may not be fully set up. Contact support.'
+        );
+      }
 
       const copies = parseInt(form.total_copies) || 1;
 
