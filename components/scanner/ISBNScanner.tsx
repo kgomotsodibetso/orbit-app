@@ -110,22 +110,11 @@ export default function ISBNScanner({
                 width: { ideal: 640 },
                 height: { ideal: 480 },
               },
-              // Crop to a narrow horizontal strip where the barcode will be
-              area: {
-                top: '25%',
-                right: '0%',
-                left: '0%',
-                bottom: '25%',
-              },
             },
-            // Process at most 15 frames/sec — reduces CPU without missing scans
-            frequency: 15,
+            frequency: 8,
             decoder: {
               readers: ['ean_reader', 'ean_8_reader'],
             },
-            // locate: true finds the barcode anywhere in the crop area.
-            // Required — locate: false decodes the whole frame blindly and
-            // picks up text/patterns on the book cover as false reads.
             locate: true,
             numOfWorkers: 0, // avoids Next.js worker bundling issues
           },
@@ -288,10 +277,9 @@ export default function ISBNScanner({
               ref={videoRef}
               className="w-full h-full [&_video]:w-full [&_video]:h-full [&_video]:object-cover [&_canvas]:hidden"
             />
-            {/* Aim guide — matches the 25%/25% crop area */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute left-0 right-0" style={{ top: '25%', bottom: '25%' }}>
-                <div className="absolute inset-0 border-2 border-steel/70 rounded" />
+            {/* Aim guide */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div className="w-4/5 h-16 border-2 border-steel/70 rounded relative">
                 <div className="absolute left-0 right-0 top-1/2 -translate-y-px h-0.5 bg-steel/80 shadow-[0_0_6px_2px_rgba(75,142,186,0.6)] scan-line" />
               </div>
             </div>
