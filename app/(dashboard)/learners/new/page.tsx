@@ -159,7 +159,7 @@ export default function AddLearnerPage() {
                   </select>
                 </div>
                 <Input
-                  label="Class / Homeroom (optional)"
+                  label="Classroom (optional)"
                   value={form.class_name}
                   onChange={set('class_name')}
                   placeholder="e.g. 7A"
