@@ -5,14 +5,6 @@ import { KeyRound, CheckCircle2 } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
-async function hashPin(pin: string): Promise<string> {
-  const data = new TextEncoder().encode(pin);
-  const buf = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-}
-
 export default function SetPinForm({ memberId, hasPin }: { memberId: string; hasPin: boolean }) {
   const [pin, setPin] = useState('');
   const [saving, setSaving] = useState(false);
@@ -26,12 +18,10 @@ export default function SetPinForm({ memberId, hasPin }: { memberId: string; has
     setSaving(true);
     setError('');
 
-    const pinHash = await hashPin(pin);
-
-    const res = await fetch(`/api/learner/pin`, {
+    const res = await fetch('/api/learner/pin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ member_id: memberId, pin_hash: pinHash }),
+      body: JSON.stringify({ member_id: memberId, pin }),
     });
 
     const data = await res.json();
@@ -47,7 +37,7 @@ export default function SetPinForm({ memberId, hasPin }: { memberId: string; has
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate/10 p-5">
+    <div className="bg-white rounded-2xl border border-slate/10 p-5 mb-6">
       <div className="flex items-center gap-2 mb-4">
         <KeyRound className="w-4 h-4 text-steel" />
         <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest">
@@ -82,12 +72,7 @@ export default function SetPinForm({ memberId, hasPin }: { memberId: string; has
               error={error}
             />
           </div>
-          <Button
-            type="submit"
-            loading={saving}
-            disabled={pin.length !== 4}
-            variant="secondary"
-          >
+          <Button type="submit" loading={saving} disabled={pin.length !== 4} variant="secondary">
             {hasPin ? 'Update' : 'Set PIN'}
           </Button>
         </form>

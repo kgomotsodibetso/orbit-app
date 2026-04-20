@@ -13,8 +13,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'member_id and pin required' }, { status: 400 });
   }
 
-  if (typeof pin !== 'string' || !/^\d{4,6}$/.test(pin)) {
-    return NextResponse.json({ error: 'PIN must be 4–6 digits' }, { status: 400 });
+  if (typeof pin !== 'string' || !/^\d{4}$/.test(pin)) {
+    return NextResponse.json({ error: 'PIN must be exactly 4 digits' }, { status: 400 });
   }
 
   // Verify the calling user is a librarian/admin (uses their Supabase session)

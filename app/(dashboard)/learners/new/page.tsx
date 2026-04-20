@@ -10,12 +10,6 @@ import { createClient } from '@/lib/supabase/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
-async function hashPin(pin: string): Promise<string> {
-  const data = new TextEncoder().encode(pin);
-  const buf = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
 const GRADES = ['R', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 const MEMBER_TYPES = ['learner', 'teacher', 'staff', 'community'];
 
@@ -26,7 +20,6 @@ export default function AddLearnerPage() {
   const [done, setDone] = useState(false);
   const [newMemberNumber, setNewMemberNumber] = useState('');
 
-  const [pin, setPin] = useState('');
   const [form, setForm] = useState({
     full_name: '',
     member_type: 'learner',
@@ -66,8 +59,6 @@ export default function AddLearnerPage() {
 
     const memberNumber = `ORB-${String((count ?? 0) + 1).padStart(4, '0')}`;
 
-    const pinHash = pin.length === 4 ? await hashPin(pin) : null;
-
     const { error: insertError } = await supabase.from('members').insert({
       institution_id: profile.institution_id,
       member_number: memberNumber,
@@ -79,7 +70,6 @@ export default function AddLearnerPage() {
       contact_phone: form.contact_phone || null,
       contact_email: form.contact_email || null,
       notes: form.notes || null,
-      pin_hash: pinHash,
     });
 
     setSaving(false);
@@ -99,14 +89,15 @@ export default function AddLearnerPage() {
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-8 h-8 text-green-500" />
           </div>
-          <h2 className="text-xl font-bold text-slate mb-1">Learner Added</h2>
+          <h2 className="text-xl font-bold text-slate mb-1">Member Added</h2>
           <p className="text-sm text-slate/50 mb-1">{form.full_name}</p>
-          <p className="text-sm font-semibold text-steel mb-8">{newMemberNumber}</p>
+          <p className="text-sm font-semibold text-steel mb-2">{newMemberNumber}</p>
+          <p className="text-xs text-slate/40 mb-8">To set a learner portal PIN, open the member profile.</p>
           <div className="flex gap-3 justify-center">
-            <Button onClick={() => { setDone(false); setPin(''); setForm({ full_name: '', member_type: 'learner', grade: '', class_name: '', guardian_name: '', contact_phone: '', contact_email: '', notes: '' }); }}>
+            <Button onClick={() => { setDone(false); setForm({ full_name: '', member_type: 'learner', grade: '', class_name: '', guardian_name: '', contact_phone: '', contact_email: '', notes: '' }); }}>
               Add Another
             </Button>
-            <Link href="/learners"><Button variant="secondary">View Learners</Button></Link>
+            <Link href="/learners"><Button variant="secondary">View Members</Button></Link>
           </div>
         </div>
       </div>
@@ -119,7 +110,7 @@ export default function AddLearnerPage() {
         <Link href="/learners" className="text-slate/40 hover:text-slate transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-3xl font-bold text-slate">Add Learner</h1>
+        <h1 className="text-3xl font-bold text-slate">Add Member</h1>
       </div>
 
       {error && (
@@ -197,20 +188,6 @@ export default function AddLearnerPage() {
           />
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate/10 p-5 space-y-4">
-          <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest">Learner Portal Access</p>
-          <Input
-            label="PIN (optional — 4 digits)"
-            type="password"
-            inputMode="numeric"
-            maxLength={4}
-            value={pin}
-            onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
-            placeholder="e.g. 1234"
-          />
-          <p className="text-xs text-slate/40">Set a 4-digit PIN so this learner can log into the learner portal at <span className="font-semibold">/learner/login</span>. Leave blank to skip.</p>
-        </div>
-
         <div className="bg-white rounded-2xl border border-slate/10 p-5">
           <label className="text-sm font-semibold text-slate block mb-1.5">Notes (optional)</label>
           <textarea
@@ -223,7 +200,7 @@ export default function AddLearnerPage() {
         </div>
 
         <Button type="submit" loading={saving} disabled={!form.full_name} className="w-full" size="lg">
-          Add Learner
+          Add Member
         </Button>
       </form>
     </div>
