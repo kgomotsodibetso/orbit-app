@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export async function GET(request: NextRequest) {
   const memberId = request.cookies.get('orbit_learner_session')?.value;
@@ -7,7 +7,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const supabase = await createClient();
+  // Learners have no Supabase session — use service client and scope by member UUID.
+  const supabase = createServiceClient();
   const { data: member } = await supabase
     .from('members')
     .select('id, full_name, member_number, grade, class_name, member_type, max_loans')
