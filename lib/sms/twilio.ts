@@ -26,6 +26,11 @@ export async function sendSMS(to: string, message: string): Promise<SMSResult> {
   // Normalise SA mobile number: 0821234567 → +27821234567
   const normalised = to.startsWith('0') ? `+27${to.slice(1)}` : to;
 
+  if (!/^\+\d{10,15}$/.test(normalised)) {
+    console.warn('[Twilio] Invalid phone number — SMS skipped:', to);
+    return { success: false, error: 'Invalid phone number' };
+  }
+
   const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
 
   // Twilio uses form-encoded bodies, not JSON
