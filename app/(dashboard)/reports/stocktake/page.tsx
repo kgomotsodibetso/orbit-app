@@ -20,17 +20,16 @@ type BookRow = {
   available_copies: number;
 };
 
-type Condition = 'new' | 'good' | 'fair' | 'poor' | 'damaged' | 'lost';
+type Condition = 'new' | 'good' | 'fair' | 'poor' | 'withdrawn';
 
-const ALL_CONDITIONS: Condition[] = ['new', 'good', 'fair', 'poor', 'damaged', 'lost'];
+const ALL_CONDITIONS: Condition[] = ['new', 'good', 'fair', 'poor', 'withdrawn'];
 
 const conditionBadge: Record<string, string> = {
-  new:     'bg-green-50 text-green-700 border-green-200',
-  good:    'bg-steel/10 text-steel border-steel/20',
-  fair:    'bg-golden/10 text-amber-700 border-golden/30',
-  poor:    'bg-orange-50 text-orange-700 border-orange-200',
-  damaged: 'bg-red-50 text-red-700 border-red-200',
-  lost:    'bg-slate/10 text-slate/60 border-slate/20',
+  new:       'bg-green-50 text-green-700 border-green-200',
+  good:      'bg-steel/10 text-steel border-steel/20',
+  fair:      'bg-golden/10 text-amber-700 border-golden/30',
+  poor:      'bg-orange-50 text-orange-700 border-orange-200',
+  withdrawn: 'bg-slate/10 text-slate/60 border-slate/20',
 };
 
 export default async function StocktakePage({
