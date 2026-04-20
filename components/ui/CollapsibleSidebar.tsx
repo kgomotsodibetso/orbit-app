@@ -13,6 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Rocket,
+  GraduationCap,
+  ExternalLink,
   LogOut,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -78,6 +80,25 @@ export default function CollapsibleSidebar() {
           );
         })}
       </nav>
+
+      {/* Learner portal link */}
+      <div className="px-2 pb-3 border-t border-white/10 pt-3">
+        <a
+          href="/learner/login"
+          target="_blank"
+          rel="noopener noreferrer"
+          title={collapsed ? 'Learner Portal' : undefined}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-lavender/70 hover:bg-white/10 hover:text-lavender transition-colors"
+        >
+          <GraduationCap className="w-4 h-4 shrink-0" />
+          {!collapsed && (
+            <span className="truncate flex items-center gap-1.5">
+              Learner Portal
+              <ExternalLink className="w-3 h-3 opacity-60" />
+            </span>
+          )}
+        </a>
+      </div>
 
       {/* Sign out */}
       <div className="px-2 pb-2">

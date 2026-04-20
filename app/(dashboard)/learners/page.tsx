@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Plus, User } from 'lucide-react';
+import { Plus, User, Eye, Pencil } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -29,7 +29,7 @@ export default async function LearnersPage({
 
   let query = supabase
     .from('members')
-    .select('id, member_number, full_name, grade, member_type, is_active, max_loans')
+    .select('id, member_number, full_name, grade, class_name, member_type, is_active, contact_phone, contact_email, max_loans')
     .eq('member_type', activeType)
     .order('full_name');
 
@@ -89,52 +89,81 @@ export default async function LearnersPage({
       </form>
 
       {!members?.length ? (
-        <div className="text-center py-20">
-          <p className="text-slate/40 mb-4">No {TYPE_LABELS[activeType].toLowerCase()} found.</p>
+        <div className="bg-white rounded-2xl border border-slate/10 text-center py-20">
+          <User className="w-10 h-10 text-slate/20 mx-auto mb-3" />
+          <p className="text-slate/40 font-medium">No {TYPE_LABELS[activeType].toLowerCase()} found.</p>
+          <Link href="/learners/new" className="inline-block mt-4">
+            <Button size="sm"><Plus className="w-3.5 h-3.5" />Add one now</Button>
+          </Link>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate/10 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-slate/10 bg-cream/60">
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest">Member</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest hidden sm:table-cell">Grade</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest hidden md:table-cell">Type</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate/5">
-              {members.map((m) => (
-                <tr key={m.id} className="hover:bg-cream/40 transition-colors">
-                  <td className="px-5 py-3.5">
-                    <Link href={`/learners/${m.id}`} className="flex items-center gap-3 group">
-                      <div className="w-8 h-8 rounded-full bg-lavender/20 flex items-center justify-center shrink-0">
-                        <User className="w-4 h-4 text-lavender" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-slate group-hover:text-steel transition-colors">
-                          {m.full_name}
-                        </p>
-                        <p className="text-xs text-slate/40">{m.member_number}</p>
-                      </div>
-                    </Link>
-                  </td>
-                  <td className="px-5 py-3.5 hidden sm:table-cell">
-                    <span className="text-sm text-slate/60">{m.grade ?? '—'}</span>
-                  </td>
-                  <td className="px-5 py-3.5 hidden md:table-cell">
-                    <span className="text-sm text-slate/60 capitalize">{m.member_type}</span>
-                  </td>
-                  <td className="px-5 py-3.5">
-                    <Badge variant={m.is_active ? 'success' : 'neutral'}>
-                      {m.is_active ? 'Active' : 'Inactive'}
-                    </Badge>
-                  </td>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate/10 bg-cream/60">
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest">Member</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest hidden sm:table-cell">Grade / Class</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest hidden lg:table-cell">Contact</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate/50 uppercase tracking-widest">Status</th>
+                  <th className="px-5 py-3 text-right text-xs font-semibold text-slate/50 uppercase tracking-widest">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate/5">
+                {members.map((m) => (
+                  <tr key={m.id} className="hover:bg-cream/30 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-lavender/20 flex items-center justify-center shrink-0">
+                          <User className="w-4 h-4 text-lavender" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-slate">{m.full_name}</p>
+                          <p className="text-xs text-slate/40">{m.member_number}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 hidden sm:table-cell">
+                      <p className="text-sm text-slate/70">
+                        {m.grade ? `Grade ${m.grade}` : '—'}
+                      </p>
+                      {m.class_name && (
+                        <p className="text-xs text-slate/40">{m.class_name}</p>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5 hidden lg:table-cell">
+                      <p className="text-sm text-slate/70">{m.contact_phone ?? '—'}</p>
+                      {m.contact_email && (
+                        <p className="text-xs text-slate/40 truncate max-w-[180px]">{m.contact_email}</p>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <Badge variant={m.is_active ? 'success' : 'neutral'}>
+                        {m.is_active ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-2 justify-end">
+                        <Link
+                          href={`/learners/${m.id}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate/60 hover:text-steel hover:bg-steel/10 transition-colors"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          View
+                        </Link>
+                        <Link
+                          href={`/learners/${m.id}/edit`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate/60 hover:text-slate hover:bg-slate/10 transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                          Edit
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
