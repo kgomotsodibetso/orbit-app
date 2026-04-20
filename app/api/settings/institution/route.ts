@@ -16,15 +16,18 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'name and contact_email are required' }, { status: 400 });
   }
 
-  // Get the institution_id from the user's profile
   const { data: profile } = await supabase
     .from('profiles')
-    .select('institution_id')
+    .select('institution_id, role')
     .eq('id', user.id)
     .single();
 
   if (!profile?.institution_id) {
     return NextResponse.json({ error: 'No institution linked to this account' }, { status: 403 });
+  }
+
+  if (!['super_admin', 'admin'].includes(profile.role)) {
+    return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
   }
 
   const { error } = await supabase
