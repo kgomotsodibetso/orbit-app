@@ -3,6 +3,7 @@ import { Plus, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import GradeSelect from './GradeSelect';
 
 const MEMBER_TYPES = ['learner', 'teacher', 'staff', 'community'] as const;
 type MemberType = (typeof MEMBER_TYPES)[number];
@@ -75,15 +76,16 @@ export default async function LearnersPage({
         ))}
       </div>
 
-      {/* Search */}
-      <form className="mb-6">
+      {/* Search + grade filter */}
+      <form className="flex gap-2 mb-6">
         <input type="hidden" name="type" value={activeType} />
         <input
           name="q"
           defaultValue={q}
           placeholder={`Search ${TYPE_LABELS[activeType].toLowerCase()} by name or member number…`}
-          className="w-full px-4 py-2.5 rounded-xl border border-slate/20 bg-white text-sm text-slate placeholder:text-slate/40 focus:outline-none focus:ring-2 focus:ring-steel"
+          className="flex-1 px-4 py-2.5 rounded-xl border border-slate/20 bg-white text-sm text-slate placeholder:text-slate/40 focus:outline-none focus:ring-2 focus:ring-steel"
         />
+        {activeType === 'learner' && <GradeSelect defaultValue={grade} />}
       </form>
 
       {!members?.length ? (
