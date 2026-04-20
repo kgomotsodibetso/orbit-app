@@ -7,7 +7,7 @@ export async function updateSession(request: NextRequest) {
   // ── Learner portal routes ───────────────────────────────────────────────
   // Learners are not Supabase auth users — they authenticate with a PIN
   // and get a simple httpOnly session cookie: orbit_learner_session
-  if (pathname.startsWith('/learner')) {
+  if (pathname === '/learner' || pathname.startsWith('/learner/')) {
     const isLearnerLogin = pathname === '/learner/login';
     const session = request.cookies.get('orbit_learner_session');
 
