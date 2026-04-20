@@ -163,51 +163,56 @@ export default function EditMemberPage({
             placeholder="Lesedi Mokoena"
             required
           />
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-slate">Type</label>
-              <select
-                value={form.member_type}
-                onChange={set('member_type')}
-                className="w-full rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm text-slate focus:outline-none focus:ring-2 focus:ring-steel"
-              >
-                {MEMBER_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-slate">Grade</label>
-              <select
-                value={form.grade}
-                onChange={set('grade')}
-                className="w-full rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm text-slate focus:outline-none focus:ring-2 focus:ring-steel"
-              >
-                <option value="">Select…</option>
-                {GRADES.map((g) => (
-                  <option key={g} value={g}>Grade {g}</option>
-                ))}
-              </select>
-            </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-semibold text-slate">Type</label>
+            <select
+              value={form.member_type}
+              onChange={set('member_type')}
+              className="w-full rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm text-slate focus:outline-none focus:ring-2 focus:ring-steel"
+            >
+              {MEMBER_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </option>
+              ))}
+            </select>
           </div>
-          <Input
-            label="Class / Homeroom (optional)"
-            value={form.class_name}
-            onChange={set('class_name')}
-            placeholder="e.g. 7A"
-          />
+
+          {form.member_type === 'learner' && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-semibold text-slate">Grade</label>
+                <select
+                  value={form.grade}
+                  onChange={set('grade')}
+                  className="w-full rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm text-slate focus:outline-none focus:ring-2 focus:ring-steel"
+                >
+                  <option value="">Select…</option>
+                  {GRADES.map((g) => (
+                    <option key={g} value={g}>Grade {g}</option>
+                  ))}
+                </select>
+              </div>
+              <Input
+                label="Class / Homeroom (optional)"
+                value={form.class_name}
+                onChange={set('class_name')}
+                placeholder="e.g. 7A"
+              />
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-2xl border border-slate/10 p-5 space-y-4">
           <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest">Contact Details</p>
-          <Input
-            label="Guardian name (optional)"
-            value={form.guardian_name}
-            onChange={set('guardian_name')}
-            placeholder="Parent or guardian"
-          />
+          {form.member_type === 'learner' && (
+            <Input
+              label="Guardian name (optional)"
+              value={form.guardian_name}
+              onChange={set('guardian_name')}
+              placeholder="Parent or guardian"
+            />
+          )}
           <Input
             label="Contact phone (optional)"
             type="tel"
