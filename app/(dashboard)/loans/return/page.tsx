@@ -30,14 +30,31 @@ export default function ReturnPage() {
   const handleScan = async (isbn: string) => {
     setLoading(true); setError('');
     const supabase = createClient();
+
+    // Step 1: resolve ISBN → book_id. Filtering loans by books.isbn_13 without
+    // !inner embedding is an outer join and won't constrain the parent rows.
+    const { data: book } = await supabase
+      .from('books')
+      .select('id')
+      .eq('isbn_13', isbn)
+      .single();
+
+    if (!book) {
+      setLoading(false);
+      setError('Book not found in catalogue.');
+      return;
+    }
+
+    // Step 2: find the most recent active loan for that book
     const { data } = await supabase
       .from('loans')
       .select('id, due_date, status, books(title, cover_url, authors), members(full_name)')
-      .eq('books.isbn_13', isbn)
+      .eq('book_id', book.id)
       .in('status', ['active', 'overdue'])
       .order('checked_out_at', { ascending: false })
       .limit(1)
       .single();
+
     setLoading(false);
     if (data) { setLoan(data as unknown as ActiveLoan); setStep('condition'); }
     else setError('No active loan found for this book.');
