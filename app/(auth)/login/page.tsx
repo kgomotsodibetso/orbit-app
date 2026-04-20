@@ -105,6 +105,11 @@ function LoginPageInner() {
               required
               autoComplete="current-password"
             />
+            <div className="text-right">
+              <Link href="/forgot-password" className="text-xs text-steel hover:underline">
+                Forgot password?
+              </Link>
+            </div>
 
             <Button
               type="submit"
