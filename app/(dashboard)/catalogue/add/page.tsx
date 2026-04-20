@@ -104,7 +104,7 @@ export default function AddBookPage() {
         .from('profiles')
         .select('institution_id')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError || !profile) {
         throw new Error(

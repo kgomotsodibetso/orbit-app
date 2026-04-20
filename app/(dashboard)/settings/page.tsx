@@ -17,7 +17,7 @@ export default async function SettingsPage() {
     await Promise.all([
       supabase.from('institutions').select('*').single(),
       user
-        ? supabase.from('profiles').select('*').eq('id', user.id).single()
+        ? supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
         : Promise.resolve({ data: null }),
       supabase.from('books').select('id', { count: 'exact', head: true }),
       supabase.from('members').select('id', { count: 'exact', head: true }).eq('is_active', true),

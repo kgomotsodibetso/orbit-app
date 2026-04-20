@@ -47,7 +47,7 @@ export default function AddLearnerPage() {
       .from('profiles')
       .select('institution_id')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
     if (!profile) { setError('Profile not found'); setSaving(false); return; }
 

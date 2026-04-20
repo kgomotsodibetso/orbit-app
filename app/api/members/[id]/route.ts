@@ -15,7 +15,7 @@ export async function PATCH(
     .from('profiles')
     .select('institution_id')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!profile?.institution_id) {
     return NextResponse.json({ error: 'No institution linked' }, { status: 403 });

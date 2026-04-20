@@ -15,7 +15,7 @@ export async function generateStocktakeReport() {
     .from('profiles')
     .select('institution_id')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!profile) redirect('/login');
 

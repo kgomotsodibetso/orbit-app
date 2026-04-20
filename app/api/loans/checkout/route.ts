@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     .from('profiles')
     .select('id, institution_id')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 403 });
 

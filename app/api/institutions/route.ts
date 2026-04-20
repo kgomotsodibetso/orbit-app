@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (profile?.role !== 'super_admin') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -39,7 +39,7 @@ export async function GET() {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (profile?.role !== 'super_admin') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
