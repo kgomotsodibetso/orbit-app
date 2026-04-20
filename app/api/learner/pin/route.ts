@@ -24,13 +24,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  // Hash server-side — consistent with /api/learner/auth
-  const { error } = await supabase
+  // Hash server-side — consistent with /api/learner/auth.
+  // .select().single() turns "0 rows updated" into an error so we can
+  // distinguish a missing member_id from a real DB failure.
+  const { data, error } = await supabase
     .from('members')
     .update({ pin_hash: hashPin(pin) })
-    .eq('id', member_id);
+    .eq('id', member_id)
+    .select('id')
+    .single();
 
   if (error) {
+    if (error.code === 'PGRST116') {
+      return NextResponse.json({ error: 'Member not found' }, { status: 404 });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
