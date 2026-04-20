@@ -29,39 +29,20 @@ export async function POST(request: NextRequest) {
 
   const isLost = condition_on_return === 'lost';
 
-  // 2. Update loan record
-  const { data: updatedLoan, error: updateError } = await supabase
-    .from('loans')
-    .update({
-      status: isLost ? 'lost' : 'returned',
-      returned_at: new Date().toISOString(),
-      checked_in_by: user.id,
-      condition_on_return: condition_on_return ?? 'good',
-    })
-    .eq('id', loan_id)
-    .select()
-    .single();
+  // 2. Atomically update loan status and restore available_copies via RPC.
+  // The DB function handles both writes in one transaction.
+  const { data: returnedRows, error: returnError } = await supabase.rpc('return_book', {
+    p_loan_id: loan_id,
+    p_checked_in_by: user.id,
+    p_condition: condition_on_return ?? 'good',
+  });
 
-  if (updateError) {
-    console.error('[Return]', updateError);
-    return NextResponse.json({ error: 'Failed to update loan' }, { status: 500 });
+  if (returnError) {
+    console.error('[Return]', returnError);
+    return NextResponse.json({ error: 'Failed to process return' }, { status: 500 });
   }
 
-  // 3. Restore available_copies (unless lost)
-  if (!isLost) {
-    const { data: book } = await supabase
-      .from('books')
-      .select('available_copies')
-      .eq('id', loan.book_id)
-      .single();
-
-    if (book) {
-      await supabase
-        .from('books')
-        .update({ available_copies: book.available_copies + 1 })
-        .eq('id', loan.book_id);
-    }
-  }
+  const updatedLoan = returnedRows?.[0];
 
   // 4. Audit log
   await supabase.from('audit_log').insert({

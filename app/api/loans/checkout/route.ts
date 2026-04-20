@@ -57,30 +57,25 @@ export async function POST(request: NextRequest) {
   const dueDate = new Date();
   dueDate.setDate(dueDate.getDate() + member.loan_period_days);
 
-  // 4. Create loan + decrement available_copies (in one transaction via RPC ideally)
-  const { data: loan, error: loanError } = await supabase
-    .from('loans')
-    .insert({
-      institution_id: profile.institution_id,
-      book_id,
-      member_id,
-      checked_out_by: user.id,
-      checked_out_at: new Date().toISOString(),
-      due_date: dueDate.toISOString().split('T')[0],
-      status: 'active',
-    })
-    .select()
-    .single();
+  // 4. Atomically insert loan + decrement available_copies via RPC.
+  // The DB function uses SELECT FOR UPDATE to prevent double-checkout races.
+  const { data: loanRows, error: loanError } = await supabase.rpc('checkout_book', {
+    p_institution_id: profile.institution_id,
+    p_book_id: book_id,
+    p_member_id: member_id,
+    p_checked_out_by: user.id,
+    p_due_date: dueDate.toISOString().split('T')[0],
+  });
 
   if (loanError) {
+    if (loanError.message.includes('no_copies_available')) {
+      return NextResponse.json({ error: 'No copies available' }, { status: 409 });
+    }
     console.error('[Checkout]', loanError);
     return NextResponse.json({ error: 'Failed to create loan' }, { status: 500 });
   }
 
-  await supabase
-    .from('books')
-    .update({ available_copies: book.available_copies - 1 })
-    .eq('id', book_id);
+  const loan = loanRows?.[0];
 
   // 5. Audit log
   await supabase.from('audit_log').insert({
