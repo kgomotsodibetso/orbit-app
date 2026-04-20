@@ -57,8 +57,15 @@ export async function GET(
       raw_data: raw,
     };
 
-    // 3. Store in cache — requires service role to bypass RLS write policy
-    await createServiceClient().from('isbn_cache').upsert(record);
+    // 3. Store in cache — requires service role to bypass RLS write policy.
+    // Use onConflict so concurrent requests for the same ISBN are idempotent.
+    const { error: cacheError } = await createServiceClient()
+      .from('isbn_cache')
+      .upsert(record, { onConflict: 'isbn_13', ignoreDuplicates: true });
+
+    if (cacheError) {
+      console.warn('[ISBN API] Cache upsert failed:', cacheError.message);
+    }
 
     return NextResponse.json(record);
   } catch (err) {
