@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, User, BookOpen, Clock, AlertCircle } from 'lucide-react';
+import { ArrowLeft, User, BookOpen, Clock, AlertCircle, Pencil } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 import SetPinForm from './SetPinForm';
@@ -34,11 +34,20 @@ export default async function LearnerProfilePage({
 
   return (
     <div className="max-w-3xl">
-      <div className="flex items-center gap-3 mb-8">
-        <Link href="/learners" className="text-slate/40 hover:text-slate transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+      <div className="flex items-center justify-between gap-3 mb-8">
+        <div className="flex items-center gap-3">
+          <Link href="/learners" className="text-slate/40 hover:text-slate transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <h1 className="text-3xl font-bold text-slate">Member Profile</h1>
+        </div>
+        <Link
+          href={`/learners/${id}/edit`}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold border border-slate/20 bg-white text-slate hover:bg-cream transition-colors"
+        >
+          <Pencil className="w-3.5 h-3.5" />
+          Edit
         </Link>
-        <h1 className="text-3xl font-bold text-slate">Learner Profile</h1>
       </div>
 
       {/* Profile card */}
