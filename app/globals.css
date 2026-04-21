@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* =====================================================
+   Orbit Tech Design System
+   Palette confirmed by client, April 2026
+   ===================================================== */
+
+@theme {
+  /* Brand Colours */
+  --color-steel:    #4B8EBA;   /* primary actions, nav, links */
+  --color-golden:   #F6B93B;   /* accent, badges, achievements */
+  --color-lavender: #A29FEC;   /* AI/assistant, secondary accent */
+  --color-cream:    #F0E5DF;   /* light surfaces, card backgrounds */
+  --color-slate:    #2C3A47;   /* dark bg, sidebar, body text */
+
+  /* Semantic aliases */
+  --color-primary:    var(--color-steel);
+  --color-accent:     var(--color-golden);
+  --color-ai:         var(--color-lavender);
+  --color-surface:    var(--color-cream);
+  --color-background: var(--color-slate);
+
+  /* Status colours */
+  --color-success:  #22c55e;
+  --color-warning:  #f59e0b;
+  --color-danger:   #ef4444;
+  --color-info:     var(--color-steel);
+
+  /* Typography */
+  --font-sans:    "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  32px;
+  --radius-full: 9999px;
+}
+
+/* Base styles */
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-slate);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sidebar / dark areas use slate */
+.bg-sidebar {
+  background-color: var(--color-slate);
+  color: var(--color-cream);
+}
+
+/* Glass card utility */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+}
+
+/* Glow utilities */
+.glow-steel  { box-shadow: 0 0 20px rgba(75, 142, 186, 0.35); }
+.glow-golden { box-shadow: 0 0 20px rgba(246, 185, 59, 0.35); }
+
+/* Scan line animation for ISBN scanner */
+@keyframes scan-line {
+  0%, 100% { top: 4%; }
+  50%       { top: 92%; }
+}
+
+.scan-line {
+  animation: scan-line 2.4s ease-in-out infinite;
+}
