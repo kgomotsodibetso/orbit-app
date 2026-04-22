@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Lock, Satellite } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import OrbitLogo from '@/components/ui/OrbitLogo';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
@@ -48,9 +49,7 @@ export default function ResetPasswordPage() {
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-steel flex items-center justify-center mb-4 shadow-lg">
-            <Satellite className="w-8 h-8 text-white" />
-          </div>
+          <OrbitLogo markWidth={80} showWordmark={false} className="mb-4" />
           <h1 className="text-2xl font-bold text-cream tracking-tight">Mission Control</h1>
           <p className="text-slate/50 text-sm mt-1">Orbit Tech · Library Management</p>
         </div>

@@ -12,12 +12,12 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  Rocket,
   GraduationCap,
   ExternalLink,
   LogOut,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import OrbitLogo, { OrbitMark } from '@/components/ui/OrbitLogo';
 
 const navItems = [
   { href: '/',                label: 'Mission Control', icon: LayoutDashboard },
@@ -49,11 +49,10 @@ export default function CollapsibleSidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-white/10">
-        <div className="w-8 h-8 rounded-lg bg-steel flex items-center justify-center shrink-0">
-          <Rocket className="w-4 h-4 text-white" />
-        </div>
-        {!collapsed && (
-          <span className="font-bold text-sm tracking-wide truncate">Orbit Tech</span>
+        {collapsed ? (
+          <OrbitMark width={32} />
+        ) : (
+          <OrbitLogo markWidth={40} variant="dark" />
         )}
       </div>
 

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Satellite } from 'lucide-react';
 import Input from '@/components/ui/Input';
+import OrbitLogo from '@/components/ui/OrbitLogo';
 import Button from '@/components/ui/Button';
 
 interface Props {
@@ -63,9 +63,7 @@ export default function OnboardingForm({ defaultName, defaultEmail }: Props) {
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-steel flex items-center justify-center mb-4 shadow-lg">
-            <Satellite className="w-8 h-8 text-white" />
-          </div>
+          <OrbitLogo markWidth={80} showWordmark={false} className="mb-4" />
           <h1 className="text-2xl font-bold text-cream tracking-tight">Mission Control</h1>
           <p className="text-slate/50 text-sm mt-1">Set up your school library</p>
         </div>
