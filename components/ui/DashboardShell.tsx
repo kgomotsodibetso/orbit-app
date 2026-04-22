@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, Rocket } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import CollapsibleSidebar from './CollapsibleSidebar';
+import { OrbitMark } from '@/components/ui/OrbitLogo';
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -49,10 +50,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-steel flex items-center justify-center">
-              <Rocket className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-bold text-sm text-cream tracking-wide">Orbit Tech</span>
+            <OrbitMark width={28} />
+            <span className="font-bold text-sm text-cream tracking-wide">Orbit</span>
           </div>
         </header>
 

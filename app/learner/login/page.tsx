@@ -2,8 +2,9 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Satellite, Hash } from 'lucide-react';
+import { Hash } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import OrbitLogo from '@/components/ui/OrbitLogo';
 import Input from '@/components/ui/Input';
 
 export default function LearnerLoginPage() {
@@ -71,9 +72,7 @@ export default function LearnerLoginPage() {
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-lavender flex items-center justify-center mb-4 shadow-lg">
-            <Satellite className="w-8 h-8 text-white" />
-          </div>
+          <OrbitLogo markWidth={80} showWordmark={false} className="mb-4" />
           <h1 className="text-2xl font-bold text-cream tracking-tight">Orbit Library</h1>
           <p className="text-slate/50 text-sm mt-1">Learner Portal</p>
         </div>
