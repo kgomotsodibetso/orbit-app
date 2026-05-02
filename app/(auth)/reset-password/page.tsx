@@ -44,12 +44,12 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate px-4">
+    <main className="min-h-screen flex items-center justify-center bg-ink px-4">
       <div className="w-full max-w-sm">
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
-          <OrbitLogo markWidth={80} showWordmark={false} className="mb-4" />
+          <OrbitLogo markWidth={80} showWordmark={false} variant="dark" className="mb-4" />
           <h1 className="text-2xl font-bold text-cream tracking-tight">Mission Control</h1>
           <p className="text-slate/50 text-sm mt-1">Orbit Tech · Library Management</p>
         </div>

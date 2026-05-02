@@ -12,6 +12,7 @@
   --color-lavender: #A29FEC;   /* AI/assistant, secondary accent */
   --color-cream:    #F0E5DF;   /* light surfaces, card backgrounds */
   --color-slate:    #2C3A47;   /* dark bg, sidebar, body text */
+  --color-ink:      #1C2830;   /* deepest dark — auth page backgrounds */
 
   /* Semantic aliases */
   --color-primary:    var(--color-steel);

@@ -50,7 +50,7 @@ export default function CollapsibleSidebar() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-white/10">
         {collapsed ? (
-          <OrbitMark width={32} />
+          <OrbitMark width={32} dark={true} />
         ) : (
           <OrbitLogo markWidth={40} variant="dark" />
         )}
