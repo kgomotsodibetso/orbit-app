@@ -7,7 +7,7 @@ export async function PATCH(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-  const { full_name, phone, avatar_url } = await request.json();
+  const { full_name, phone, role, avatar_url } = await request.json();
   if (!full_name?.trim()) return NextResponse.json({ error: 'full_name is required' }, { status: 400 });
 
   const service = createServiceClient();
@@ -15,8 +15,8 @@ export async function PATCH(request: NextRequest) {
     .from('profiles')
     .update({
       full_name: full_name.trim(),
-      phone: phone?.trim() || null,
-      // Only include avatar_url in the update when it was explicitly sent
+      phone:     phone?.trim() || null,
+      ...(role?.trim()          && { role: role.trim() }),
       ...(avatar_url !== undefined && { avatar_url: avatar_url || null }),
     })
     .eq('id', user.id);

@@ -218,6 +218,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
   const nameParts = (profile?.full_name ?? '').split(' ');
   const [firstName,       setFirstName]       = useState(nameParts[0] ?? '');
   const [lastName,        setLastName]        = useState(nameParts.slice(1).join(' ') ?? '');
+  const [jobTitle,        setJobTitle]        = useState(profile?.role ?? '');
   const [email,           setEmail]           = useState(userEmail ?? profile?.email ?? '');
   const [phone,           setPhone]           = useState(profile?.phone ?? '');
   const [bio,             setBio]             = useState('');
@@ -283,6 +284,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
       body: JSON.stringify({
         full_name,
         phone,
+        role: jobTitle.trim() || undefined,
         ...(savedAvatarUrl !== undefined && { avatar_url: savedAvatarUrl }),
       }),
     });
@@ -436,7 +438,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             />
             <div style={{ textAlign: 'center', marginTop: 16 }}>
               <p style={{ fontSize: 15, fontWeight: 900, color: '#2C3A47' }}>{firstName} {lastName}</p>
-              <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{profile?.role ?? 'user'}</p>
+              <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2 }}>{jobTitle || profile?.role || 'User'}</p>
               <div style={{ marginTop: 8 }}><Badge variant="golden">Administrator</Badge></div>
             </div>
             <div style={{ width: '100%', height: 1, background: 'rgba(44,58,71,0.07)', margin: '16px 0' }} />
@@ -454,15 +456,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                 <Input label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} required />
                 <Input label="Last Name"  value={lastName}  onChange={e => setLastName(e.target.value)}  required />
               </div>
-
-              {/* Account role is system-controlled — display only */}
-              <div>
-                <p className="text-sm font-semibold text-slate mb-1.5">Account Role</p>
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate/10 bg-slate/5">
-                  <span className="text-sm text-slate capitalize">{profile?.role ?? 'user'}</span>
-                  <span className="text-xs text-slate/40 ml-auto">Managed by your institution</span>
-                </div>
-              </div>
+              <Input label="Job Title / Role" value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder="e.g. Head Librarian" />
 
               <div className="grid grid-cols-2 gap-3">
                 <Input label="Email Address" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
