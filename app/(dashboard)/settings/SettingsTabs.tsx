@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import Input from '@/components/ui/Input';
@@ -56,24 +56,26 @@ function AvatarPicker({
   initials,
   color,
   photoUrl,
+  uploading,
   setColor,
-  onPhotoChange,
+  onFileSelected,
 }: {
   initials: string;
   color: AvatarColor;
   photoUrl: string | null;
+  uploading: boolean;
   setColor: (c: AvatarColor) => void;
-  onPhotoChange: (url: string) => void;
+  onFileSelected: (preview: string, file: File) => void;
 }) {
   const [open, setOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    // Preview locally with object URL — actual upload can be wired to Supabase Storage
-    const url = URL.createObjectURL(file);
-    onPhotoChange(url);
+    onFileSelected(URL.createObjectURL(file), file);
+    // Reset so the same file can be re-selected
+    e.target.value = '';
   };
 
   return (
@@ -92,8 +94,10 @@ function AvatarPicker({
 
       <div style={{ display: 'flex', gap: 8 }}>
         <Button size="sm" variant="secondary" type="button" onClick={() => setOpen(o => !o)}>Change Colour</Button>
-        <Button size="sm" variant="secondary" type="button" onClick={() => fileRef.current?.click()}>Upload Photo</Button>
-        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+        <Button size="sm" variant="secondary" type="button" loading={uploading} onClick={() => fileRef.current?.click()}>
+          {uploading ? 'Uploading…' : 'Upload Photo'}
+        </Button>
+        <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={handleFile} />
       </div>
 
       {open && (
@@ -212,15 +216,23 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
 
   // ── Profile state ────────────────────────────────────────────────────────
   const nameParts = (profile?.full_name ?? '').split(' ');
-  const [firstName,    setFirstName]    = useState(nameParts[0] ?? '');
-  const [lastName,     setLastName]     = useState(nameParts.slice(1).join(' ') ?? '');
-  const [jobTitle,     setJobTitle]     = useState(profile?.role ?? '');
-  const [email,        setEmail]        = useState(userEmail ?? profile?.email ?? '');
-  const [phone,        setPhone]        = useState(profile?.phone ?? '');
-  const [bio,          setBio]          = useState('');
-  const [avatarColor,  setAvatarColor]  = useState<AvatarColor>(AVATAR_COLORS[0]);
-  const [avatarPhoto,  setAvatarPhoto]  = useState<string | null>(profile?.avatar_url ?? null);
+  const [firstName,       setFirstName]       = useState(nameParts[0] ?? '');
+  const [lastName,        setLastName]        = useState(nameParts.slice(1).join(' ') ?? '');
+  const [email,           setEmail]           = useState(userEmail ?? profile?.email ?? '');
+  const [phone,           setPhone]           = useState(profile?.phone ?? '');
+  const [bio,             setBio]             = useState('');
+  const [avatarColor,     setAvatarColor]     = useState<AvatarColor>(AVATAR_COLORS[0]);
+  const [avatarPhoto,     setAvatarPhoto]     = useState<string | null>(profile?.avatar_url ?? null);
+  const [avatarFile,      setAvatarFile]      = useState<File | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const initials = getInitials((`${firstName} ${lastName}`.trim()) || (profile?.full_name ?? '?'));
+
+  // Load bio from localStorage after mount (no DB column — saved per device)
+  useEffect(() => {
+    if (profile?.id) {
+      setBio(localStorage.getItem(`orbit_bio_${profile.id}`) ?? '');
+    }
+  }, [profile?.id]);
 
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError,  setProfileError]  = useState('');
@@ -236,11 +248,43 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setProfileSaving(true); setProfileError('');
+
+    let savedAvatarUrl: string | null | undefined = undefined; // undefined = don't touch the DB field
+
+    // Upload new photo if one was selected
+    if (avatarFile) {
+      setAvatarUploading(true);
+      const fd = new FormData();
+      fd.append('file', avatarFile);
+      const uploadRes = await fetch('/api/settings/avatar', { method: 'POST', body: fd });
+      setAvatarUploading(false);
+      if (uploadRes.ok) {
+        const { url } = await uploadRes.json();
+        savedAvatarUrl = url;
+        setAvatarPhoto(url);  // replace blob URL with permanent URL
+        setAvatarFile(null);
+      } else {
+        const { error } = await uploadRes.json();
+        setProfileError(error ?? 'Photo upload failed');
+        setProfileSaving(false);
+        return;
+      }
+    }
+
+    // Persist bio locally (no dedicated DB column)
+    if (profile?.id) {
+      localStorage.setItem(`orbit_bio_${profile.id}`, bio);
+    }
+
     const full_name = `${firstName} ${lastName}`.trim();
     const res = await fetch('/api/settings/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ full_name, phone }),
+      body: JSON.stringify({
+        full_name,
+        phone,
+        ...(savedAvatarUrl !== undefined && { avatar_url: savedAvatarUrl }),
+      }),
     });
     const data = await res.json();
     setProfileSaving(false);
@@ -386,12 +430,13 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               initials={initials}
               color={avatarColor}
               photoUrl={avatarPhoto}
+              uploading={avatarUploading}
               setColor={setAvatarColor}
-              onPhotoChange={setAvatarPhoto}
+              onFileSelected={(preview, file) => { setAvatarPhoto(preview); setAvatarFile(file); }}
             />
             <div style={{ textAlign: 'center', marginTop: 16 }}>
               <p style={{ fontSize: 15, fontWeight: 900, color: '#2C3A47' }}>{firstName} {lastName}</p>
-              <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{jobTitle || profile?.role}</p>
+              <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{profile?.role ?? 'user'}</p>
               <div style={{ marginTop: 8 }}><Badge variant="golden">Administrator</Badge></div>
             </div>
             <div style={{ width: '100%', height: 1, background: 'rgba(44,58,71,0.07)', margin: '16px 0' }} />
@@ -409,14 +454,26 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                 <Input label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} required />
                 <Input label="Last Name"  value={lastName}  onChange={e => setLastName(e.target.value)}  required />
               </div>
-              <Input label="Job Title / Role" value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder="Head Librarian" />
+
+              {/* Account role is system-controlled — display only */}
+              <div>
+                <p className="text-sm font-semibold text-slate mb-1.5">Account Role</p>
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate/10 bg-slate/5">
+                  <span className="text-sm text-slate capitalize">{profile?.role ?? 'user'}</span>
+                  <span className="text-xs text-slate/40 ml-auto">Managed by your institution</span>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <Input label="Email Address" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
                 <Input label="Phone Number"  value={phone} onChange={e => setPhone(e.target.value)} />
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>Bio</label>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>Bio</label>
+                  <span style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)' }}>Saved on this device</span>
+                </div>
                 <textarea
                   value={bio}
                   onChange={e => setBio(e.target.value.slice(0, 200))}
