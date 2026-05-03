@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, CheckCircle2 } from 'lucide-react';
+import { Shield, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -225,11 +225,13 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError,  setProfileError]  = useState('');
 
-  const [currentPw, setCurrentPw] = useState('');
-  const [newPw,     setNewPw]     = useState('');
-  const [confirmPw, setConfirmPw] = useState('');
-  const [pwSaving,  setPwSaving]  = useState(false);
-  const [pwError,   setPwError]   = useState('');
+  const [currentPw,      setCurrentPw]      = useState('');
+  const [newPw,          setNewPw]          = useState('');
+  const [confirmPw,      setConfirmPw]      = useState('');
+  const [showCurrentPw,  setShowCurrentPw]  = useState(false);
+  const [showNewPw,      setShowNewPw]      = useState(false);
+  const [pwSaving,       setPwSaving]       = useState(false);
+  const [pwError,        setPwError]        = useState('');
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -433,10 +435,43 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               <div style={{ borderTop: '1px solid rgba(44,58,71,0.07)', paddingTop: 16, marginTop: 4 }}>
                 <h3 style={{ fontSize: 13, fontWeight: 800, color: '#2C3A47', marginBottom: 14 }}>Change Password</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <Input label="Current Password" type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)} placeholder="••••••••" />
+                  <Input
+                    label="Current Password"
+                    type={showCurrentPw ? 'text' : 'password'}
+                    value={currentPw}
+                    onChange={e => setCurrentPw(e.target.value)}
+                    placeholder="••••••••"
+                    rightElement={
+                      <button type="button" onClick={() => setShowCurrentPw(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showCurrentPw ? 'Hide password' : 'Show password'}>
+                        {showCurrentPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    }
+                  />
                   <div className="grid grid-cols-2 gap-3">
-                    <Input label="New Password"     type="password" value={newPw}     onChange={e => setNewPw(e.target.value)}     placeholder="Min. 8 characters" />
-                    <Input label="Confirm Password" type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} placeholder="Repeat new password" />
+                    <Input
+                      label="New Password"
+                      type={showNewPw ? 'text' : 'password'}
+                      value={newPw}
+                      onChange={e => setNewPw(e.target.value)}
+                      placeholder="Min. 8 characters"
+                      rightElement={
+                        <button type="button" onClick={() => setShowNewPw(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showNewPw ? 'Hide password' : 'Show password'}>
+                          {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      }
+                    />
+                    <Input
+                      label="Confirm Password"
+                      type={showNewPw ? 'text' : 'password'}
+                      value={confirmPw}
+                      onChange={e => setConfirmPw(e.target.value)}
+                      placeholder="Repeat new password"
+                      rightElement={
+                        <button type="button" onClick={() => setShowNewPw(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showNewPw ? 'Hide password' : 'Show password'}>
+                          {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      }
+                    />
                   </div>
                   {pwError && <p className="text-sm text-red-600">{pwError}</p>}
                 </div>

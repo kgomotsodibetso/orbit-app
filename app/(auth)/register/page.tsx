@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import OrbitLogo from '@/components/ui/OrbitLogo';
 import Input from '@/components/ui/Input';
@@ -33,6 +34,7 @@ export default function RegisterPage() {
   // Account fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState('');
 
   // Institution fields
@@ -175,12 +177,17 @@ export default function RegisterPage() {
                 />
                 <Input
                   label="Password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
                   minLength={8}
                   required
+                  rightElement={
+                    <button type="button" onClick={() => setShowPassword(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  }
                 />
                 <Button
                   type="submit"

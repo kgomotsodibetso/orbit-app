@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Lock } from 'lucide-react';
+import { Lock, Eye, EyeOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import OrbitLogo from '@/components/ui/OrbitLogo';
 import Input from '@/components/ui/Input';
@@ -13,6 +13,7 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -78,21 +79,31 @@ export default function ResetPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   label="New password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   icon={<Lock className="w-4 h-4" />}
+                  rightElement={
+                    <button type="button" onClick={() => setShowPassword(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  }
                   required
                   autoComplete="new-password"
                 />
                 <Input
                   label="Confirm password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
                   icon={<Lock className="w-4 h-4" />}
+                  rightElement={
+                    <button type="button" onClick={() => setShowPassword(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  }
                   required
                   autoComplete="new-password"
                 />
