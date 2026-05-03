@@ -24,22 +24,29 @@ export default withPWA({
   // Don't precache Next.js internals — let the network handle them
   buildExcludes: [/middleware-manifest\.json$/, /app-build-manifest\.json$/],
   runtimeCaching: [
-    // Pages — network first, fall back to cache
-    {
-      urlPattern: /^https?.*\/$/,
-      handler: 'NetworkFirst',
-      options: { cacheName: 'pages', expiration: { maxEntries: 50, maxAgeSeconds: 86400 } },
-    },
-    // API routes — network only (must be fresh)
+    // API routes — always network (never cache, must be fresh)
     {
       urlPattern: /^https?.*\/api\//,
       handler: 'NetworkOnly',
     },
-    // Static assets — cache first
+    // Static assets only — cache first, long TTL
     {
       urlPattern: /\.(?:png|svg|jpg|jpeg|webp|gif|ico|woff2?)$/i,
       handler: 'CacheFirst',
       options: { cacheName: 'static-assets', expiration: { maxEntries: 100, maxAgeSeconds: 2592000 } },
+    },
+    // JS/CSS bundles — stale-while-revalidate (serve cache immediately, update in bg)
+    {
+      urlPattern: /\/_next\/static\//,
+      handler: 'StaleWhileRevalidate',
+      options: { cacheName: 'next-static' },
+    },
+    // Page HTML — network only so React always hydrates fresh markup.
+    // Caching page HTML caused the service worker to serve stale rendered HTML
+    // which delayed hydration and made buttons require multiple clicks.
+    {
+      urlPattern: /^https?:\/\/.+\/(?:[^.]*)?$/,
+      handler: 'NetworkOnly',
     },
   ],
 })(nextConfig);

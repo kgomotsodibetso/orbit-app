@@ -44,9 +44,12 @@
   color-scheme: light dark;
 }
 
-/* Eliminate 300 ms tap delay on all interactive elements */
-a, button, [role="button"], input, select, textarea, label {
+/* Eliminate 300 ms tap delay and iOS tap flash on every interactive element.
+   Inline styles on Button also enforce this, but the global rule covers
+   every other clickable (nav links, custom toggles, tab buttons, etc.) */
+a, button, [role="button"], input, select, textarea, label, summary {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {

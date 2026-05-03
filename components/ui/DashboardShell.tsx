@@ -1,10 +1,51 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import CollapsibleSidebar from './CollapsibleSidebar';
 import { OrbitMark } from '@/components/ui/OrbitLogo';
+
+/** Thin progress bar at the top — shows immediately on any link click,
+ *  disappears once the new pathname lands. Gives instant click feedback
+ *  so users don't double-click thinking nothing happened. */
+function NavProgress() {
+  const pathname = usePathname();
+  const [visible, setVisible] = useState(false);
+  const [width, setWidth] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevPath = useRef(pathname);
+
+  // Start bar on any anchor/button click that might trigger navigation
+  useEffect(() => {
+    const start = () => {
+      setVisible(true);
+      setWidth(30);
+      timerRef.current = setTimeout(() => setWidth(70), 200);
+    };
+    document.addEventListener('click', start, { capture: true, passive: true });
+    return () => document.removeEventListener('click', start, { capture: true });
+  }, []);
+
+  // Finish bar when pathname changes (navigation completed)
+  useEffect(() => {
+    if (pathname !== prevPath.current) {
+      prevPath.current = pathname;
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setWidth(100);
+      const hide = setTimeout(() => { setVisible(false); setWidth(0); }, 300);
+      return () => clearTimeout(hide);
+    }
+  }, [pathname]);
+
+  if (!visible) return null;
+  return (
+    <div
+      className="fixed top-0 left-0 z-[9999] h-[3px] bg-gradient-to-r from-lavender to-steel transition-[width] duration-300 ease-out pointer-events-none"
+      style={{ width: `${width}%` }}
+    />
+  );
+}
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -17,6 +58,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   return (
     <div className="flex h-screen overflow-hidden bg-cream">
+      <NavProgress />
 
       {/* Mobile backdrop */}
       {mobileOpen && (

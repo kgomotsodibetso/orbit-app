@@ -32,6 +32,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       loading = false,
       disabled,
       className = '',
+      style,
       children,
       ...props
     },
@@ -41,12 +42,20 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
+        // Inline styles are applied before any stylesheet — guaranteed to work
+        // even before CSS loads. touchAction kills the 300 ms mobile tap delay.
+        style={{
+          touchAction: 'manipulation',
+          WebkitTapHighlightColor: 'transparent',
+          ...style,
+        }}
         className={[
           'inline-flex items-center justify-center gap-2 font-semibold',
-          'cursor-pointer select-none touch-manipulation',
+          'cursor-pointer select-none',
           'transition-[background-color,border-color,color,box-shadow,opacity] duration-100',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-steel focus-visible:ring-offset-2',
-          'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
+          // opacity only — no pointer-events manipulation which can misfire in Tailwind v4
+          'disabled:opacity-50 disabled:cursor-not-allowed',
           variantClasses[variant],
           sizeClasses[size],
           className,
