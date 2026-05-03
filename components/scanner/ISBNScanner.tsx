@@ -12,6 +12,10 @@ interface ISBNScannerProps {
 type Mode = 'hid' | 'camera' | 'manual';
 type CameraState = 'idle' | 'starting' | 'active' | 'error';
 
+interface BarcodeDet {
+  detect(source: HTMLVideoElement): Promise<{ rawValue: string }[]>;
+}
+
 export default function ISBNScanner({
   onScan,
   placeholder = 'Scan barcode or type ISBN…',
@@ -23,13 +27,14 @@ export default function ISBNScanner({
   const [cameraError, setCameraError] = useState('');
   const [lastScanned, setLastScanned] = useState('');
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const quaggaRef = useRef<any>(null);
-  const lastDetectedRef = useRef('');
-  // Consecutive-read counter — code must appear twice in a row before firing
-  const consecutiveRef = useRef({ code: '', count: 0 });
+  const inputRef    = useRef<HTMLInputElement>(null);
+  const videoRef    = useRef<HTMLVideoElement>(null);
+  const streamRef   = useRef<MediaStream | null>(null);
+  const detectorRef = useRef<BarcodeDet | null>(null);
+  const rafRef      = useRef<number>(0);
+  const runningRef  = useRef(false);
+  const lastDetectedRef  = useRef('');
+  const consecutiveRef   = useRef({ code: '', count: 0 });
 
   // ── HID barcode scanner ───────────────────────────────────────────────────
   useEffect(() => {
@@ -65,27 +70,21 @@ export default function ISBNScanner({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mode, onScan]);
 
-  // ── Camera / Quagga2 ──────────────────────────────────────────────────────
+  // ── Camera / BarcodeDetector ──────────────────────────────────────────────
   const stopCamera = useCallback(() => {
-    if (quaggaRef.current) {
-      try { quaggaRef.current.stop(); } catch { /* ignore */ }
-      quaggaRef.current = null;
+    runningRef.current = false;
+    cancelAnimationFrame(rafRef.current);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
     }
+    if (videoRef.current) videoRef.current.srcObject = null;
     lastDetectedRef.current = '';
     consecutiveRef.current = { code: '', count: 0 };
     setCameraState('idle');
   }, []);
 
   const startCamera = useCallback(async () => {
-    if (!videoRef.current) return;
-
-    // Stop any existing instance first
-    if (quaggaRef.current) {
-      try { quaggaRef.current.stop(); } catch { /* ignore */ }
-      quaggaRef.current = null;
-    }
-
-    // Camera requires HTTPS (or localhost)
     if (!navigator.mediaDevices?.getUserMedia) {
       setCameraError('Camera not supported. This requires HTTPS. Use Manual mode instead.');
       setCameraState('error');
@@ -95,83 +94,83 @@ export default function ISBNScanner({
     setCameraState('starting');
     setCameraError('');
     lastDetectedRef.current = '';
+    consecutiveRef.current = { code: '', count: 0 };
+    runningRef.current = true;
 
     try {
-      const Quagga = (await import('@ericblade/quagga2')).default;
+      // Resolve detector once — native BarcodeDetector on Chrome/Edge/Android,
+      // WASM polyfill on Firefox/Safari
+      if (!detectorRef.current) {
+        if ('BarcodeDetector' in window) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          detectorRef.current = new (window as any).BarcodeDetector({
+            formats: ['ean_13', 'ean_8'],
+          }) as BarcodeDet;
+        } else {
+          const { BarcodeDetector: Polyfill } = await import('barcode-detector/pure');
+          detectorRef.current = new Polyfill({
+            formats: ['ean_13', 'ean_8'],
+          }) as unknown as BarcodeDet;
+        }
+      }
 
-      await new Promise<void>((resolve, reject) => {
-        Quagga.init(
-          {
-            inputStream: {
-              type: 'LiveStream',
-              target: videoRef.current!,
-              constraints: {
-                facingMode: 'environment',
-                width: { ideal: 640 },
-                height: { ideal: 480 },
-              },
-            },
-            frequency: 8,
-            decoder: {
-              readers: ['ean_reader', 'ean_8_reader'],
-            },
-            locate: true,
-            numOfWorkers: 0, // avoids Next.js worker bundling issues
-          },
-          (err: unknown) => {
-            if (err) reject(err instanceof Error ? err : new Error(String(err)));
-            else resolve();
-          }
-        );
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
       });
+      streamRef.current = stream;
 
-      quaggaRef.current = Quagga;
-      Quagga.start();
+      const video = videoRef.current!;
+      video.srcObject = stream;
+      await video.play();
+
       setCameraState('active');
 
-      Quagga.onDetected((result: { codeResult?: { code?: string | null } }) => {
-        const code = result.codeResult?.code;
-        if (!code) return;
+      const detectLoop = async () => {
+        if (!runningRef.current || !detectorRef.current || !videoRef.current) return;
 
-        // Must be exactly 13 digits (EAN-13) or 8 digits (EAN-8)
-        if (!/^\d{13}$/.test(code) && !/^\d{8}$/.test(code)) return;
+        if (videoRef.current.readyState >= 2) {
+          try {
+            const results = await detectorRef.current.detect(videoRef.current);
+            for (const { rawValue: code } of results) {
+              if (!/^\d{13}$/.test(code) && !/^\d{8}$/.test(code)) continue;
+              if (code.length === 13 && !code.startsWith('978') && !code.startsWith('979')) continue;
 
-        // Book ISBNs always start with 978 or 979
-        if (code.length === 13 && !code.startsWith('978') && !code.startsWith('979')) return;
+              // EAN-13 check digit
+              if (code.length === 13) {
+                const sum = code
+                  .slice(0, 12)
+                  .split('')
+                  .reduce((acc, d, i) => acc + parseInt(d) * (i % 2 === 0 ? 1 : 3), 0);
+                if ((10 - (sum % 10)) % 10 !== parseInt(code[12])) continue;
+              }
 
-        // Validate EAN-13 check digit — rejects garbage partial reads
-        if (code.length === 13) {
-          const sum = code.split('').slice(0, 12).reduce((acc, d, i) => acc + parseInt(d) * (i % 2 === 0 ? 1 : 3), 0);
-          const check = (10 - (sum % 10)) % 10;
-          if (check !== parseInt(code[12])) return;
+              // Require 2 consecutive reads before accepting
+              const cons = consecutiveRef.current;
+              if (cons.code === code) cons.count += 1;
+              else { cons.code = code; cons.count = 1; }
+              if (cons.count < 2) continue;
+
+              // Debounce — ignore same code for 3 s after a successful scan
+              if (code === lastDetectedRef.current) continue;
+
+              lastDetectedRef.current = code;
+              consecutiveRef.current = { code: '', count: 0 };
+              const isbn13 = code.length === 13 ? code : code.padStart(13, '0');
+              stopCamera();
+              setLastScanned(isbn13);
+              onScan(isbn13);
+              setTimeout(() => { lastDetectedRef.current = ''; }, 3000);
+              return;
+            }
+          } catch { /* frame not yet decodable — skip */ }
         }
 
-        // Require the same code twice in a row before accepting
-        const cons = consecutiveRef.current;
-        if (cons.code === code) {
-          cons.count += 1;
-        } else {
-          cons.code = code;
-          cons.count = 1;
-        }
-        if (cons.count < 2) return;
+        if (runningRef.current) rafRef.current = requestAnimationFrame(detectLoop);
+      };
 
-        // Debounce — ignore same code within 3 s
-        if (code === lastDetectedRef.current) return;
-
-        lastDetectedRef.current = code;
-        consecutiveRef.current = { code: '', count: 0 };
-        const isbn13 = code.length === 13 ? code : code.padStart(13, '0');
-
-        try { Quagga.stop(); } catch { /* ignore */ }
-        quaggaRef.current = null;
-        setCameraState('idle');
-        setLastScanned(isbn13);
-        onScan(isbn13);
-
-        setTimeout(() => { lastDetectedRef.current = ''; }, 3000);
-      });
+      rafRef.current = requestAnimationFrame(detectLoop);
     } catch (err) {
+      runningRef.current = false;
       const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
       setCameraError(
         msg.includes('permission') || msg.includes('denied') || msg.includes('notallowed')
@@ -180,18 +179,18 @@ export default function ISBNScanner({
       );
       setCameraState('error');
     }
-  }, [onScan]);
+  }, [onScan, stopCamera]);
 
-  // Stop camera when switching away
+  // Stop camera when switching away from camera mode
   useEffect(() => {
     if (mode !== 'camera') stopCamera();
   }, [mode, stopCamera]);
 
   // Cleanup on unmount
   useEffect(() => () => {
-    if (quaggaRef.current) {
-      try { quaggaRef.current.stop(); } catch { /* ignore */ }
-    }
+    runningRef.current = false;
+    cancelAnimationFrame(rafRef.current);
+    streamRef.current?.getTracks().forEach(t => t.stop());
   }, []);
 
   const switchMode = (m: Mode) => {
@@ -216,9 +215,9 @@ export default function ISBNScanner({
       {/* Mode tabs */}
       <div className="flex gap-2 mb-5 flex-wrap">
         {([
-          { key: 'hid' as const, icon: ScanLine, label: 'Scanner' },
-          { key: 'camera' as const, icon: Camera, label: 'Camera' },
-          { key: 'manual' as const, icon: Keyboard, label: 'Manual' },
+          { key: 'hid'    as const, icon: ScanLine, label: 'Scanner' },
+          { key: 'camera' as const, icon: Camera,   label: 'Camera'  },
+          { key: 'manual' as const, icon: Keyboard, label: 'Manual'  },
         ]).map(({ key, icon: Icon, label }) => (
           <button
             key={key}
@@ -240,9 +239,7 @@ export default function ISBNScanner({
       {mode === 'hid' && (
         <div className="text-center py-4">
           <div className="relative w-48 h-24 mx-auto mb-4 rounded-xl overflow-hidden bg-slate/5 border border-steel/20">
-            <div
-              className="absolute left-0 right-0 h-0.5 bg-steel/70 shadow-[0_0_8px_2px_rgba(75,142,186,0.5)] scan-line"
-            />
+            <div className="absolute left-0 right-0 h-0.5 bg-steel/70 shadow-[0_0_8px_2px_rgba(75,142,186,0.5)] scan-line" />
             <ScanLine className="w-8 h-8 text-steel/30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
           <p className="text-sm font-medium text-slate/60">
@@ -267,17 +264,18 @@ export default function ISBNScanner({
       {/* ── Camera mode ─────────────────────────────────────────────────── */}
       {mode === 'camera' && (
         <div>
-          {/*
-            Quagga injects <video> + <canvas> elements into this div.
-            Always keep it in the DOM when in camera mode so Quagga can target it.
-            Hide canvases — we just want the clean video feed on mobile.
-          */}
-          <div className={`relative w-full rounded-xl overflow-hidden bg-black ${cameraState === 'active' ? 'block' : 'hidden'}`} style={{ height: 240 }}>
-            <div
+          <div
+            className={`relative w-full rounded-xl overflow-hidden bg-black ${cameraState === 'active' ? 'block' : 'hidden'}`}
+            style={{ height: 240 }}
+          >
+            {/* Native <video> element — no Quagga canvas injection */}
+            <video
               ref={videoRef}
-              className="w-full h-full [&_video]:w-full [&_video]:h-full [&_video]:object-cover [&_canvas]:hidden"
+              className="w-full h-full object-cover"
+              playsInline
+              muted
             />
-            {/* Aim guide */}
+            {/* Aim guide overlay */}
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
               <div className="w-4/5 h-16 border-2 border-steel/70 rounded relative">
                 <div className="absolute left-0 right-0 top-1/2 -translate-y-px h-0.5 bg-steel/80 shadow-[0_0_6px_2px_rgba(75,142,186,0.6)] scan-line" />
