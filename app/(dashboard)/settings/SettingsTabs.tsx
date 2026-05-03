@@ -439,7 +439,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             type="button"
             onClick={() => setTab(t.id)}
             className="flex items-center gap-1.5 whitespace-nowrap rounded-[10px] text-xs font-bold transition-all border-0 cursor-pointer"
-            style={{ padding: '8px 14px', background: tab === t.id ? '#2C3A47' : 'transparent', color: tab === t.id ? '#F0E5DF' : 'rgba(44,58,71,0.55)', fontFamily: 'inherit' }}
+            style={{ padding: '8px 14px', background: tab === t.id ? 'linear-gradient(135deg,#C4C0FB,#4B8EBA)' : 'transparent', color: tab === t.id ? 'white' : 'rgba(44,58,71,0.55)', fontFamily: 'inherit', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
           >
             <span>{t.icon}</span>
             <span className="hidden sm:inline">{t.label}</span>

@@ -101,7 +101,8 @@ export default async function StocktakePage({
           <form action={generateStocktakeReport}>
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl bg-steel text-white hover:bg-steel/90 shadow-sm transition-all"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl btn-primary transition-all"
+              style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             >
               <FileText className="w-4 h-4" />
               <span className="hidden sm:inline">Generate Report</span>

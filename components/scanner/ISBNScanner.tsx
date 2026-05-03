@@ -223,9 +223,10 @@ export default function ISBNScanner({
             key={key}
             type="button"
             onClick={() => switchMode(key)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
               mode === key
-                ? 'bg-steel text-white'
+                ? 'btn-primary'
                 : 'bg-white text-slate/60 border border-slate/20 hover:border-steel/40'
             }`}
           >

@@ -177,7 +177,7 @@ export default function LearnerPortalClient({ member, loans, books }: Props) {
       <div style={{ background: 'white', borderBottom: '1px solid rgba(44,58,71,0.06)', display: 'flex', overflowX: 'auto', flexShrink: 0, position: 'sticky', top: 48, zIndex: 9 }}>
         {TABS.map(t => (
           <button key={t.id} type="button" onClick={() => setTab(t.id)}
-            style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '11px 14px', border: 'none', borderBottom: `2px solid ${tab === t.id ? '#4B8EBA' : 'transparent'}`, background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', fontSize: 12, fontWeight: 700, color: tab === t.id ? '#4B8EBA' : 'rgba(44,58,71,0.5)', transition: 'all 0.12s', position: 'relative' }}>
+            style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '11px 14px', border: 'none', borderBottom: `2px solid ${tab === t.id ? '#C4C0FB' : 'transparent'}`, background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', fontSize: 12, fontWeight: 700, color: tab === t.id ? '#4B8EBA' : 'rgba(44,58,71,0.5)', transition: 'all 0.12s', position: 'relative', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}>
             <span style={{ fontSize: 15 }}>{t.icon}</span>
             {t.label}
             {'badge' in t && (t.badge ?? 0) > 0 && (
@@ -358,7 +358,7 @@ export default function LearnerPortalClient({ member, loans, books }: Props) {
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4 }}>
             {genres.map(g => (
               <button key={g} type="button" onClick={() => setGenreFilter(g)}
-                style={{ padding: '5px 12px', borderRadius: 99, fontSize: 11, fontWeight: 700, border: `1.5px solid ${genreFilter === g ? '#2C3A47' : 'rgba(44,58,71,0.15)'}`, background: genreFilter === g ? '#2C3A47' : 'white', color: genreFilter === g ? '#F0E5DF' : 'rgba(44,58,71,0.6)', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', transition: 'all 0.1s' }}>
+                style={{ padding: '5px 12px', borderRadius: 99, fontSize: 11, fontWeight: 700, border: `1.5px solid ${genreFilter === g ? 'transparent' : 'rgba(44,58,71,0.15)'}`, background: genreFilter === g ? 'linear-gradient(135deg,#C4C0FB,#4B8EBA)' : 'white', color: genreFilter === g ? 'white' : 'rgba(44,58,71,0.6)', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', transition: 'all 0.1s', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}>
                 {g}
               </button>
             ))}

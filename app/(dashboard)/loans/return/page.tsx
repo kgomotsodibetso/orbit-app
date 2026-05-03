@@ -115,8 +115,9 @@ export default function ReturnPage() {
                 <button
                   key={c}
                   onClick={() => setCondition(c)}
-                  className={`py-2.5 rounded-xl text-sm font-semibold border transition-colors capitalize ${
-                    condition === c ? 'border-steel bg-steel text-white' : 'border-slate/20 bg-white text-slate'
+                  style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+                  className={`py-2.5 rounded-xl text-sm font-semibold transition-colors capitalize cursor-pointer ${
+                    condition === c ? 'btn-primary' : 'border border-slate/20 bg-white text-slate hover:bg-cream/60'
                   }`}
                 >
                   {c}
