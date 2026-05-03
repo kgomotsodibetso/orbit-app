@@ -44,6 +44,11 @@
   color-scheme: light dark;
 }
 
+/* Eliminate 300 ms tap delay on all interactive elements */
+a, button, [role="button"], input, select, textarea, label {
+  touch-action: manipulation;
+}
+
 body {
   background-color: var(--color-cream);
   color: var(--color-slate);
@@ -75,9 +80,10 @@ body {
   background: linear-gradient(135deg, #C4C0FB, #4B8EBA);
   box-shadow: 0 4px 14px rgba(75, 142, 186, 0.32);
   color: white;
+  touch-action: manipulation; /* eliminates 300 ms tap delay on mobile */
 }
-.btn-primary:hover:not(:disabled)  { filter: brightness(1.06); }
-.btn-primary:active:not(:disabled) { filter: brightness(0.96); }
+.btn-primary:hover:not(:disabled)  { box-shadow: 0 6px 18px rgba(75, 142, 186, 0.42); opacity: 0.92; }
+.btn-primary:active:not(:disabled) { box-shadow: 0 2px 8px rgba(75, 142, 186, 0.22);  opacity: 0.85; }
 
 /* Sidebar active nav item — gradient highlight + Lavender left border */
 .sidebar-nav-active {

@@ -12,14 +12,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary:
-    'btn-primary active:scale-[0.98]',
-  secondary:
-    'bg-cream text-slate border border-slate/20 hover:bg-cream/80 active:scale-[0.98]',
-  ghost:
-    'bg-transparent text-steel hover:bg-steel/10 active:scale-[0.98]',
-  danger:
-    'bg-red-500 text-white hover:bg-red-600 active:scale-[0.98]',
+  primary:   'btn-primary',
+  secondary: 'bg-cream text-slate border border-slate/20 hover:bg-cream/80 active:bg-cream/60',
+  ghost:     'bg-transparent text-steel hover:bg-steel/10 active:bg-steel/20',
+  danger:    'bg-red-500 text-white hover:bg-red-600 active:bg-red-700',
 };
 
 const sizeClasses: Record<Size, string> = {
@@ -47,9 +43,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         className={[
           'inline-flex items-center justify-center gap-2 font-semibold',
-          'transition-all duration-150 focus-visible:outline-none',
-          'focus-visible:ring-2 focus-visible:ring-steel focus-visible:ring-offset-2',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'cursor-pointer select-none touch-manipulation',
+          'transition-[background-color,border-color,color,box-shadow,opacity] duration-100',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-steel focus-visible:ring-offset-2',
+          'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
           variantClasses[variant],
           sizeClasses[size],
           className,
