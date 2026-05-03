@@ -10,9 +10,11 @@ import {
   Tag,
   Users,
   Package,
+  Pencil,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
 
 type LoanWithMember = {
   id: string;
@@ -71,7 +73,13 @@ export default async function BookDetailPage({
         <Link href="/catalogue" className="text-slate/40 hover:text-slate transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-3xl font-bold text-slate">Book Detail</h1>
+        <h1 className="text-3xl font-bold text-slate flex-1">Book Detail</h1>
+        <Link href={`/catalogue/${id}/edit`}>
+          <Button variant="secondary" size="sm">
+            <Pencil className="w-3.5 h-3.5 mr-1.5" />
+            Edit Book
+          </Button>
+        </Link>
       </div>
 
       {/* Main card */}
