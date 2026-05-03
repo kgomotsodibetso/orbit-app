@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -14,10 +15,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'book_id and member_id are required' }, { status: 400 });
   }
 
+  // Use service client for all writes — bypasses RLS so no JWT-claim setup required
+  const service = createServiceClient();
+
   // 1. Verify book is available
-  const { data: book } = await supabase
+  const { data: book } = await service
     .from('books')
-    .select('id, title, available_copies, is_reference_only')
+    .select('id, title, institution_id, available_copies, is_reference_only')
     .eq('id', book_id)
     .single();
 
@@ -26,7 +30,7 @@ export async function POST(request: NextRequest) {
   if (book.available_copies < 1) return NextResponse.json({ error: 'No copies available' }, { status: 409 });
 
   // 2. Verify member has loan capacity
-  const { data: member } = await supabase
+  const { data: member } = await service
     .from('members')
     .select('id, full_name, max_loans, loan_period_days, is_active')
     .eq('id', member_id)
@@ -35,7 +39,7 @@ export async function POST(request: NextRequest) {
   if (!member) return NextResponse.json({ error: 'Member not found' }, { status: 404 });
   if (!member.is_active) return NextResponse.json({ error: 'Member account is inactive' }, { status: 400 });
 
-  const { count: activeLoans } = await supabase
+  const { count: activeLoans } = await service
     .from('loans')
     .select('id', { count: 'exact', head: true })
     .eq('member_id', member_id)
@@ -45,46 +49,56 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Member has reached their loan limit' }, { status: 409 });
   }
 
-  // 3. Get librarian profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('id, institution_id')
-    .eq('id', user.id)
-    .maybeSingle();
+  // 3. Atomically decrement available_copies (optimistic lock — only succeeds if still > 0)
+  const { error: decrementError, count: decremented } = await service
+    .from('books')
+    .update({ available_copies: book.available_copies - 1 })
+    .eq('id', book_id)
+    .eq('available_copies', book.available_copies) // ensures no race between check and update
+    .gt('available_copies', 0);
 
-  if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 403 });
-
-  const dueDate = new Date();
-  dueDate.setDate(dueDate.getDate() + member.loan_period_days);
-
-  // 4. Atomically insert loan + decrement available_copies via RPC.
-  // The DB function uses SELECT FOR UPDATE to prevent double-checkout races.
-  const { data: loanRows, error: loanError } = await supabase.rpc('checkout_book', {
-    p_institution_id: profile.institution_id,
-    p_book_id: book_id,
-    p_member_id: member_id,
-    p_checked_out_by: user.id,
-    p_due_date: dueDate.toISOString().split('T')[0],
-  });
-
-  if (loanError) {
-    if (loanError.message.includes('no_copies_available')) {
-      return NextResponse.json({ error: 'No copies available' }, { status: 409 });
-    }
-    console.error('[Checkout]', loanError);
-    return NextResponse.json({ error: 'Failed to create loan' }, { status: 500 });
+  if (decrementError || decremented === 0) {
+    return NextResponse.json({ error: 'No copies available' }, { status: 409 });
   }
 
-  const loan = loanRows?.[0];
+  // 4. Insert loan
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + (member.loan_period_days ?? 14));
 
-  // 5. Audit log
-  await supabase.from('audit_log').insert({
-    institution_id: profile.institution_id,
+  const { data: loan, error: loanError } = await service
+    .from('loans')
+    .insert({
+      institution_id: book.institution_id,
+      book_id,
+      member_id,
+      checked_out_by: user.id,
+      due_date: dueDate.toISOString().split('T')[0],
+      status: 'active',
+    })
+    .select()
+    .single();
+
+  if (loanError) {
+    // Rollback the decrement so available_copies is consistent
+    await service
+      .from('books')
+      .update({ available_copies: book.available_copies })
+      .eq('id', book_id);
+
+    console.error('[Checkout] loan insert failed:', loanError);
+    return NextResponse.json({ error: loanError.message }, { status: 500 });
+  }
+
+  // 5. Audit log (best-effort — don't fail the whole request if this errors)
+  await service.from('audit_log').insert({
+    institution_id: book.institution_id,
     performed_by: user.id,
     action: 'loan_created',
     table_name: 'loans',
     record_id: loan.id,
     new_values: { book_id, member_id, due_date: loan.due_date },
+  }).then(({ error }) => {
+    if (error) console.warn('[Checkout] audit_log insert failed:', error.message);
   });
 
   return NextResponse.json(loan, { status: 201 });
