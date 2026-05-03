@@ -1,11 +1,13 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Shield, CheckCircle2 } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import { OrbitMark } from '@/components/ui/OrbitLogo';
+import { createClient } from '@/lib/supabase/client';
 import type { InstitutionRow, ProfileRow } from '@/types/database';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -18,6 +20,15 @@ interface Props {
   memberCount: number;
   tierInfo: { label: string; colour: string };
 }
+
+type InstitutionSettings = {
+  loan_period_days?: number;
+  max_loans?: number;
+  fine_per_day?: number;
+  open_time?: string;
+  close_time?: string;
+  logo_url?: string;
+};
 
 // ── Avatar helpers ────────────────────────────────────────────────────────────
 
@@ -44,28 +55,45 @@ function getInitials(name: string | null): string {
 function AvatarPicker({
   initials,
   color,
+  photoUrl,
   setColor,
+  onPhotoChange,
 }: {
   initials: string;
   color: AvatarColor;
+  photoUrl: string | null;
   setColor: (c: AvatarColor) => void;
+  onPhotoChange: (url: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Preview locally with object URL — actual upload can be wired to Supabase Storage
+    const url = URL.createObjectURL(file);
+    onPhotoChange(url);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
       <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOpen(o => !o)}>
-        <div style={{ width: 88, height: 88, borderRadius: '50%', background: color.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 900, color: color.fg, border: '3px solid white', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}>
-          {initials}
-        </div>
+        {photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photoUrl} alt="Avatar" style={{ width: 88, height: 88, borderRadius: '50%', objectFit: 'cover', border: '3px solid white', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }} />
+        ) : (
+          <div style={{ width: 88, height: 88, borderRadius: '50%', background: color.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 900, color: color.fg, border: '3px solid white', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}>
+            {initials}
+          </div>
+        )}
         <div style={{ position: 'absolute', bottom: 0, right: 0, width: 26, height: 26, borderRadius: '50%', background: '#2C3A47', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: 'white', border: '2px solid white' }}>✎</div>
       </div>
 
       <div style={{ display: 'flex', gap: 8 }}>
-        <Button size="sm" variant="secondary" onClick={() => setOpen(o => !o)}>Change Colour</Button>
-        <Button size="sm" variant="secondary" onClick={() => fileRef.current?.click()}>Upload Photo</Button>
-        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={() => {}} />
+        <Button size="sm" variant="secondary" type="button" onClick={() => setOpen(o => !o)}>Change Colour</Button>
+        <Button size="sm" variant="secondary" type="button" onClick={() => fileRef.current?.click()}>Upload Photo</Button>
+        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
       </div>
 
       {open && (
@@ -118,7 +146,7 @@ function NotifRow({ label, desc, value, onChange }: { label: string; desc: strin
   );
 }
 
-// ── Avatar initials ───────────────────────────────────────────────────────────
+// ── AvatarCircle ──────────────────────────────────────────────────────────────
 
 function AvatarCircle({ name, size = 40 }: { name: string; size?: number }) {
   const ini = name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase();
@@ -152,14 +180,14 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
   );
 }
 
-// ── Toast helper ──────────────────────────────────────────────────────────────
+// ── Toast ─────────────────────────────────────────────────────────────────────
 
 function useSimpleToast() {
-  const [msg, setMsg] = useState<string | null>(null);
-  const show = (m: string) => { setMsg(m); setTimeout(() => setMsg(null), 2500); };
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const show = (text: string, ok = true) => { setMsg({ text, ok }); setTimeout(() => setMsg(null), 2800); };
   const el = msg ? (
-    <div className="fixed bottom-20 right-4 z-50 bg-green-600 text-white px-4 py-3 rounded-2xl text-sm font-bold shadow-xl pointer-events-none" style={{ animation: 'slideUp 0.18s ease' }}>
-      ✓ {msg}
+    <div className={`fixed bottom-20 right-4 z-50 px-4 py-3 rounded-2xl text-sm font-bold shadow-xl pointer-events-none ${msg.ok ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+      {msg.ok ? '✓' : '✕'} {msg.text}
     </div>
   ) : null;
   return { show, el };
@@ -168,14 +196,15 @@ function useSimpleToast() {
 // ── SettingsTabs ──────────────────────────────────────────────────────────────
 
 export default function SettingsTabs({ institution, profile, userEmail, bookCount, memberCount, tierInfo }: Props) {
+  const router = useRouter();
   const toast = useSimpleToast();
 
   const TABS = [
-    { id: 'profile',       label: 'Profile',       icon: '👤' },
-    { id: 'school',        label: 'School',         icon: '🏫' },
-    { id: 'notifications', label: 'Notifications',  icon: '🔔' },
-    { id: 'appearance',    label: 'Appearance',     icon: '🎨' },
-    { id: 'team',          label: 'Team',           icon: '👥' },
+    { id: 'profile',       label: 'Profile',      icon: '👤' },
+    { id: 'school',        label: 'School',        icon: '🏫' },
+    { id: 'notifications', label: 'Notifications', icon: '🔔' },
+    { id: 'appearance',    label: 'Appearance',    icon: '🎨' },
+    { id: 'team',          label: 'Team',          icon: '👥' },
   ] as const;
 
   type TabId = (typeof TABS)[number]['id'];
@@ -183,24 +212,83 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
 
   // ── Profile state ────────────────────────────────────────────────────────
   const nameParts = (profile?.full_name ?? '').split(' ');
-  const [firstName, setFirstName] = useState(nameParts[0] ?? '');
-  const [lastName,  setLastName]  = useState(nameParts.slice(1).join(' ') ?? '');
-  const [role,      setRole]      = useState(profile?.role ?? '');
-  const [email,     setEmail]     = useState(userEmail ?? profile?.email ?? '');
-  const [phone,     setPhone]     = useState(profile?.phone ?? '');
-  const [bio,       setBio]       = useState('Passionate about reading and connecting learners with books.');
-  const [avatarColor, setAvatarColor] = useState<AvatarColor>(AVATAR_COLORS[0]);
+  const [firstName,    setFirstName]    = useState(nameParts[0] ?? '');
+  const [lastName,     setLastName]     = useState(nameParts.slice(1).join(' ') ?? '');
+  const [jobTitle,     setJobTitle]     = useState(profile?.role ?? '');
+  const [email,        setEmail]        = useState(userEmail ?? profile?.email ?? '');
+  const [phone,        setPhone]        = useState(profile?.phone ?? '');
+  const [bio,          setBio]          = useState('');
+  const [avatarColor,  setAvatarColor]  = useState<AvatarColor>(AVATAR_COLORS[0]);
+  const [avatarPhoto,  setAvatarPhoto]  = useState<string | null>(profile?.avatar_url ?? null);
   const initials = getInitials((`${firstName} ${lastName}`.trim()) || (profile?.full_name ?? '?'));
 
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError,  setProfileError]  = useState('');
+
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw,     setNewPw]     = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [pwSaving,  setPwSaving]  = useState(false);
+  const [pwError,   setPwError]   = useState('');
+
+  const handleProfileSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileSaving(true); setProfileError('');
+    const full_name = `${firstName} ${lastName}`.trim();
+    const res = await fetch('/api/settings/profile', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name, phone }),
+    });
+    const data = await res.json();
+    setProfileSaving(false);
+    if (!res.ok) { setProfileError(data.error ?? 'Save failed'); toast.show('Save failed', false); }
+    else { toast.show('Profile saved'); router.refresh(); }
+  };
+
+  const handlePasswordChange = async () => {
+    if (!currentPw || !newPw || !confirmPw) { setPwError('All password fields are required'); return; }
+    if (newPw !== confirmPw) { setPwError('New passwords do not match'); return; }
+    if (newPw.length < 8) { setPwError('New password must be at least 8 characters'); return; }
+
+    setPwSaving(true); setPwError('');
+    const supabase = createClient();
+
+    // Re-authenticate with current password first
+    const { error: signInErr } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: currentPw,
+    });
+
+    if (signInErr) {
+      setPwSaving(false);
+      setPwError('Current password is incorrect');
+      return;
+    }
+
+    const { error: updateErr } = await supabase.auth.updateUser({ password: newPw });
+    setPwSaving(false);
+    if (updateErr) { setPwError(updateErr.message); }
+    else { toast.show('Password updated'); setCurrentPw(''); setNewPw(''); setConfirmPw(''); }
+  };
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
+
   // ── School state ─────────────────────────────────────────────────────────
+  const institutionSettings = (institution?.settings ?? {}) as InstitutionSettings;
   const [schoolName,    setSchoolName]    = useState(institution?.name ?? '');
   const [contactEmail,  setContactEmail]  = useState(institution?.contact_email ?? '');
   const [contactPhone,  setContactPhone]  = useState(institution?.contact_phone ?? '');
-  const [loanDays,      setLoanDays]      = useState('14');
-  const [maxBooks,      setMaxBooks]      = useState('3');
-  const [finePerDay,    setFinePerDay]    = useState('0');
-  const [openTime,      setOpenTime]      = useState('07:30');
-  const [closeTime,     setCloseTime]     = useState('15:30');
+  const [logoUrl,       setLogoUrl]       = useState(institutionSettings.logo_url ?? '');
+  const [loanDays,      setLoanDays]      = useState(String(institutionSettings.loan_period_days ?? 14));
+  const [maxBooks,      setMaxBooks]      = useState(String(institutionSettings.max_loans ?? 3));
+  const [finePerDay,    setFinePerDay]    = useState(String(institutionSettings.fine_per_day ?? 0));
+  const [openTime,      setOpenTime]      = useState(institutionSettings.open_time ?? '07:30');
+  const [closeTime,     setCloseTime]     = useState(institutionSettings.close_time ?? '15:30');
   const [schoolSaving,  setSchoolSaving]  = useState(false);
   const [schoolSaved,   setSchoolSaved]   = useState(false);
   const [schoolError,   setSchoolError]   = useState('');
@@ -211,38 +299,60 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     const res = await fetch('/api/settings/institution', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: schoolName.trim(), contact_email: contactEmail.trim(), contact_phone: contactPhone.trim() || null }),
+      body: JSON.stringify({
+        name: schoolName.trim(),
+        contact_email: contactEmail.trim(),
+        contact_phone: contactPhone.trim() || null,
+        settings: {
+          ...institutionSettings,
+          loan_period_days: parseInt(loanDays) || 14,
+          max_loans: parseInt(maxBooks) || 3,
+          fine_per_day: parseFloat(finePerDay) || 0,
+          open_time: openTime,
+          close_time: closeTime,
+          logo_url: logoUrl.trim() || null,
+        },
+      }),
     });
     const data = await res.json();
     setSchoolSaving(false);
-    if (!res.ok) { setSchoolError(data.error ?? 'Failed to save'); }
-    else { setSchoolSaved(true); toast.show('School settings saved'); setTimeout(() => setSchoolSaved(false), 3000); }
+    if (!res.ok) { setSchoolError(data.error ?? 'Save failed'); toast.show('Save failed', false); }
+    else { setSchoolSaved(true); toast.show('School settings saved'); setTimeout(() => setSchoolSaved(false), 3000); router.refresh(); }
   };
 
   // ── Notifications state ──────────────────────────────────────────────────
-  const [notifs, setNotifs] = useState({ smsOverdue: true, smsReminder: true, emailSummary: true, emailNew: false, overdueReport: true, newBookAlert: false, lowStockAlert: false, returnConfirm: true });
-  const setNotif = (k: keyof typeof notifs, v: boolean) => { setNotifs(n => ({ ...n, [k]: v })); toast.show(v ? 'Enabled' : 'Disabled'); };
+  const [notifs, setNotifs] = useState({
+    smsOverdue: true, smsReminder: true, emailSummary: true, emailNew: false,
+    overdueReport: true, newBookAlert: false, lowStockAlert: false, returnConfirm: true,
+  });
+  const setNotif = (k: keyof typeof notifs, v: boolean) => {
+    setNotifs(n => ({ ...n, [k]: v }));
+    toast.show(v ? 'Enabled' : 'Disabled');
+  };
 
   // ── Appearance state ─────────────────────────────────────────────────────
-  const [accentColor,  setAccentColor]  = useState('steel');
-  const [dateFormat,   setDateFormat]   = useState('dd/mm/yyyy');
-  const [density,      setDensity]      = useState<'compact' | 'comfortable' | 'spacious'>('comfortable');
-  const [darkSidebar,  setDarkSidebar]  = useState(true);
+  const [accentColor, setAccentColor] = useState('steel');
+  const [dateFormat,  setDateFormat]  = useState('dd/mm/yyyy');
+  const [density,     setDensity]     = useState<'compact' | 'comfortable' | 'spacious'>('comfortable');
+  const [darkSidebar, setDarkSidebar] = useState(true);
 
   // ── Team state ───────────────────────────────────────────────────────────
   const [team, setTeam] = useState([
     { id: 't1', name: 'Naledi Dube',   role: 'Head Librarian', email: 'naledi.dube@tshiamiso.edu.za', status: 'active',  last: 'Today'     },
     { id: 't2', name: 'Sipho Khumalo', role: 'Librarian',      email: 'sipho.k@tshiamiso.edu.za',     status: 'active',  last: 'Yesterday' },
-    { id: 't3', name: 'Amara Osei',    role: 'Volunteer',      email: 'amara.o@tshiamiso.edu.za',      status: 'pending', last: 'Never'     },
+    { id: 't3', name: 'Amara Osei',    role: 'Volunteer',      email: 'amara.o@tshiamiso.edu.za',     status: 'pending', last: 'Never'     },
   ]);
   const [showInvite,  setShowInvite]  = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole,  setInviteRole]  = useState('Librarian');
 
   const ACCENT_SWATCHES = [
-    { k: 'steel', c: '#4B8EBA', l: 'Steel' }, { k: 'slate', c: '#2C3A47', l: 'Slate' },
-    { k: 'golden', c: '#F6B93B', l: 'Golden' }, { k: 'lavender', c: '#A29FEC', l: 'Lavender' },
-    { k: 'green', c: '#22c55e', l: 'Green' }, { k: 'red', c: '#ef4444', l: 'Red' },
+    { k: 'steel',    c: '#4B8EBA', l: 'Steel'    },
+    { k: 'slate',    c: '#2C3A47', l: 'Slate'    },
+    { k: 'golden',   c: '#F6B93B', l: 'Golden'   },
+    { k: 'lavender', c: '#A29FEC', l: 'Lavender' },
+    { k: 'green',    c: '#22c55e', l: 'Green'    },
+    { k: 'red',      c: '#ef4444', l: 'Red'      },
   ] as const;
 
   return (
@@ -270,10 +380,16 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         <div className="flex flex-col md:flex-row gap-5 items-start" style={{ maxWidth: 760 }}>
           {/* Avatar card */}
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: '28px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 220, flexShrink: 0 }}>
-            <AvatarPicker initials={initials} color={avatarColor} setColor={setAvatarColor} />
+            <AvatarPicker
+              initials={initials}
+              color={avatarColor}
+              photoUrl={avatarPhoto}
+              setColor={setAvatarColor}
+              onPhotoChange={setAvatarPhoto}
+            />
             <div style={{ textAlign: 'center', marginTop: 16 }}>
               <p style={{ fontSize: 15, fontWeight: 900, color: '#2C3A47' }}>{firstName} {lastName}</p>
-              <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{role || profile?.role}</p>
+              <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{jobTitle || profile?.role}</p>
               <div style={{ marginTop: 8 }}><Badge variant="golden">Administrator</Badge></div>
             </div>
             <div style={{ width: '100%', height: 1, background: 'rgba(44,58,71,0.07)', margin: '16px 0' }} />
@@ -286,18 +402,17 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
           {/* Profile form */}
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, flex: 1 }}>
             <h2 style={{ fontSize: 15, fontWeight: 800, color: '#2C3A47', marginBottom: 18 }}>Personal Information</h2>
-            <form onSubmit={e => { e.preventDefault(); toast.show('Profile saved'); }} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <form onSubmit={handleProfileSave} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div className="grid grid-cols-2 gap-3">
                 <Input label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} required />
                 <Input label="Last Name"  value={lastName}  onChange={e => setLastName(e.target.value)}  required />
               </div>
-              <Input label="Job Title / Role" value={role || profile?.role || ''} onChange={e => setRole(e.target.value)} placeholder="Head Librarian" />
+              <Input label="Job Title / Role" value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder="Head Librarian" />
               <div className="grid grid-cols-2 gap-3">
                 <Input label="Email Address" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
                 <Input label="Phone Number"  value={phone} onChange={e => setPhone(e.target.value)} />
               </div>
 
-              {/* Bio */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <label style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>Bio</label>
                 <textarea
@@ -312,22 +427,27 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                 <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', textAlign: 'right' }}>{bio.length}/200</p>
               </div>
 
+              {profileError && <p className="text-sm text-red-600">{profileError}</p>}
+
               {/* Change Password */}
               <div style={{ borderTop: '1px solid rgba(44,58,71,0.07)', paddingTop: 16, marginTop: 4 }}>
                 <h3 style={{ fontSize: 13, fontWeight: 800, color: '#2C3A47', marginBottom: 14 }}>Change Password</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <Input label="Current Password" type="password" placeholder="••••••••" />
+                  <Input label="Current Password" type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)} placeholder="••••••••" />
                   <div className="grid grid-cols-2 gap-3">
-                    <Input label="New Password"     type="password" placeholder="Min. 8 characters" />
-                    <Input label="Confirm Password" type="password" placeholder="Repeat new password" />
+                    <Input label="New Password"     type="password" value={newPw}     onChange={e => setNewPw(e.target.value)}     placeholder="Min. 8 characters" />
+                    <Input label="Confirm Password" type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} placeholder="Repeat new password" />
                   </div>
+                  {pwError && <p className="text-sm text-red-600">{pwError}</p>}
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: 10, paddingTop: 4, flexWrap: 'wrap' }}>
-                <Button type="submit">Save Profile</Button>
-                <Button variant="secondary" type="button" onClick={() => toast.show('Password updated')}>Update Password</Button>
-                <Button variant="danger"    type="button" onClick={() => toast.show('Signed out')}>Sign Out</Button>
+                <Button type="submit" loading={profileSaving}>Save Profile</Button>
+                <Button variant="secondary" type="button" loading={pwSaving} onClick={handlePasswordChange}>
+                  Update Password
+                </Button>
+                <Button variant="danger" type="button" onClick={handleSignOut}>Sign Out</Button>
               </div>
             </form>
           </div>
@@ -338,18 +458,35 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
       {tab === 'school' && (
         <div style={{ maxWidth: 620 }}>
           {/* School logo card */}
-          <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
-            <div style={{ width: 72, height: 72, borderRadius: 16, background: '#2C3A47', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <OrbitMark width={44} dark={true} />
-            </div>
-            <div style={{ flex: 1, minWidth: 160 }}>
-              <p style={{ fontSize: 16, fontWeight: 900, color: '#2C3A47' }}>{institution?.name ?? '—'}</p>
-              <p style={{ fontSize: 13, color: 'rgba(44,58,71,0.5)', marginTop: 2 }}>
-                {institution?.province}{institution?.province && ' · '}{institution?.type} School
-              </p>
-              <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-                <Button size="sm" variant="secondary" onClick={() => toast.show('Logo upload coming soon')}>Upload Logo</Button>
-                <Button size="sm" variant="ghost">Remove</Button>
+          <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, marginBottom: 16 }}>
+            <h2 style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47', marginBottom: 16 }}>School Logo</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+              {/* Logo preview */}
+              <div style={{ width: 80, height: 80, borderRadius: 16, background: '#2C3A47', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                {logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logoUrl} alt="School logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setLogoUrl('')} />
+                ) : (
+                  <OrbitMark width={48} dark={true} />
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <p style={{ fontSize: 15, fontWeight: 800, color: '#2C3A47' }}>{institution?.name ?? '—'}</p>
+                <p style={{ fontSize: 13, color: 'rgba(44,58,71,0.5)', marginTop: 2 }}>
+                  {institution?.province}{institution?.province && institution?.type ? ' · ' : ''}{institution?.type ? `${institution.type} School` : ''}
+                </p>
+                {/* Logo URL input */}
+                <div style={{ marginTop: 12 }}>
+                  <Input
+                    label="Logo URL"
+                    value={logoUrl}
+                    onChange={e => setLogoUrl(e.target.value)}
+                    placeholder="https://yourschool.co.za/logo.png"
+                  />
+                  <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', marginTop: 4 }}>
+                    Paste a publicly accessible image URL, or upload via the school website and copy the link.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -361,7 +498,6 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
 
               <Input label="School Name" value={schoolName} onChange={e => setSchoolName(e.target.value)} required />
 
-              {/* Read-only province + type */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Province</p>
@@ -400,7 +536,9 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                     <CheckCircle2 className="w-4 h-4" /> Saved
                   </span>
                 )}
-                <Button type="submit" loading={schoolSaving} className={schoolSaved ? '' : 'ml-auto'}>Save School Settings</Button>
+                <Button type="submit" loading={schoolSaving} className={schoolSaved ? '' : 'ml-auto'}>
+                  Save School Settings
+                </Button>
               </div>
             </form>
           </div>
@@ -453,18 +591,18 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
           <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginBottom: 18 }}>Choose when and how you receive alerts</p>
 
           <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1">SMS Alerts</p>
-          <NotifRow label="Overdue SMS to Learners"  desc="Automatically SMS learners with overdue books each night" value={notifs.smsOverdue}    onChange={v => setNotif('smsOverdue', v)} />
-          <NotifRow label="Due Date Reminder SMS"    desc="Remind learners 2 days before their book is due"         value={notifs.smsReminder}   onChange={v => setNotif('smsReminder', v)} />
+          <NotifRow label="Overdue SMS to Learners" desc="Automatically SMS learners with overdue books each night" value={notifs.smsOverdue}    onChange={v => setNotif('smsOverdue', v)} />
+          <NotifRow label="Due Date Reminder SMS"   desc="Remind learners 2 days before their book is due"         value={notifs.smsReminder}   onChange={v => setNotif('smsReminder', v)} />
 
           <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1 mt-5">Email Reports</p>
-          <NotifRow label="Weekly Summary Email"    desc="Receive a library report every Monday morning"        value={notifs.emailSummary}  onChange={v => setNotif('emailSummary', v)} />
-          <NotifRow label="New Registration Alerts" desc="Email when a new learner registers on the portal"     value={notifs.emailNew}      onChange={v => setNotif('emailNew', v)} />
-          <NotifRow label="Monthly Overdue Report"  desc="Full overdue report on the 1st of each month"        value={notifs.overdueReport} onChange={v => setNotif('overdueReport', v)} />
+          <NotifRow label="Weekly Summary Email"    desc="Receive a library report every Monday morning"       value={notifs.emailSummary}  onChange={v => setNotif('emailSummary', v)} />
+          <NotifRow label="New Registration Alerts" desc="Email when a new learner registers on the portal"    value={notifs.emailNew}      onChange={v => setNotif('emailNew', v)} />
+          <NotifRow label="Monthly Overdue Report"  desc="Full overdue report on the 1st of each month"       value={notifs.overdueReport} onChange={v => setNotif('overdueReport', v)} />
 
           <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1 mt-5">Library Activity</p>
-          <NotifRow label="New Book Added"       desc="Notify staff when a new book is catalogued"               value={notifs.newBookAlert}  onChange={v => setNotif('newBookAlert', v)} />
-          <NotifRow label="Low Stock Warnings"   desc="Alert when any book has 0 copies available"              value={notifs.lowStockAlert} onChange={v => setNotif('lowStockAlert', v)} />
-          <NotifRow label="Return Confirmations" desc="Send confirmation to learner when book is marked returned" value={notifs.returnConfirm} onChange={v => setNotif('returnConfirm', v)} />
+          <NotifRow label="New Book Added"       desc="Notify staff when a new book is catalogued"                value={notifs.newBookAlert}  onChange={v => setNotif('newBookAlert', v)} />
+          <NotifRow label="Low Stock Warnings"   desc="Alert when any book has 0 copies available"               value={notifs.lowStockAlert} onChange={v => setNotif('lowStockAlert', v)} />
+          <NotifRow label="Return Confirmations" desc="Send confirmation to learner when book is marked returned"  value={notifs.returnConfirm} onChange={v => setNotif('returnConfirm', v)} />
         </div>
       )}
 
@@ -473,7 +611,6 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, maxWidth: 520 }}>
           <h2 style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47', marginBottom: 18 }}>Display Preferences</h2>
 
-          {/* Accent colour */}
           <div style={{ marginBottom: 20 }}>
             <p style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47', marginBottom: 4 }}>Accent Colour</p>
             <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginBottom: 10 }}>Choose the highlight colour used across the interface</p>
@@ -488,7 +625,6 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             </div>
           </div>
 
-          {/* Date format */}
           <div style={{ marginBottom: 18 }}>
             <label className="text-sm font-semibold text-slate block mb-1.5">Date Format</label>
             <select value={dateFormat} onChange={e => setDateFormat(e.target.value)} className="w-full rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm text-slate focus:outline-none focus:ring-2 focus:ring-steel cursor-pointer" style={{ fontFamily: 'inherit' }}>
@@ -499,7 +635,6 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             </select>
           </div>
 
-          {/* Density */}
           <div style={{ marginBottom: 18 }}>
             <p style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47', marginBottom: 8 }}>Interface Density</p>
             <div style={{ display: 'flex', gap: 8 }}>
@@ -512,17 +647,16 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             </div>
           </div>
 
-          {/* Dark sidebar toggle */}
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, padding: '14px 0', borderTop: '1px solid rgba(44,58,71,0.07)' }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>Dark Sidebar</p>
               <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2 }}>Use the dark colour scheme for the navigation sidebar</p>
             </div>
-            <Toggle value={darkSidebar} onChange={v => { setDarkSidebar(v); toast.show(v ? 'Enabled' : 'Disabled'); }} />
+            <Toggle value={darkSidebar} onChange={v => { setDarkSidebar(v); toast.show(v ? 'Dark sidebar enabled' : 'Light sidebar enabled'); }} />
           </div>
 
           <div style={{ paddingTop: 12 }}>
-            <Button onClick={() => toast.show('Appearance saved')}>Save Preferences</Button>
+            <Button type="button" onClick={() => toast.show('Appearance preferences saved')}>Save Preferences</Button>
           </div>
         </div>
       )}
@@ -536,7 +670,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                 <p style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47' }}>Staff Members</p>
                 <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 1 }}>{team.length} team members</p>
               </div>
-              <Button size="sm" onClick={() => setShowInvite(true)}>+ Invite Staff</Button>
+              <Button size="sm" type="button" onClick={() => setShowInvite(true)}>+ Invite Staff</Button>
             </div>
             {team.map((member, i) => (
               <div key={member.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 20px', borderBottom: i < team.length - 1 ? '1px solid rgba(44,58,71,0.06)' : 'none' }}>
@@ -551,22 +685,21 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                   {member.status === 'pending' && (
-                    <Button size="sm" variant="secondary" onClick={() => { setTeam(t => t.map(m => m.id === member.id ? { ...m, status: 'active', last: 'Just now' } : m)); toast.show(`${member.name} approved`); }}>Approve</Button>
+                    <Button size="sm" variant="secondary" type="button" onClick={() => { setTeam(t => t.map(m => m.id === member.id ? { ...m, status: 'active', last: 'Just now' } : m)); toast.show(`${member.name} approved`); }}>Approve</Button>
                   )}
-                  <Button size="sm" variant="ghost" onClick={() => { setTeam(t => t.filter(m => m.id !== member.id)); toast.show(`${member.name} removed`); }}>Remove</Button>
+                  <Button size="sm" variant="ghost" type="button" onClick={() => { setTeam(t => t.filter(m => m.id !== member.id)); toast.show(`${member.name} removed`); }}>Remove</Button>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Role permissions */}
           <div style={{ background: 'rgba(75,142,186,0.06)', borderRadius: 16, padding: '16px 20px', border: '1px solid rgba(75,142,186,0.15)' }}>
             <p style={{ fontSize: 12, fontWeight: 800, color: '#4B8EBA', marginBottom: 10 }}>Role Permissions</p>
             {[
-              { role: 'Administrator',  perms: 'Full access — settings, team, reports, all data',             v: 'golden'  },
+              { role: 'Administrator',  perms: 'Full access — settings, team, reports, all data',              v: 'golden'  },
               { role: 'Head Librarian', perms: 'All library functions — add books, manage loans, view reports', v: 'steel'   },
-              { role: 'Librarian',      perms: 'Check in/out, manage catalogue, view learners',               v: 'neutral' },
-              { role: 'Volunteer',      perms: 'Check in/out books only',                                      v: 'neutral' },
+              { role: 'Librarian',      perms: 'Check in/out, manage catalogue, view learners',                v: 'neutral' },
+              { role: 'Volunteer',      perms: 'Check in/out books only',                                       v: 'neutral' },
             ].map(r => (
               <div key={r.role} style={{ display: 'flex', gap: 10, marginBottom: 6, alignItems: 'flex-start' }}>
                 <Badge variant={r.v as 'golden' | 'steel' | 'neutral'}>{r.role}</Badge>
@@ -591,8 +724,9 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             An invitation email will be sent to the address above.
           </div>
           <div className="grid grid-cols-2 gap-2.5">
-            <Button variant="secondary" onClick={() => setShowInvite(false)}>Cancel</Button>
+            <Button variant="secondary" type="button" onClick={() => setShowInvite(false)}>Cancel</Button>
             <Button
+              type="button"
               disabled={!inviteEmail}
               onClick={() => {
                 setTeam(t => [...t, { id: `t${Date.now()}`, name: inviteEmail.split('@')[0], role: inviteRole, email: inviteEmail, status: 'pending', last: 'Never' }]);
@@ -607,7 +741,6 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         </div>
       </Modal>
 
-      {/* POPIA note (profile tab only) */}
       {tab === 'profile' && (
         <div className="flex items-start gap-3 p-4 rounded-xl bg-slate/5 border border-slate/10 mt-4" style={{ maxWidth: 760 }}>
           <Shield className="w-4 h-4 text-slate/30 mt-0.5 shrink-0" />
