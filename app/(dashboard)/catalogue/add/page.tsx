@@ -9,7 +9,6 @@ import Link from 'next/link';
 import ISBNScanner from '@/components/scanner/ISBNScanner';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { createClient } from '@/lib/supabase/client';
 
 interface BookForm {
   isbn_13: string;
@@ -44,32 +43,6 @@ export default function AddBookPage() {
     setLookingUp(true);
     setError('');
     try {
-      // Check for duplicate within this institution's catalogue first
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('institution_id')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (profile?.institution_id) {
-          const { data: existing } = await supabase
-            .from('books')
-            .select('id, title')
-            .eq('institution_id', profile.institution_id)
-            .eq('isbn_13', isbn)
-            .maybeSingle();
-
-          if (existing) {
-            setError(`"${existing.title}" is already in your catalogue.`);
-            setForm((f) => ({ ...f, isbn_13: isbn }));
-            return;
-          }
-        }
-      }
-
       const res = await fetch(`/api/isbn/${isbn}`);
       if (!res.ok) throw new Error('Book not found in Open Library');
       const data = await res.json();
@@ -96,45 +69,26 @@ export default function AddBookPage() {
     setSaving(true);
     setError('');
     try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('institution_id')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (profileError || !profile) {
-        throw new Error(
-          profileError
-            ? `Profile lookup failed: ${profileError.message} (code: ${profileError.code})`
-            : 'Profile not found — your account may not be fully set up. Contact support.'
-        );
-      }
-
-      const copies = parseInt(form.total_copies) || 1;
-
-      const { error: insertError } = await supabase.from('books').insert({
-        institution_id: profile.institution_id,
-        isbn_13: form.isbn_13,
-        title: form.title,
-        authors: form.authors.split(',').map((a) => a.trim()).filter(Boolean),
-        publisher: form.publisher || null,
-        published_year: form.published_year ? parseInt(form.published_year) : null,
-        subject_area: form.subject_area || null,
-        location_shelf: form.location_shelf || null,
-        total_copies: copies,
-        available_copies: copies,
-        acquisition_source: form.acquisition_source || null,
-        acquisition_cost: form.acquisition_cost ? parseFloat(form.acquisition_cost) : null,
-        cover_url: form.cover_url || null,
-        description: form.description || null,
-        created_by: user.id,
+      const res = await fetch('/api/books', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isbn_13:            form.isbn_13,
+          title:              form.title,
+          authors:            form.authors,
+          publisher:          form.publisher || null,
+          published_year:     form.published_year || null,
+          subject_area:       form.subject_area || null,
+          location_shelf:     form.location_shelf || null,
+          total_copies:       form.total_copies,
+          acquisition_source: form.acquisition_source || null,
+          acquisition_cost:   form.acquisition_cost || null,
+          cover_url:          form.cover_url || null,
+          description:        form.description || null,
+        }),
       });
-
-      if (insertError) throw new Error(insertError.message);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Failed to save book');
       router.push('/catalogue');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save book');
