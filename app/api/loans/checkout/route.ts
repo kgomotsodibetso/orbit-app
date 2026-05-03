@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createServiceClient } from '@/lib/supabase/service';
+import { sendEmail } from '@/lib/email';
+import { checkoutEmail } from '@/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -89,7 +91,33 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: loanError.message }, { status: 500 });
   }
 
-  // 5. Audit log (best-effort — don't fail the whole request if this errors)
+  // 5. Checkout confirmation email (best-effort)
+  void (async () => {
+    try {
+      const [{ data: memberFull }, { data: inst }] = await Promise.all([
+        service.from('members').select('contact_email').eq('id', member_id).single(),
+        service.from('institutions').select('name, settings').eq('id', book.institution_id).single(),
+      ]);
+      const notifPrefs = ((inst?.settings as Record<string, unknown>)?.notifications ?? {}) as Record<string, boolean>;
+      if (memberFull?.contact_email && notifPrefs.emailCheckout !== false) {
+        await sendEmail({
+          to:      memberFull.contact_email,
+          subject: `Checked Out: ${book.title}`,
+          html:    checkoutEmail({
+            schoolName: inst?.name ?? 'Your School',
+            memberName: member.full_name,
+            bookTitle:  book.title,
+            authors:    '',
+            dueDate:    new Date(loan.due_date).toLocaleDateString('en-ZA'),
+          }),
+        });
+      }
+    } catch (e) {
+      console.warn('[Checkout] email failed:', e);
+    }
+  })();
+
+  // 6. Audit log (best-effort — don't fail the whole request if this errors)
   await service.from('audit_log').insert({
     institution_id: book.institution_id,
     performed_by: user.id,

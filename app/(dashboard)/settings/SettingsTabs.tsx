@@ -368,14 +368,36 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     else { setSchoolSaved(true); toast.show('School settings saved'); setTimeout(() => setSchoolSaved(false), 3000); router.refresh(); }
   };
 
-  // ── Notifications state ──────────────────────────────────────────────────
+  // ── Notifications state (persisted in institution.settings.notifications) ─
+  const savedNotifs = (institutionSettings as Record<string, unknown>).notifications as Record<string, boolean> | undefined;
   const [notifs, setNotifs] = useState({
-    smsOverdue: true, smsReminder: true, emailSummary: true, emailNew: false,
-    overdueReport: true, newBookAlert: false, lowStockAlert: false, returnConfirm: true,
+    smsOverdue:         savedNotifs?.smsOverdue         ?? true,
+    smsReminder:        savedNotifs?.smsReminder        ?? true,
+    emailCheckout:      savedNotifs?.emailCheckout      ?? true,
+    emailReturn:        savedNotifs?.emailReturn        ?? true,
+    emailDueReminder:   savedNotifs?.emailDueReminder   ?? true,
+    emailOverdue:       savedNotifs?.emailOverdue       ?? true,
+    emailWeeklySummary: savedNotifs?.emailWeeklySummary ?? true,
+    emailMonthlyReport: savedNotifs?.emailMonthlyReport ?? true,
   });
-  const setNotif = (k: keyof typeof notifs, v: boolean) => {
-    setNotifs(n => ({ ...n, [k]: v }));
-    toast.show(v ? 'Enabled' : 'Disabled');
+  const [notifSaving, setNotifSaving] = useState(false);
+
+  const setNotif = (k: keyof typeof notifs, v: boolean) => setNotifs(n => ({ ...n, [k]: v }));
+
+  const handleNotifSave = async () => {
+    setNotifSaving(true);
+    const res = await fetch('/api/settings/institution', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: institution?.name ?? '',
+        contact_email: institution?.contact_email ?? '',
+        settings: { ...institutionSettings, notifications: notifs },
+      }),
+    });
+    setNotifSaving(false);
+    if (res.ok) { toast.show('Notification preferences saved'); }
+    else { toast.show('Save failed', false); }
   };
 
   // ── Appearance state ─────────────────────────────────────────────────────
@@ -390,9 +412,11 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     { id: 't2', name: 'Sipho Khumalo', role: 'Librarian',      email: 'sipho.k@tshiamiso.edu.za',     status: 'active',  last: 'Yesterday' },
     { id: 't3', name: 'Amara Osei',    role: 'Volunteer',      email: 'amara.o@tshiamiso.edu.za',     status: 'pending', last: 'Never'     },
   ]);
-  const [showInvite,  setShowInvite]  = useState(false);
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole,  setInviteRole]  = useState('Librarian');
+  const [showInvite,   setShowInvite]   = useState(false);
+  const [inviteEmail,  setInviteEmail]  = useState('');
+  const [inviteRole,   setInviteRole]   = useState('Librarian');
+  const [inviteSending, setInviteSending] = useState(false);
+  const [inviteError,  setInviteError]  = useState('');
 
   const ACCENT_SWATCHES = [
     { k: 'steel',    c: '#4B8EBA', l: 'Steel'    },
@@ -674,21 +698,25 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
       {tab === 'notifications' && (
         <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, maxWidth: 560 }}>
           <h2 style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47', marginBottom: 4 }}>Notification Preferences</h2>
-          <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginBottom: 18 }}>Choose when and how you receive alerts</p>
+          <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginBottom: 18 }}>Changes are saved to your school settings and take effect immediately.</p>
 
           <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1">SMS Alerts</p>
-          <NotifRow label="Overdue SMS to Learners" desc="Automatically SMS learners with overdue books each night" value={notifs.smsOverdue}    onChange={v => setNotif('smsOverdue', v)} />
-          <NotifRow label="Due Date Reminder SMS"   desc="Remind learners 2 days before their book is due"         value={notifs.smsReminder}   onChange={v => setNotif('smsReminder', v)} />
+          <NotifRow label="Overdue SMS to Learners"  desc="Automatically SMS learners with overdue books each night" value={notifs.smsOverdue}   onChange={v => setNotif('smsOverdue', v)} />
+          <NotifRow label="Due Date Reminder SMS"    desc="Remind learners 2 days before their book is due"         value={notifs.smsReminder}  onChange={v => setNotif('smsReminder', v)} />
 
-          <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1 mt-5">Email Reports</p>
-          <NotifRow label="Weekly Summary Email"    desc="Receive a library report every Monday morning"       value={notifs.emailSummary}  onChange={v => setNotif('emailSummary', v)} />
-          <NotifRow label="New Registration Alerts" desc="Email when a new learner registers on the portal"    value={notifs.emailNew}      onChange={v => setNotif('emailNew', v)} />
-          <NotifRow label="Monthly Overdue Report"  desc="Full overdue report on the 1st of each month"       value={notifs.overdueReport} onChange={v => setNotif('overdueReport', v)} />
+          <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1 mt-5">Learner Emails</p>
+          <NotifRow label="Checkout Confirmation"    desc="Email the learner when a book is checked out to them"    value={notifs.emailCheckout}    onChange={v => setNotif('emailCheckout', v)} />
+          <NotifRow label="Return Confirmation"      desc="Email the learner when their book return is processed"   value={notifs.emailReturn}      onChange={v => setNotif('emailReturn', v)} />
+          <NotifRow label="Due Date Reminder Email"  desc="Email learners 2 days before their book is due"         value={notifs.emailDueReminder} onChange={v => setNotif('emailDueReminder', v)} />
+          <NotifRow label="Overdue Notice Email"     desc="Email learners when their book becomes overdue"         value={notifs.emailOverdue}     onChange={v => setNotif('emailOverdue', v)} />
 
-          <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1 mt-5">Library Activity</p>
-          <NotifRow label="New Book Added"       desc="Notify staff when a new book is catalogued"                value={notifs.newBookAlert}  onChange={v => setNotif('newBookAlert', v)} />
-          <NotifRow label="Low Stock Warnings"   desc="Alert when any book has 0 copies available"               value={notifs.lowStockAlert} onChange={v => setNotif('lowStockAlert', v)} />
-          <NotifRow label="Return Confirmations" desc="Send confirmation to learner when book is marked returned"  value={notifs.returnConfirm} onChange={v => setNotif('returnConfirm', v)} />
+          <p className="text-[10px] font-bold tracking-[2px] uppercase text-slate/40 mb-1 mt-5">Admin Reports</p>
+          <NotifRow label="Weekly Summary"           desc="Library overview email to admin every Monday morning"   value={notifs.emailWeeklySummary} onChange={v => setNotif('emailWeeklySummary', v)} />
+          <NotifRow label="Monthly Overdue Report"   desc="Full overdue report to admin on the 1st of each month" value={notifs.emailMonthlyReport} onChange={v => setNotif('emailMonthlyReport', v)} />
+
+          <div style={{ paddingTop: 20 }}>
+            <Button type="button" loading={notifSaving} onClick={handleNotifSave}>Save Preferences</Button>
+          </div>
         </div>
       )}
 
@@ -807,18 +835,28 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             </select>
           </div>
           <div style={{ background: 'rgba(240,229,223,0.6)', borderRadius: 12, padding: '10px 14px', fontSize: 12, color: 'rgba(44,58,71,0.65)' }}>
-            An invitation email will be sent to the address above.
+            An invitation email will be sent to the address above with a link to sign up.
           </div>
+          {inviteError && <p className="text-sm text-red-600">{inviteError}</p>}
           <div className="grid grid-cols-2 gap-2.5">
             <Button variant="secondary" type="button" onClick={() => setShowInvite(false)}>Cancel</Button>
             <Button
               type="button"
               disabled={!inviteEmail}
-              onClick={() => {
+              loading={inviteSending}
+              onClick={async () => {
+                setInviteSending(true); setInviteError('');
+                const res = await fetch('/api/email/invite', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
+                });
+                const data = await res.json();
+                setInviteSending(false);
+                if (!res.ok) { setInviteError(data.error ?? 'Failed to send'); return; }
                 setTeam(t => [...t, { id: `t${Date.now()}`, name: inviteEmail.split('@')[0], role: inviteRole, email: inviteEmail, status: 'pending', last: 'Never' }]);
                 toast.show(`Invite sent to ${inviteEmail}`);
-                setShowInvite(false);
-                setInviteEmail('');
+                setShowInvite(false); setInviteEmail(''); setInviteError('');
               }}
             >
               Send Invite

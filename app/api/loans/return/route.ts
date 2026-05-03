@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createServiceClient } from '@/lib/supabase/service';
+import { sendEmail } from '@/lib/email';
+import { returnEmail } from '@/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -66,7 +68,34 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 4. Audit log (best-effort)
+  // 4. Return confirmation email (best-effort)
+  void (async () => {
+    try {
+      const [{ data: memberFull }, { data: bookFull }, { data: inst }] = await Promise.all([
+        service.from('members').select('full_name, contact_email').eq('id', updatedLoan.member_id).single(),
+        service.from('books').select('title, authors, institution_id').eq('id', loan.book_id).single(),
+        service.from('institutions').select('name, settings').eq('id', loan.institution_id).single(),
+      ]);
+      const notifPrefs = ((inst?.settings as Record<string, unknown>)?.notifications ?? {}) as Record<string, boolean>;
+      if (memberFull?.contact_email && notifPrefs.emailReturn !== false && !isLost) {
+        await sendEmail({
+          to:      memberFull.contact_email,
+          subject: `Returned: ${bookFull?.title ?? 'Book'}`,
+          html:    returnEmail({
+            schoolName:   inst?.name ?? 'Your School',
+            memberName:   memberFull.full_name,
+            bookTitle:    bookFull?.title ?? '',
+            authors:      (bookFull?.authors as string[] ?? []).join(', '),
+            returnedDate: new Date().toLocaleDateString('en-ZA'),
+          }),
+        });
+      }
+    } catch (e) {
+      console.warn('[Return] email failed:', e);
+    }
+  })();
+
+  // 5. Audit log (best-effort)
   await service.from('audit_log').insert({
     institution_id: loan.institution_id,
     performed_by: user.id,
