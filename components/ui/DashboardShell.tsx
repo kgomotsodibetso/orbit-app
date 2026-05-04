@@ -67,7 +67,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   useEffect(() => {
     setDensity((readLocalPref('orbit_density', 'comfortable')) as Density);
-    setDarkSidebar(readLocalPref('orbit_dark_sidebar', 'true') !== 'false');
+    setDarkSidebar(readLocalPref<string>('orbit_dark_sidebar', 'true') !== 'false');
   }, []);
 
   // Live-update when user saves preferences without reloading
@@ -104,7 +104,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           mobileOpen ? 'flex' : 'hidden md:flex',
         ].join(' ')}
       >
-        <CollapsibleSidebar lightMode={!darkSidebar} />
+        <CollapsibleSidebar />
       </div>
 
       {/* Right side: mobile top bar + main content */}
