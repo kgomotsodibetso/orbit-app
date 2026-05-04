@@ -69,8 +69,12 @@ export default function RegisterPage() {
       options: { data: { full_name: fullName } },
     });
 
-    if (signUpError || !authData.user) {
-      setError(signUpError?.message ?? 'Sign-up failed');
+    if (signUpError || !authData.user?.id) {
+      // Supabase returns no error but a null user.id when email confirmation is
+      // enabled and the address is already registered. Catch it explicitly.
+      const msg = signUpError?.message
+        ?? (!authData.user?.id ? 'This email is already registered. Please sign in instead.' : 'Sign-up failed');
+      setError(msg);
       setLoading(false);
       return;
     }

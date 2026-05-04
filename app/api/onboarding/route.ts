@@ -9,8 +9,11 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { userId, fullName, email, institutionName, province, emisNumber, contactPhone } = body;
 
-  if (!userId || !fullName || !email || !institutionName || !province) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+  const missing = ['userId','fullName','email','institutionName','province']
+    .filter(k => !body[k]);
+  if (missing.length) {
+    console.error('[api/onboarding] missing fields:', missing, '| received:', { userId, fullName, email, institutionName, province });
+    return NextResponse.json({ error: `Missing required fields: ${missing.join(', ')}` }, { status: 400 });
   }
 
   // Verify this userId actually exists in auth — prevents spoofed requests.
