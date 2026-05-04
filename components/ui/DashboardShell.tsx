@@ -6,9 +6,21 @@ import { Menu } from 'lucide-react';
 import CollapsibleSidebar from './CollapsibleSidebar';
 import { OrbitMark } from '@/components/ui/OrbitLogo';
 
-/** Thin progress bar at the top — shows immediately on any link click,
- *  disappears once the new pathname lands. Gives instant click feedback
- *  so users don't double-click thinking nothing happened. */
+type Density = 'compact' | 'comfortable' | 'spacious';
+
+const densityPadding: Record<Density, string> = {
+  compact:     'p-3 sm:p-4 md:p-5',
+  comfortable: 'p-4 sm:p-6 md:p-8',
+  spacious:    'p-6 sm:p-8 md:p-12',
+};
+
+function readLocalPref<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  const v = localStorage.getItem(key);
+  return (v !== null ? v : fallback) as T;
+}
+
+/** Thin progress bar at the top. Fires on any click, completes when pathname changes. */
 function NavProgress() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
@@ -16,7 +28,6 @@ function NavProgress() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevPath = useRef(pathname);
 
-  // Start bar on any anchor/button click that might trigger navigation
   useEffect(() => {
     const start = () => {
       setVisible(true);
@@ -27,7 +38,6 @@ function NavProgress() {
     return () => document.removeEventListener('click', start, { capture: true });
   }, []);
 
-  // Finish bar when pathname changes (navigation completed)
   useEffect(() => {
     if (pathname !== prevPath.current) {
       prevPath.current = pathname;
@@ -51,10 +61,28 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close drawer on navigation
+  // Read display preferences from localStorage (written by Settings > Appearance)
+  const [density,     setDensity]     = useState<Density>('comfortable');
+  const [darkSidebar, setDarkSidebar] = useState(true);
+
   useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+    setDensity((readLocalPref('orbit_density', 'comfortable')) as Density);
+    setDarkSidebar(readLocalPref('orbit_dark_sidebar', 'true') !== 'false');
+  }, []);
+
+  // Live-update when user saves preferences without reloading
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { density?: Density; darkSidebar?: boolean };
+      if (detail.density)     setDensity(detail.density);
+      if (detail.darkSidebar !== undefined) setDarkSidebar(detail.darkSidebar);
+    };
+    window.addEventListener('orbit-prefs-changed', handler);
+    return () => window.removeEventListener('orbit-prefs-changed', handler);
+  }, []);
+
+  // Close mobile drawer on navigation
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-cream">
@@ -69,36 +97,36 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         />
       )}
 
-      {/* Sidebar — hidden on mobile unless open, always visible on md+ */}
+      {/* Sidebar */}
       <div
         className={[
           'fixed inset-y-0 left-0 z-50 md:relative md:flex md:z-auto transition-transform duration-300',
           mobileOpen ? 'flex' : 'hidden md:flex',
         ].join(' ')}
       >
-        <CollapsibleSidebar />
+        <CollapsibleSidebar lightMode={!darkSidebar} />
       </div>
 
       {/* Right side: mobile top bar + main content */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
-        {/* Mobile top bar — only shown on < md */}
-        <header className="flex items-center gap-3 px-4 py-3 bg-slate border-b border-white/10 md:hidden shrink-0">
+        {/* Mobile top bar */}
+        <header className={`flex items-center gap-3 px-4 py-3 border-b md:hidden shrink-0 ${darkSidebar ? 'bg-slate border-white/10' : 'bg-white border-slate/10'}`}>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 rounded-lg text-cream/60 hover:text-cream hover:bg-white/10 transition-colors"
+            className={`p-1.5 rounded-lg transition-colors ${darkSidebar ? 'text-cream/60 hover:text-cream hover:bg-white/10' : 'text-slate/60 hover:text-slate hover:bg-slate/5'}`}
             aria-label="Open navigation menu"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <OrbitMark width={28} dark={true} />
-            <span className="font-bold text-sm text-cream tracking-wide">Orbit</span>
+            <OrbitMark width={28} dark={darkSidebar} />
+            <span className={`font-bold text-sm tracking-wide ${darkSidebar ? 'text-cream' : 'text-slate'}`}>Orbit</span>
           </div>
         </header>
 
-        {/* Page content */}
-        <main id="main-content" className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+        {/* Page content — padding controlled by density preference */}
+        <main id="main-content" className={`flex-1 overflow-y-auto ${densityPadding[density]}`}>
           {children}
         </main>
       </div>

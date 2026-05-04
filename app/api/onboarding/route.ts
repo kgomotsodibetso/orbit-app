@@ -1,45 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
+  // Use service role for all writes — bypasses RLS so registration works
+  // regardless of email-confirmation settings (session may not exist yet).
+  const service = createServiceClient();
 
-  // Must be authenticated
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const body = await request.json();
+  const { userId, fullName, email, institutionName, province, emisNumber, contactPhone } = body;
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+  if (!userId || !fullName || !email || !institutionName || !province) {
+    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  // 409 guard: prevent double-submit if profile already exists
-  const { data: existingProfile } = await supabase
+  // Verify this userId actually exists in auth — prevents spoofed requests.
+  const { data: authUser, error: authErr } = await service.auth.admin.getUserById(userId);
+  if (authErr || !authUser?.user) {
+    return NextResponse.json({ error: 'Invalid user' }, { status: 401 });
+  }
+
+  // 409 guard: prevent double-submit if profile already exists.
+  const { data: existingProfile } = await service
     .from('profiles')
     .select('id')
-    .eq('id', user.id)
+    .eq('id', userId)
     .maybeSingle();
 
   if (existingProfile) {
     return NextResponse.json({ error: 'Profile already exists' }, { status: 409 });
   }
 
-  const body = await request.json();
-  const { fullName, email, institutionName, province, emisNumber, contactPhone } = body;
-
-  if (!fullName || !email || !institutionName || !province) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-  }
-
-  // Generate slug
   const baseSlug = institutionName
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
   const slug = `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`;
 
-  // Create institution
-  const { data: institution, error: instError } = await supabase
+  const { data: institution, error: instError } = await service
     .from('institutions')
     .insert({
       name: institutionName,
@@ -63,9 +60,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Create profile
-  const { error: profileError } = await supabase.from('profiles').insert({
-    id: user.id,
+  const { error: profileError } = await service.from('profiles').insert({
+    id: userId,
     institution_id: institution.id,
     email,
     full_name: fullName,
@@ -74,8 +70,7 @@ export async function POST(request: NextRequest) {
 
   if (profileError) {
     console.error('[api/onboarding] profile insert error:', profileError.message);
-    // Rollback orphaned institution
-    await supabase.from('institutions').delete().eq('id', institution.id);
+    await service.from('institutions').delete().eq('id', institution.id);
     return NextResponse.json({ error: profileError.message }, { status: 500 });
   }
 

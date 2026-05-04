@@ -75,47 +75,28 @@ export default function RegisterPage() {
       return;
     }
 
-    const slug = institutionName
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
-
-    // 2. Create institution
-    const { data: institution, error: instError } = await supabase
-      .from('institutions')
-      .insert({
-        name: institutionName,
-        slug: `${slug}-${Math.random().toString(36).slice(2, 6)}`,
-        tier: emisNumber ? 3 : 1,
-        type: 'school',
+    // 2 & 3. Create institution + profile via server-side API (uses service role
+    //         to bypass RLS — works even when email confirmation is required and
+    //         no session exists yet).
+    const res = await fetch('/api/onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: authData.user.id,
+        fullName,
+        email,
+        institutionName,
         province,
-        emis_number: emisNumber || null,
-        contact_email: email,
-        contact_phone: contactPhone || null,
-        subscription_status: 'trial',
-      })
-      .select('id')
-      .single();
-
-    if (instError || !institution) {
-      setError(instError?.message ?? 'Failed to create institution');
-      setLoading(false);
-      return;
-    }
-
-    // 3. Create profile
-    const { error: profileError } = await supabase.from('profiles').insert({
-      id: authData.user.id,
-      institution_id: institution.id,
-      email,
-      full_name: fullName,
-      role: 'admin',
+        emisNumber: emisNumber || null,
+        contactPhone: contactPhone || null,
+      }),
     });
 
     setLoading(false);
 
-    if (profileError) {
-      setError(profileError.message);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setError(body.error ?? 'Failed to set up your school. Please try again.');
     } else {
       router.push('/');
       router.refresh();

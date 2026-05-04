@@ -328,22 +328,50 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
 
   // ── School state ─────────────────────────────────────────────────────────
   const institutionSettings = (institution?.settings ?? {}) as InstitutionSettings;
-  const [schoolName,    setSchoolName]    = useState(institution?.name ?? '');
-  const [contactEmail,  setContactEmail]  = useState(institution?.contact_email ?? '');
-  const [contactPhone,  setContactPhone]  = useState(institution?.contact_phone ?? '');
-  const [logoUrl,       setLogoUrl]       = useState(institutionSettings.logo_url ?? '');
-  const [loanDays,      setLoanDays]      = useState(String(institutionSettings.loan_period_days ?? 14));
-  const [maxBooks,      setMaxBooks]      = useState(String(institutionSettings.max_loans ?? 3));
-  const [finePerDay,    setFinePerDay]    = useState(String(institutionSettings.fine_per_day ?? 0));
-  const [openTime,      setOpenTime]      = useState(institutionSettings.open_time ?? '07:30');
-  const [closeTime,     setCloseTime]     = useState(institutionSettings.close_time ?? '15:30');
-  const [schoolSaving,  setSchoolSaving]  = useState(false);
-  const [schoolSaved,   setSchoolSaved]   = useState(false);
-  const [schoolError,   setSchoolError]   = useState('');
+  const [schoolName,      setSchoolName]      = useState(institution?.name ?? '');
+  const [contactEmail,    setContactEmail]    = useState(institution?.contact_email ?? '');
+  const [contactPhone,    setContactPhone]    = useState(institution?.contact_phone ?? '');
+  const [logoUrl,         setLogoUrl]         = useState(institutionSettings.logo_url ?? '');
+  const [logoFile,        setLogoFile]        = useState<File | null>(null);
+  const [logoUploading,   setLogoUploading]   = useState(false);
+  const [logoPreview,     setLogoPreview]     = useState<string | null>(institutionSettings.logo_url ?? null);
+  const logoFileRef = useRef<HTMLInputElement>(null);
+  const [loanDays,        setLoanDays]        = useState(String(institutionSettings.loan_period_days ?? 14));
+  const [maxBooks,        setMaxBooks]        = useState(String(institutionSettings.max_loans ?? 3));
+  const [finePerDay,      setFinePerDay]      = useState(String(institutionSettings.fine_per_day ?? 0));
+  const [openTime,        setOpenTime]        = useState(institutionSettings.open_time ?? '07:30');
+  const [closeTime,       setCloseTime]       = useState(institutionSettings.close_time ?? '15:30');
+  const [schoolSaving,    setSchoolSaving]    = useState(false);
+  const [schoolSaved,     setSchoolSaved]     = useState(false);
+  const [schoolError,     setSchoolError]     = useState('');
 
   const handleSchoolSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSchoolSaving(true); setSchoolError('');
+
+    let finalLogoUrl = logoUrl.trim() || null;
+
+    // Upload logo file if one was selected
+    if (logoFile) {
+      setLogoUploading(true);
+      const fd = new FormData();
+      fd.append('file', logoFile);
+      const uploadRes = await fetch('/api/settings/school-logo', { method: 'POST', body: fd });
+      setLogoUploading(false);
+      if (uploadRes.ok) {
+        const { url } = await uploadRes.json();
+        finalLogoUrl = url;
+        setLogoUrl(url);
+        setLogoPreview(url);
+        setLogoFile(null);
+      } else {
+        const { error } = await uploadRes.json();
+        setSchoolError(error ?? 'Logo upload failed');
+        setSchoolSaving(false);
+        return;
+      }
+    }
+
     const res = await fetch('/api/settings/institution', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -358,7 +386,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
           fine_per_day: parseFloat(finePerDay) || 0,
           open_time: openTime,
           close_time: closeTime,
-          logo_url: logoUrl.trim() || null,
+          logo_url: finalLogoUrl,
         },
       }),
     });
@@ -400,11 +428,46 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     else { toast.show('Save failed', false); }
   };
 
-  // ── Appearance state ─────────────────────────────────────────────────────
-  const [accentColor, setAccentColor] = useState('steel');
-  const [dateFormat,  setDateFormat]  = useState('dd/mm/yyyy');
-  const [density,     setDensity]     = useState<'compact' | 'comfortable' | 'spacious'>('comfortable');
-  const [darkSidebar, setDarkSidebar] = useState(true);
+  // ── Appearance state — loaded from institution.settings.display_prefs ────
+  type Density = 'compact' | 'comfortable' | 'spacious';
+  const savedPrefs = (institutionSettings as Record<string, unknown>).display_prefs as Record<string, string | boolean> | undefined;
+  const [accentColor,   setAccentColor]   = useState<string>(String(savedPrefs?.accentColor ?? 'steel'));
+  const [dateFormat,    setDateFormat]    = useState<string>(String(savedPrefs?.dateFormat  ?? 'dd/mm/yyyy'));
+  const [density,       setDensity]       = useState<Density>((savedPrefs?.density as Density) ?? 'comfortable');
+  const [darkSidebar,   setDarkSidebar]   = useState<boolean>(savedPrefs?.darkSidebar !== false);
+  const [appearSaving,  setAppearSaving]  = useState(false);
+
+  // Apply density to localStorage so DashboardShell can read it
+  useEffect(() => {
+    if (savedPrefs?.density) localStorage.setItem('orbit_density', String(savedPrefs.density));
+    if (savedPrefs?.darkSidebar !== undefined) localStorage.setItem('orbit_dark_sidebar', String(savedPrefs.darkSidebar));
+  }, [savedPrefs]);
+
+  const handleAppearSave = async () => {
+    setAppearSaving(true);
+    const prefs = { accentColor, dateFormat, density, darkSidebar };
+    // Persist to localStorage immediately for sidebar/density to pick up
+    localStorage.setItem('orbit_density',      density);
+    localStorage.setItem('orbit_dark_sidebar', String(darkSidebar));
+    // Persist to DB so settings survive device changes
+    const res = await fetch('/api/settings/institution', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:          institution?.name          ?? '',
+        contact_email: institution?.contact_email ?? '',
+        settings: { ...institutionSettings, display_prefs: prefs },
+      }),
+    });
+    setAppearSaving(false);
+    if (res.ok) {
+      toast.show('Appearance preferences saved');
+      // Dispatch event so DashboardShell updates without page reload
+      window.dispatchEvent(new CustomEvent('orbit-prefs-changed', { detail: prefs }));
+    } else {
+      toast.show('Save failed', false);
+    }
+  };
 
   // ── Team state ───────────────────────────────────────────────────────────
   const [team, setTeam] = useState([
@@ -570,33 +633,68 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
           {/* School logo card */}
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, marginBottom: 16 }}>
             <h2 style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47', marginBottom: 16 }}>School Logo</h2>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap' }}>
               {/* Logo preview */}
-              <div style={{ width: 80, height: 80, borderRadius: 16, background: '#2C3A47', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-                {logoUrl ? (
+              <div style={{ width: 90, height: 90, borderRadius: 16, background: '#2C3A47', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden', border: '2px solid rgba(44,58,71,0.1)' }}>
+                {logoPreview ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={logoUrl} alt="School logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setLogoUrl('')} />
+                  <img src={logoPreview} alt="School logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} onError={() => { setLogoPreview(null); setLogoUrl(''); }} />
                 ) : (
-                  <OrbitMark width={48} dark={true} />
+                  <OrbitMark width={52} dark={true} />
                 )}
               </div>
+
               <div style={{ flex: 1, minWidth: 200 }}>
                 <p style={{ fontSize: 15, fontWeight: 800, color: '#2C3A47' }}>{institution?.name ?? '—'}</p>
-                <p style={{ fontSize: 13, color: 'rgba(44,58,71,0.5)', marginTop: 2 }}>
+                <p style={{ fontSize: 13, color: 'rgba(44,58,71,0.5)', marginTop: 2, marginBottom: 14 }}>
                   {institution?.province}{institution?.province && institution?.type ? ' · ' : ''}{institution?.type ? `${institution.type} School` : ''}
                 </p>
-                {/* Logo URL input */}
-                <div style={{ marginTop: 12 }}>
-                  <Input
-                    label="Logo URL"
-                    value={logoUrl}
-                    onChange={e => setLogoUrl(e.target.value)}
-                    placeholder="https://yourschool.co.za/logo.png"
+
+                {/* Upload button */}
+                <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+                  <Button
+                    type="button"
+                    size="sm"
+                    loading={logoUploading}
+                    onClick={() => logoFileRef.current?.click()}
+                  >
+                    {logoUploading ? 'Uploading…' : logoPreview ? 'Change Logo' : 'Upload Logo'}
+                  </Button>
+                  {logoPreview && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => { setLogoPreview(null); setLogoUrl(''); setLogoFile(null); }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                  <input
+                    ref={logoFileRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    className="hidden"
+                    onChange={e => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      setLogoFile(f);
+                      setLogoPreview(URL.createObjectURL(f));
+                      e.target.value = '';
+                    }}
                   />
-                  <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', marginTop: 4 }}>
-                    Paste a publicly accessible image URL, or upload via the school website and copy the link.
-                  </p>
                 </div>
+
+                {/* OR paste a URL */}
+                <Input
+                  label="Or paste a logo URL"
+                  value={logoUrl}
+                  onChange={e => { setLogoUrl(e.target.value); setLogoPreview(e.target.value || null); setLogoFile(null); }}
+                  placeholder="https://yourschool.co.za/logo.png"
+                />
+                <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', marginTop: 4 }}>
+                  PNG, JPG, WebP or SVG · max 5 MB
+                </p>
               </div>
             </div>
           </div>
@@ -770,7 +868,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
           </div>
 
           <div style={{ paddingTop: 12 }}>
-            <Button type="button" onClick={() => toast.show('Appearance preferences saved')}>Save Preferences</Button>
+            <Button type="button" loading={appearSaving} onClick={handleAppearSave}>Save Preferences</Button>
           </div>
         </div>
       )}

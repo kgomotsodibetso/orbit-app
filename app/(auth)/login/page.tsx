@@ -78,6 +78,12 @@ function LoginPageInner() {
             </div>
           )}
 
+          {oauthError === 'setup_failed' && (
+            <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
+              <p className="text-sm text-red-600">Account created but setup failed. Please sign in again to retry.</p>
+            </div>
+          )}
+
           {error && (
             <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
               <p className="text-sm text-red-600">{error}</p>
