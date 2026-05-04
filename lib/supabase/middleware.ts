@@ -26,6 +26,18 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
+  // ── Public API routes — bypass Supabase entirely ──────────────────────
+  // These routes handle their own auth. Skipping the Supabase client here
+  // prevents NextResponse.next({ request }) from being called twice, which
+  // in Next.js 16 can exhaust the POST body stream before the handler reads it.
+  const isPublicApi =
+    pathname.startsWith('/api/onboarding') ||
+    pathname.startsWith('/api/isbn') ||
+    pathname.startsWith('/api/webhooks') ||
+    pathname.startsWith('/api/learner');
+
+  if (isPublicApi) return NextResponse.next();
+
   // ── Admin / librarian routes (Supabase auth) ───────────────────────────
   let supabaseResponse = NextResponse.next({ request });
 
@@ -60,10 +72,6 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith('/register') ||
     pathname.startsWith('/setup') ||
     pathname.startsWith('/auth/callback') ||
-    pathname.startsWith('/api/isbn') ||
-    pathname.startsWith('/api/onboarding') ||
-    pathname.startsWith('/api/webhooks') ||
-    pathname.startsWith('/api/learner') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon');
 
