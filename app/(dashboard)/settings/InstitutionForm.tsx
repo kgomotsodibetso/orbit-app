@@ -129,7 +129,7 @@ export default function InstitutionForm({ institution }: Props) {
         <div className="flex items-center justify-between pt-1">
           {done ? (
             <span className="flex items-center gap-1.5 text-sm text-green-600 font-semibold">
-              <CheckCircle2 className="w-4 h-4" />
+              <CheckCircle weight="light" className="w-4 h-4" />
               Saved successfully
             </span>
           ) : (

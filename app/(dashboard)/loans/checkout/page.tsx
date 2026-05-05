@@ -71,7 +71,7 @@ export default function CheckoutPage() {
     <div className="max-w-lg">
       <div className="flex items-center gap-3 mb-8">
         <Link href="/loans" className="text-slate/40 hover:text-slate">
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft weight="light" className="w-5 h-5" />
         </Link>
         <h1 className="text-3xl font-bold text-slate">Check Out</h1>
       </div>
@@ -96,7 +96,7 @@ export default function CheckoutPage() {
       {step === 'member' && (
         <div className="space-y-4">
           <div className="flex items-center gap-3 p-4 bg-steel/5 rounded-2xl border border-steel/20 mb-2">
-            <UserCheck className="w-5 h-5 text-steel" />
+            <UserCheck weight="light" className="w-5 h-5 text-steel" />
             <p className="text-sm font-medium text-slate">Search for learner by name or member number</p>
           </div>
           <Input
@@ -116,14 +116,14 @@ export default function CheckoutPage() {
       {step === 'book' && member && (
         <div className="space-y-4">
           <div className="flex items-center gap-3 p-4 bg-green-50 rounded-2xl border border-green-200">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <CheckCircle weight="light" className="w-5 h-5 text-green-500" />
             <div>
               <p className="text-sm font-semibold text-green-800">{member.full_name}</p>
               <p className="text-xs text-green-600">{member.member_number}{member.grade ? ` · Grade ${member.grade}` : ''}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-4 bg-steel/5 rounded-2xl border border-steel/20">
-            <BookOpen className="w-5 h-5 text-steel" />
+            <BookOpen weight="light" className="w-5 h-5 text-steel" />
             <p className="text-sm font-medium text-slate">Now scan the book ISBN</p>
           </div>
           <ISBNScanner onScan={handleBookScan} />
@@ -142,7 +142,7 @@ export default function CheckoutPage() {
                 <img src={book.cover_url} alt={book.title} className="w-14 h-20 object-cover rounded-lg" />
               ) : (
                 <div className="w-14 h-20 bg-steel/10 rounded-lg flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-steel/40" />
+                  <BookOpen weight="light" className="w-5 h-5 text-steel/40" />
                 </div>
               )}
               <div>
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
       {step === 'done' && (
         <div className="text-center py-8">
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-8 h-8 text-green-500" />
+            <CheckCircle weight="light" className="w-8 h-8 text-green-500" />
           </div>
           <h2 className="text-xl font-bold text-slate mb-2">Checked Out!</h2>
           <p className="text-sm text-slate/50 mb-6">

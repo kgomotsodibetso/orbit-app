@@ -57,15 +57,15 @@ export default async function ReportsPage() {
       {/* Summary stats */}
       <section className="mb-8">
         <h2 className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-3 flex items-center gap-2">
-          <BarChart3 className="w-3.5 h-3.5" />
+          <ChartBar weight="light" className="w-3.5 h-3.5" />
           Library Snapshot
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           <StatBlock icon={BookOpen} label="Total Books" value={totalBooks ?? 0} colour="steel" />
-          <StatBlock icon={Users} label="Active Members" value={totalMembers ?? 0} colour="lavender" />
-          <StatBlock icon={ArrowLeftRight} label="On Loan" value={activeLoans ?? 0} colour="slate" />
-          <StatBlock icon={AlertCircle} label="Overdue" value={overdueLoans ?? 0} colour="red" />
-          <StatBlock icon={CheckCircle2} label="Returned This Term" value={returnedThisTerm ?? 0} colour="green" />
+          <StatBlock icon={UsersThree} label="Active Members" value={totalMembers ?? 0} colour="lavender" />
+          <StatBlock icon={ArrowsLeftRight} label="On Loan" value={activeLoans ?? 0} colour="slate" />
+          <StatBlock icon={WarningCircle} label="Overdue" value={overdueLoans ?? 0} colour="red" />
+          <StatBlock icon={CheckCircle} label="Returned This Term" value={returnedThisTerm ?? 0} colour="green" />
           <StatBlock icon={BookOpen} label="New Books This Term" value={newBooksThisTerm ?? 0} colour="golden" />
         </div>
       </section>
@@ -73,7 +73,7 @@ export default async function ReportsPage() {
       {/* Generate reports */}
       <section className="mb-8">
         <h2 className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-3 flex items-center gap-2">
-          <FileText className="w-3.5 h-3.5" />
+          <FileText weight="light" className="w-3.5 h-3.5" />
           Generate Reports
         </h2>
         <div className="space-y-3">
@@ -104,13 +104,13 @@ export default async function ReportsPage() {
       {/* Past DBE reports */}
       <section>
         <h2 className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-3 flex items-center gap-2">
-          <ClipboardList className="w-3.5 h-3.5" />
+          <ClipboardText weight="light" className="w-3.5 h-3.5" />
           Generated Reports
         </h2>
 
         {!dbeReports || dbeReports.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate/10 p-10 text-center">
-            <FileText className="w-8 h-8 text-slate/20 mx-auto mb-2" />
+            <FileText weight="light" className="w-8 h-8 text-slate/20 mx-auto mb-2" />
             <p className="text-sm text-slate/40">No reports generated yet.</p>
             <p className="text-xs text-slate/30 mt-1">
               Use the options above to generate your first DBE report.
@@ -213,7 +213,7 @@ function StatBlock({
   return (
     <div className="bg-white rounded-2xl border border-slate/10 p-4 flex items-center gap-3">
       <div className={`w-9 h-9 rounded-xl ${c.bg} flex items-center justify-center shrink-0`}>
-        <Icon className={`w-4 h-4 ${c.icon}`} />
+        <Icon weight="light" className={`w-4 h-4 ${c.icon}`} />
       </div>
       <div>
         <p className={`text-xl font-bold ${c.text}`}>{value.toLocaleString()}</p>

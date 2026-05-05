@@ -82,7 +82,7 @@ export default function ReturnPage() {
     <div className="max-w-lg">
       <div className="flex items-center gap-3 mb-8">
         <Link href="/loans" className="text-slate/40 hover:text-slate">
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft weight="light" className="w-5 h-5" />
         </Link>
         <h1 className="text-3xl font-bold text-slate">Return Book</h1>
       </div>
@@ -135,7 +135,7 @@ export default function ReturnPage() {
       {step === 'done' && (
         <div className="text-center py-8">
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-8 h-8 text-green-500" />
+            <CheckCircle weight="light" className="w-8 h-8 text-green-500" />
           </div>
           <h2 className="text-xl font-bold text-slate mb-2">
             {condition === 'lost' ? 'Marked as Lost' : 'Returned!'}

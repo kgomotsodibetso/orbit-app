@@ -85,7 +85,7 @@ export default async function LoansPage({
             href="/loans/return"
             className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl bg-cream text-slate border border-slate/20 hover:bg-cream/80 transition-all"
           >
-            <CheckCircle2 className="w-4 h-4" />
+            <CheckCircle weight="light" className="w-4 h-4" />
             Return
           </Link>
           <Link
@@ -93,7 +93,7 @@ export default async function LoansPage({
             className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl btn-primary transition-all"
             style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
           >
-            <Plus className="w-4 h-4" />
+            <Plus weight="light" className="w-4 h-4" />
             Check Out
           </Link>
         </div>
@@ -104,7 +104,7 @@ export default async function LoansPage({
         <div className="bg-white rounded-2xl border border-slate/10 p-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-steel/10 flex items-center justify-center shrink-0">
-              <ArrowLeftRight className="w-4 h-4 text-steel" />
+              <ArrowsLeftRight weight="light" className="w-4 h-4 text-steel" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate">{loans.length}</p>
@@ -115,7 +115,7 @@ export default async function LoansPage({
         <div className="bg-white rounded-2xl border border-red-100 p-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-              <AlertCircle className="w-4 h-4 text-red-500" />
+              <WarningCircle weight="light" className="w-4 h-4 text-red-500" />
             </div>
             <div>
               <p className="text-2xl font-bold text-red-600">{overdueLoans.length}</p>
@@ -126,7 +126,7 @@ export default async function LoansPage({
         <div className="bg-white rounded-2xl border border-golden/30 p-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-golden/10 flex items-center justify-center shrink-0">
-              <Clock className="w-4 h-4 text-golden" />
+              <Clock weight="light" className="w-4 h-4 text-golden" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate">{dueTodayLoans.length}</p>
@@ -171,7 +171,7 @@ export default async function LoansPage({
       {/* Loans table */}
       {filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate/10 p-16 text-center">
-          <BookOpen className="w-10 h-10 text-slate/20 mx-auto mb-3" />
+          <BookOpen weight="light" className="w-10 h-10 text-slate/20 mx-auto mb-3" />
           <p className="text-slate/50 font-medium">No loans to show</p>
           <p className="text-sm text-slate/30 mt-1">
             {filter === 'overdue' ? 'No overdue books — great!' : 'Switch tabs or check out a book.'}

@@ -581,7 +581,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                     placeholder="••••••••"
                     rightElement={
                       <button type="button" onClick={() => setShowCurrentPw(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showCurrentPw ? 'Hide password' : 'Show password'}>
-                        {showCurrentPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showCurrentPw ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                       </button>
                     }
                   />
@@ -594,7 +594,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                       placeholder="Min. 8 characters"
                       rightElement={
                         <button type="button" onClick={() => setShowNewPw(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showNewPw ? 'Hide password' : 'Show password'}>
-                          {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showNewPw ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                         </button>
                       }
                     />
@@ -606,7 +606,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                       placeholder="Repeat new password"
                       rightElement={
                         <button type="button" onClick={() => setShowNewPw(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showNewPw ? 'Hide password' : 'Show password'}>
-                          {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showNewPw ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                         </button>
                       }
                     />
@@ -741,7 +741,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               <div className="flex items-center justify-between pt-1">
                 {schoolSaved && (
                   <span className="flex items-center gap-1.5 text-sm text-green-600 font-semibold">
-                    <CheckCircle2 className="w-4 h-4" /> Saved
+                    <CheckCircle weight="light" className="w-4 h-4" /> Saved
                   </span>
                 )}
                 <Button type="submit" loading={schoolSaving} className={schoolSaved ? '' : 'ml-auto'}>
@@ -965,7 +965,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
 
       {tab === 'profile' && (
         <div className="flex items-start gap-3 p-4 rounded-xl bg-slate/5 border border-slate/10 mt-4" style={{ maxWidth: 760 }}>
-          <Shield className="w-4 h-4 text-slate/30 mt-0.5 shrink-0" />
+          <ShieldCheck weight="light" className="w-4 h-4 text-slate/30 mt-0.5 shrink-0" />
           <p className="text-xs text-slate/40 leading-relaxed">
             To change your email address, use the{' '}
             <a href="/forgot-password" className="text-steel font-semibold hover:underline">password reset flow</a>.

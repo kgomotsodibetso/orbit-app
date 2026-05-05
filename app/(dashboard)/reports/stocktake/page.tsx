@@ -79,7 +79,7 @@ export default async function StocktakePage({
             href="/reports"
             className="text-slate/40 hover:text-slate transition-colors shrink-0"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft weight="light" className="w-5 h-5" />
           </Link>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate">Annual Stock-take</h1>
@@ -94,7 +94,7 @@ export default async function StocktakePage({
             href="/api/reports/stocktake"
             className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl bg-cream text-slate border border-slate/20 hover:bg-cream/80 transition-all"
           >
-            <Download className="w-4 h-4" />
+            <DownloadSimple weight="light" className="w-4 h-4" />
             <span className="hidden sm:inline">Download CSV</span>
             <span className="sm:hidden">CSV</span>
           </a>
@@ -104,7 +104,7 @@ export default async function StocktakePage({
               className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold rounded-xl btn-primary transition-all"
               style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             >
-              <FileText className="w-4 h-4" />
+              <FileText weight="light" className="w-4 h-4" />
               <span className="hidden sm:inline">Generate Report</span>
               <span className="sm:hidden">Generate</span>
             </button>
@@ -175,7 +175,7 @@ export default async function StocktakePage({
       {/* Book table */}
       {books.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate/10 p-16 text-center">
-          <BookOpen className="w-10 h-10 text-slate/20 mx-auto mb-3" />
+          <BookOpen weight="light" className="w-10 h-10 text-slate/20 mx-auto mb-3" />
           <p className="text-slate/50 font-medium">No books found</p>
         </div>
       ) : (
