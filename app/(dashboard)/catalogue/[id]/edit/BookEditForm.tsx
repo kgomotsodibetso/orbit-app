@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, BookOpen, Trash2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, BookOpen, Trash, Warning } from '@phosphor-icons/react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -115,7 +115,7 @@ export default function BookEditForm({ book }: Props) {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link href={`/catalogue/${book.id}`} className="text-slate/40 hover:text-slate transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft weight="light" className="w-5 h-5" />
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-slate">Edit Book</h1>
@@ -259,14 +259,14 @@ export default function BookEditForm({ book }: Props) {
               size="sm"
               onClick={() => setConfirmDelete(true)}
             >
-              <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+              <Trash weight="light" className="w-3.5 h-3.5 mr-1.5" />
               Delete
             </Button>
           </div>
         ) : (
           <div className="space-y-3">
             <div className="flex items-start gap-2 text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
-              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+              <Warning weight="light" className="w-4 h-4 mt-0.5 shrink-0" />
               <p className="text-sm">
                 Are you sure? This will permanently delete <strong>{book.title}</strong> and all its loan records.
               </p>
@@ -286,7 +286,7 @@ export default function BookEditForm({ book }: Props) {
                 onClick={handleDelete}
                 size="sm"
               >
-                <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                <Trash weight="light" className="w-3.5 h-3.5 mr-1.5" />
                 Yes, Delete Book
               </Button>
               <Button
@@ -304,7 +304,7 @@ export default function BookEditForm({ book }: Props) {
 
       {/* ISBN / cover info footer */}
       <div className="mt-4 flex items-center gap-3 text-xs text-slate/40 px-1">
-        <BookOpen className="w-3.5 h-3.5 shrink-0" />
+        <BookOpen weight="light" className="w-3.5 h-3.5 shrink-0" />
         <span>ISBN-13: <span className="font-mono">{book.isbn_13}</span></span>
       </div>
     </div>

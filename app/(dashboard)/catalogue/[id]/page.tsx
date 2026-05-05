@@ -5,13 +5,13 @@ import {
   ArrowLeft,
   BookOpen,
   Clock,
-  AlertCircle,
+  WarningCircle,
   MapPin,
   Tag,
-  Users,
+  UsersThree,
   Package,
   Pencil,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -71,12 +71,12 @@ export default async function BookDetailPage({
       {/* Back nav */}
       <div className="flex items-center gap-3 mb-8">
         <Link href="/catalogue" className="text-slate/40 hover:text-slate transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft weight="light" className="w-5 h-5" />
         </Link>
         <h1 className="text-3xl font-bold text-slate flex-1">Book Detail</h1>
         <Link href={`/catalogue/${id}/edit`}>
           <Button variant="secondary" size="sm">
-            <Pencil className="w-3.5 h-3.5 mr-1.5" />
+            <Pencil weight="light" className="w-3.5 h-3.5 mr-1.5" />
             Edit Book
           </Button>
         </Link>
@@ -96,13 +96,13 @@ export default async function BookDetailPage({
                 className="object-cover w-full h-full"
               />
             ) : (
-              <BookOpen className="w-8 h-8 text-steel/30" />
+              <BookOpen weight="light" className="w-8 h-8 text-steel/30" />
             )}
           </div>
 
           {/* Title block */}
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-slate leading-snug">{book.title}</h2>
+            <h2 className="text-2xl font-black text-slate leading-tight tracking-tight">{book.title}</h2>
             {book.subtitle && (
               <p className="text-sm text-slate/50 mt-0.5">{book.subtitle}</p>
             )}
@@ -127,15 +127,15 @@ export default async function BookDetailPage({
         {/* Availability bar */}
         <div className="grid grid-cols-3 gap-4 mt-6 pt-5 border-t border-slate/10">
           <div className="text-center">
-            <p className="text-2xl font-bold text-steel">{book.available_copies}</p>
+            <p className="text-3xl font-black text-steel tracking-tighter">{book.available_copies}</p>
             <p className="text-xs text-slate/50 mt-0.5">Available</p>
           </div>
           <div className="text-center border-x border-slate/10">
-            <p className="text-2xl font-bold text-slate">{book.total_copies}</p>
+            <p className="text-3xl font-black text-slate tracking-tighter">{book.total_copies}</p>
             <p className="text-xs text-slate/50 mt-0.5">Total Copies</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-slate">
+            <p className="text-3xl font-black text-slate tracking-tighter">
               {book.total_copies - book.available_copies}
             </p>
             <p className="text-xs text-slate/50 mt-0.5">On Loan</p>
@@ -145,63 +145,63 @@ export default async function BookDetailPage({
 
       {/* Metadata grid */}
       <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-        <h3 className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-4">
+        <h3 className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-4">
           Book Information
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
           <div>
-            <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">ISBN-13</p>
+            <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">ISBN-13</p>
             <p className="text-sm font-medium text-slate font-mono">{book.isbn_13}</p>
           </div>
           {book.isbn_10 && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">ISBN-10</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">ISBN-10</p>
               <p className="text-sm font-medium text-slate font-mono">{book.isbn_10}</p>
             </div>
           )}
           {book.publisher && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Publisher</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">Publisher</p>
               <p className="text-sm font-medium text-slate">{book.publisher}</p>
             </div>
           )}
           {book.published_year && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Year</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">Year</p>
               <p className="text-sm font-medium text-slate">{book.published_year}</p>
             </div>
           )}
           {book.language && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Language</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">Language</p>
               <p className="text-sm font-medium text-slate capitalize">{book.language}</p>
             </div>
           )}
           {book.dewey_decimal && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Dewey</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">Dewey</p>
               <p className="text-sm font-medium text-slate font-mono">{book.dewey_decimal}</p>
             </div>
           )}
           {book.location_shelf && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1 flex items-center gap-1">
-                <MapPin className="w-3 h-3" /> Shelf
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1 flex items-center gap-1">
+                <MapPin weight="light" className="w-3 h-3" /> Shelf
               </p>
               <p className="text-sm font-medium text-slate">{book.location_shelf}</p>
             </div>
           )}
           {book.grade_level && (book.grade_level as string[]).length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1 flex items-center gap-1">
-                <Users className="w-3 h-3" /> Grade Level
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1 flex items-center gap-1">
+                <UsersThree weight="light" className="w-3 h-3" /> Grade Level
               </p>
               <p className="text-sm font-medium text-slate">{(book.grade_level as string[]).join(', ')}</p>
             </div>
           )}
           {book.acquisition_date && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Acquired</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">Acquired</p>
               <p className="text-sm font-medium text-slate">
                 {new Date(book.acquisition_date).toLocaleDateString('en-ZA')}
               </p>
@@ -209,15 +209,15 @@ export default async function BookDetailPage({
           )}
           {book.acquisition_source && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1 flex items-center gap-1">
-                <Package className="w-3 h-3" /> Source
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1 flex items-center gap-1">
+                <Package weight="light" className="w-3 h-3" /> Source
               </p>
               <p className="text-sm font-medium text-slate">{book.acquisition_source}</p>
             </div>
           )}
           {book.acquisition_cost != null && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Cost</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">Cost</p>
               <p className="text-sm font-medium text-slate">
                 R {(book.acquisition_cost as number).toFixed(2)}
               </p>
@@ -225,7 +225,7 @@ export default async function BookDetailPage({
           )}
           {book.barcode && (
             <div>
-              <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Barcode</p>
+              <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-1">Barcode</p>
               <p className="text-sm font-medium text-slate font-mono">{book.barcode}</p>
             </div>
           )}
@@ -233,8 +233,8 @@ export default async function BookDetailPage({
 
         {book.tags && (book.tags as string[]).length > 0 && (
           <div className="mt-4 pt-4 border-t border-slate/10">
-            <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-2 flex items-center gap-1">
-              <Tag className="w-3 h-3" /> Tags
+            <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-2 flex items-center gap-1">
+              <Tag weight="light" className="w-3 h-3" /> Tags
             </p>
             <div className="flex flex-wrap gap-1.5">
               {(book.tags as string[]).map((tag) => (
@@ -251,7 +251,7 @@ export default async function BookDetailPage({
 
         {book.description && (
           <div className="mt-4 pt-4 border-t border-slate/10">
-            <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-2">Description</p>
+            <p className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-2">Description</p>
             <p className="text-sm text-slate/70 leading-relaxed">{book.description}</p>
           </div>
         )}
@@ -278,7 +278,7 @@ export default async function BookDetailPage({
                   }`}
                 >
                   <div className="w-9 h-9 rounded-xl bg-lavender/10 flex items-center justify-center shrink-0">
-                    <Users className="w-4 h-4 text-lavender" />
+                    <UsersThree weight="light" className="w-4 h-4 text-lavender" />
                   </div>
                   <div className="flex-1 min-w-0">
                     {loan.members ? (
@@ -298,7 +298,7 @@ export default async function BookDetailPage({
                   <div className="text-right shrink-0">
                     {isOverdue ? (
                       <div className="flex items-center gap-1 text-red-600">
-                        <AlertCircle className="w-3.5 h-3.5" />
+                        <WarningCircle weight="light" className="w-3.5 h-3.5" />
                         <span className="text-xs font-semibold">{Math.abs(diffDays)}d overdue</span>
                       </div>
                     ) : (
@@ -343,7 +343,7 @@ export default async function BookDetailPage({
                   <tr key={loan.id}>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-3.5 h-3.5 text-slate/30 shrink-0" />
+                        <Clock weight="light" className="w-3.5 h-3.5 text-slate/30 shrink-0" />
                         {loan.members ? (
                           <Link
                             href={`/learners/${loan.members.id}`}
@@ -379,7 +379,7 @@ export default async function BookDetailPage({
       {/* Empty state when book has never been borrowed */}
       {activeLoans.length === 0 && loanHistory.length === 0 && (
         <div className="bg-white rounded-2xl border border-slate/10 p-10 text-center">
-          <BookOpen className="w-8 h-8 text-slate/20 mx-auto mb-2" />
+          <BookOpen weight="light" className="w-8 h-8 text-slate/20 mx-auto mb-2" />
           <p className="text-sm text-slate/40">This book has no loan history yet.</p>
         </div>
       )}

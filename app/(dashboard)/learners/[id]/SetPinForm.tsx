@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { KeyRound, CheckCircle2 } from 'lucide-react';
+import { Key, CheckCircle } from '@phosphor-icons/react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
@@ -39,7 +39,7 @@ export default function SetPinForm({ memberId, hasPin }: { memberId: string; has
   return (
     <div className="bg-white rounded-2xl border border-slate/10 p-5 mb-6">
       <div className="flex items-center gap-2 mb-4">
-        <KeyRound className="w-4 h-4 text-steel" />
+        <Key weight="light" className="w-4 h-4 text-steel" />
         <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest">
           Learner Portal PIN
         </p>
@@ -52,7 +52,7 @@ export default function SetPinForm({ memberId, hasPin }: { memberId: string; has
 
       {done ? (
         <div className="flex items-center gap-2 text-green-600 py-2">
-          <CheckCircle2 className="w-4 h-4" />
+          <CheckCircle weight="light" className="w-4 h-4" />
           <span className="text-sm font-semibold">PIN updated successfully</span>
         </div>
       ) : (

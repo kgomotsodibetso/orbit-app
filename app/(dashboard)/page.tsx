@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, ArrowLeftRight, AlertTriangle, Users, ScanLine, RotateCcw } from 'lucide-react';
+import { BookOpen, ArrowsLeftRight, Warning, UsersThree, Scan, ArrowCounterClockwise } from '@phosphor-icons/react';
 import StatCard from '@/components/dashboard/StatCard';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import Button from '@/components/ui/Button';
@@ -53,13 +53,13 @@ export default async function MissionControlPage() {
         <div className="flex gap-2 shrink-0">
           <Link href="/loans/checkout">
             <Button size="sm" className="gap-2">
-              <ScanLine className="w-3.5 h-3.5" />
+              <Scan weight="light" className="w-3.5 h-3.5" />
               Check Out
             </Button>
           </Link>
           <Link href="/loans/return">
             <Button variant="secondary" size="sm" className="gap-2">
-              <RotateCcw className="w-3.5 h-3.5" />
+              <ArrowCounterClockwise weight="light" className="w-3.5 h-3.5" />
               Return
             </Button>
           </Link>
@@ -78,21 +78,21 @@ export default async function MissionControlPage() {
         <StatCard
           label="Active Loans"
           value={stats.activeLoans}
-          icon={ArrowLeftRight}
+          icon={ArrowsLeftRight}
           color="golden"
           sub="currently out"
         />
         <StatCard
           label="Overdue"
           value={stats.overdueLoans}
-          icon={AlertTriangle}
+          icon={Warning}
           color={stats.overdueLoans > 0 ? 'danger' : 'steel'}
           sub={stats.overdueLoans > 0 ? 'need attention' : 'all on time'}
         />
         <StatCard
           label="Learners"
           value={stats.totalMembers}
-          icon={Users}
+          icon={UsersThree}
           color="lavender"
           sub="active members"
         />
@@ -102,7 +102,7 @@ export default async function MissionControlPage() {
       {stats.overdueLoans > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div className="flex items-start sm:items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5 sm:mt-0" />
+            <Warning weight="light" className="w-5 h-5 text-red-500 shrink-0 mt-0.5 sm:mt-0" />
             <p className="text-sm font-semibold text-red-700">
               {stats.overdueLoans} book{stats.overdueLoans > 1 ? 's are' : ' is'} overdue — SMS alerts will be sent automatically tonight.
             </p>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Plus, Search } from 'lucide-react';
+import { Plus, MagnifyingGlass } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/server';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -35,7 +35,7 @@ export default async function CataloguePage({
         </div>
         <Link href="/catalogue/add">
           <Button>
-            <Plus className="w-4 h-4" />
+            <Plus weight="light" className="w-4 h-4" />
             Add Book
           </Button>
         </Link>
@@ -43,7 +43,7 @@ export default async function CataloguePage({
 
       {/* Search bar */}
       <form className="relative mb-6">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/40" />
+        <MagnifyingGlass weight="light" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate/40" />
         <input
           name="q"
           defaultValue={q}

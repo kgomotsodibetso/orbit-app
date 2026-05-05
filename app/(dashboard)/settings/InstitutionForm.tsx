@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle } from '@phosphor-icons/react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import type { InstitutionRow } from '@/types/database';

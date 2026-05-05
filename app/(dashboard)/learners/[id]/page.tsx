@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, User, BookOpen, Clock, AlertCircle, Pencil } from 'lucide-react';
+import { ArrowLeft, User, BookOpen, Clock, WarningCircle, Pencil } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 import SetPinForm from './SetPinForm';
@@ -37,7 +37,7 @@ export default async function LearnerProfilePage({
       <div className="flex items-center justify-between gap-3 mb-8">
         <div className="flex items-center gap-3">
           <Link href="/learners" className="text-slate/40 hover:text-slate transition-colors">
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft weight="light" className="w-5 h-5" />
           </Link>
           <h1 className="text-3xl font-bold text-slate">Member Profile</h1>
         </div>
@@ -45,7 +45,7 @@ export default async function LearnerProfilePage({
           href={`/learners/${id}/edit`}
           className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold border border-slate/20 bg-white text-slate hover:bg-cream transition-colors"
         >
-          <Pencil className="w-3.5 h-3.5" />
+          <Pencil weight="light" className="w-3.5 h-3.5" />
           Edit
         </Link>
       </div>
@@ -54,7 +54,7 @@ export default async function LearnerProfilePage({
       <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6">
         <div className="flex items-start gap-5">
           <div className="w-16 h-16 rounded-2xl bg-lavender/20 flex items-center justify-center shrink-0">
-            <User className="w-8 h-8 text-lavender" />
+            <User weight="light" className="w-8 h-8 text-lavender" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
@@ -120,7 +120,7 @@ export default async function LearnerProfilePage({
         </h3>
         {activeLoans.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate/10 p-8 text-center">
-            <BookOpen className="w-8 h-8 text-slate/20 mx-auto mb-2" />
+            <BookOpen weight="light" className="w-8 h-8 text-slate/20 mx-auto mb-2" />
             <p className="text-sm text-slate/40">No books currently checked out</p>
           </div>
         ) : (
@@ -140,7 +140,7 @@ export default async function LearnerProfilePage({
                   }`}
                 >
                   <div className="w-10 h-14 bg-steel/10 rounded-lg flex items-center justify-center shrink-0">
-                    <BookOpen className="w-5 h-5 text-steel/40" />
+                    <BookOpen weight="light" className="w-5 h-5 text-steel/40" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-slate truncate">{book?.title}</p>
@@ -149,7 +149,7 @@ export default async function LearnerProfilePage({
                   <div className="text-right shrink-0">
                     {isOverdue ? (
                       <div className="flex items-center gap-1 text-red-600">
-                        <AlertCircle className="w-3.5 h-3.5" />
+                        <WarningCircle weight="light" className="w-3.5 h-3.5" />
                         <span className="text-xs font-semibold">Overdue</span>
                       </div>
                     ) : (
@@ -190,7 +190,7 @@ export default async function LearnerProfilePage({
                     <tr key={loan.id}>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2">
-                          <Clock className="w-3.5 h-3.5 text-slate/30 shrink-0" />
+                          <Clock weight="light" className="w-3.5 h-3.5 text-slate/30 shrink-0" />
                           <span className="text-sm text-slate truncate">{book?.title}</span>
                         </div>
                       </td>

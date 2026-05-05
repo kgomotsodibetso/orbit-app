@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { ShieldCheck, CheckCircle, Eye, EyeSlash } from '@phosphor-icons/react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';

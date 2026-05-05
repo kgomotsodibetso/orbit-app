@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Hash } from 'lucide-react';
+import { Hash } from '@phosphor-icons/react';
 import Button from '@/components/ui/Button';
 import OrbitLogo from '@/components/ui/OrbitLogo';
 import Input from '@/components/ui/Input';
@@ -93,7 +93,7 @@ export default function LearnerLoginPage() {
               value={memberNumber}
               onChange={(e) => setMemberNumber(e.target.value.toUpperCase())}
               placeholder="ORB-0001"
-              icon={<Hash className="w-4 h-4" />}
+              icon={<Hash weight="light" className="w-4 h-4" />}
               required
               autoComplete="off"
             />

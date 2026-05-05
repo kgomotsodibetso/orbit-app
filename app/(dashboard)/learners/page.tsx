@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Plus, User, Eye, Pencil } from 'lucide-react';
+import { Plus, User, Eye, Pencil } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/server';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -54,7 +54,7 @@ export default async function LearnersPage({
         </div>
         <Link href="/learners/new" className="shrink-0">
           <Button>
-            <Plus className="w-4 h-4" />
+            <Plus weight="light" className="w-4 h-4" />
             Add Member
           </Button>
         </Link>
@@ -90,10 +90,10 @@ export default async function LearnersPage({
 
       {!members?.length ? (
         <div className="bg-white rounded-2xl border border-slate/10 text-center py-20">
-          <User className="w-10 h-10 text-slate/20 mx-auto mb-3" />
+          <User weight="light" className="w-10 h-10 text-slate/20 mx-auto mb-3" />
           <p className="text-slate/40 font-medium">No {TYPE_LABELS[activeType].toLowerCase()} found.</p>
           <Link href="/learners/new" className="inline-block mt-4">
-            <Button size="sm"><Plus className="w-3.5 h-3.5" />Add one now</Button>
+            <Button size="sm"><Plus weight="light" className="w-3.5 h-3.5" />Add one now</Button>
           </Link>
         </div>
       ) : (
@@ -115,7 +115,7 @@ export default async function LearnersPage({
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-lavender/20 flex items-center justify-center shrink-0">
-                          <User className="w-4 h-4 text-lavender" />
+                          <User weight="light" className="w-4 h-4 text-lavender" />
                         </div>
                         <div>
                           <p className="text-sm font-semibold text-slate">{m.full_name}</p>
@@ -148,14 +148,14 @@ export default async function LearnersPage({
                           href={`/learners/${m.id}`}
                           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate/60 hover:text-steel hover:bg-steel/10 transition-colors"
                         >
-                          <Eye className="w-3.5 h-3.5" />
+                          <Eye weight="light" className="w-3.5 h-3.5" />
                           View
                         </Link>
                         <Link
                           href={`/learners/${m.id}/edit`}
                           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate/60 hover:text-slate hover:bg-slate/10 transition-colors"
                         >
-                          <Pencil className="w-3.5 h-3.5" />
+                          <Pencil weight="light" className="w-3.5 h-3.5" />
                           Edit
                         </Link>
                       </div>

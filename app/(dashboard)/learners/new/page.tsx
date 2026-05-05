@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -87,7 +87,7 @@ export default function AddLearnerPage() {
       <div className="max-w-lg">
         <div className="text-center py-12">
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-8 h-8 text-green-500" />
+            <CheckCircle weight="light" className="w-8 h-8 text-green-500" />
           </div>
           <h2 className="text-xl font-bold text-slate mb-1">Member Added</h2>
           <p className="text-sm text-slate/50 mb-1">{form.full_name}</p>
@@ -108,7 +108,7 @@ export default function AddLearnerPage() {
     <div className="max-w-lg">
       <div className="flex items-center gap-3 mb-8">
         <Link href="/learners" className="text-slate/40 hover:text-slate transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft weight="light" className="w-5 h-5" />
         </Link>
         <h1 className="text-3xl font-bold text-slate">Add Member</h1>
       </div>

@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useState } from 'react';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from '@phosphor-icons/react';
 import Link from 'next/link';
 import ISBNScanner from '@/components/scanner/ISBNScanner';
 import Button from '@/components/ui/Button';

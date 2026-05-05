@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { AlertCircle, ArrowLeftRight, BookOpen, CheckCircle2, Clock, Plus } from 'lucide-react';
+import { WarningCircle, ArrowsLeftRight, BookOpen, CheckCircle, Clock, Plus } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 

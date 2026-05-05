@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import {
   ArrowLeft,
-  Download,
+  DownloadSimple,
   FileText,
   BookOpen,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/server';
 import { generateStocktakeReport } from './actions';
 

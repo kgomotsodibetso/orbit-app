@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { ArrowLeft, BookOpen } from '@phosphor-icons/react';
 import Link from 'next/link';
 import ISBNScanner from '@/components/scanner/ISBNScanner';
 import Button from '@/components/ui/Button';
@@ -111,7 +111,7 @@ export default function AddBookPage() {
     <div className="max-w-2xl">
       <div className="flex items-center gap-3 mb-6">
         <Link href="/catalogue" className="text-slate/40 hover:text-slate transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft weight="light" className="w-5 h-5" />
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-slate">Add Book</h1>
@@ -170,7 +170,7 @@ export default function AddBookPage() {
         {!form.cover_url && form.title && (
           <div className="flex items-center gap-4 bg-cream rounded-2xl p-4">
             <div className="w-14 h-20 bg-steel/10 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-steel/40" />
+              <BookOpen weight="light" className="w-6 h-6 text-steel/40" />
             </div>
             <div>
               <p className="font-semibold text-slate text-sm">{form.title}</p>

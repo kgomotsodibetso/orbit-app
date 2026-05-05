@@ -1,15 +1,15 @@
 import type { ElementType } from 'react';
 import Link from 'next/link';
 import {
-  BarChart3,
+  ChartBar,
   BookOpen,
-  ArrowLeftRight,
-  AlertCircle,
-  Users,
-  CheckCircle2,
+  ArrowsLeftRight,
+  WarningCircle,
+  UsersThree,
+  CheckCircle,
   FileText,
-  ClipboardList,
-} from 'lucide-react';
+  ClipboardText,
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 
