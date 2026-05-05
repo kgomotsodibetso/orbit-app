@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Orbit Library · Brand Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="deck-stage.js"></script>
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Brand tokens ── */
+:root {
+  --lavender: #A29FEC;
+  --lavender-light: #C4C0FB;
+  --steel: #4B8EBA;
+  --steel-light: #6AADD4;
+  --slate: #2C3A47;
+  --ink: #1C2830;
+  --golden: #F6B93B;
+  --golden-light: #FFD060;
+  --cream: #F0E5DF;
+  --cream-light: #F9F5F1;
+  --bg: #EDEAE6;
+  --white: #FFFFFF;
+  --f-sans: 'Montserrat', sans-serif;
+  --f-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+
+  /* Radius scale */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 9999px;
+}
+
+body { font-family: var(--f-sans); -webkit-font-smoothing: antialiased; background: #000; }
+
+/* ── Deck stage base ── */
+deck-stage { --slide-bg: var(--ink); }
+
+/* ── Shared slide styles ── */
+section {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--f-sans);
+  color: var(--ink);
+}
+
+/* Eyebrow label */
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+.eyebrow-light { color: var(--white); }
+.eyebrow-dark  { color: var(--ink); }
+
+/* Section number */
+.slide-num {
+  position: absolute;
+  bottom: 56px;
+  right: 80px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  opacity: 0.25;
+  font-family: var(--f-mono);
+}
+
+/* Gradient mark reusable SVG wrapper */
+.mark { display: inline-flex; flex-shrink: 0; }
+
+/* Code block */
+.code {
+  background: rgba(0,0,0,0.08);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  font-family: var(--f-mono);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.code-dark {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.82);
+}
+.code-key   { color: var(--lavender-light); }
+.code-val   { color: var(--golden); }
+.code-str   { color: #88D4A8; }
+
+/* Pill tag */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: var(--r-full);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.pill-blue   { background: rgba(75,142,186,0.15); color: var(--steel); }
+.pill-lav    { background: rgba(162,159,236,0.15); color: var(--lavender); }
+.pill-gold   { background: rgba(246,185,59,0.15);  color: #B8860B; }
+.pill-green  { background: rgba(80,200,140,0.13);  color: #2E8B57; }
+.pill-red    { background: rgba(220,80,80,0.13);   color: #B94040; }
+
+
+/* ══════════════════════════════════════════
+   SLIDE 01 — COVER
+══════════════════════════════════════════ */
+#s01 {
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 160px;
+}
+.s01-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+}
+.s01-title {
+  font-size: 96px;
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 1;
+  color: var(--white);
+}
+.s01-title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--lavender-light), var(--steel), var(--golden));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.s01-sub {
+  font-size: 22px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.5px;
+}
+.s01-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.s01-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cover noise texture overlay */
+#s01::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(75,142,186,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE 02 — LOGO & MARK
+══════════════════════════════════════════ */
+#s02 {
+  background: var(--bg);
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.s02-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  flex: 1;
+  margin-top: 48px;
+}
+.logo-stage {
+  border-radius: var(--r-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 32px;
+  padding: 48px;
+}
+.ls-light { background: #F5F1ED; }
+.ls-dark  { background: var(--ink); }
+.logo-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.35;
+}
+.logo-label-dark { color: var(--white); }
+.logo-label-light { color: var(--ink); }
+
+.logo-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+}
+.spec-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.spec-num {
+  font-size: 13px;
+  font-weight: 800;
+  font-family: var(--f-mono);
+  color: var(--steel);
+  width: 28px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.spec-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.spec-desc {
+  font-size: 15px;
+  font-weight: 500;
+  color: #8a9aa6;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE 03 — COLOR
+══════════════════════════════════════════ */
+#s03 {
+  background: var(--ink);
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+}
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+  flex: 1;
+}
+.color-card {
+  border-radius: var(--r-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.color-swatch {
+  flex: 1;
+  min-height: 220px;
+  position: relative;
+}
+.color-info {
+  padding: 24px;
+  background: rgba(255,255,255,0.05);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.color-name {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.color-hex {
+  font-size: 14px;
+  font-family: var(--f-mono);
+  color: rgba(255,255,255,0.42);
+  margin-bottom: 10px;
+}
+.color-use {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.5;
+}
+.color-role {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+}
+
+/* ══════════════════════════════════════════
+   SLIDE 04 — TYPOGRAPHY
+══════════════════════════════════════════ */
+#s04 {
+  background: var(--cream-light);
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+}
+.type-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 48px;
+  flex: 1;
+  margin-top: 48px;
+}
+.type-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  justify-content: center;
+}
+.type-sample {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(28,40,48,0.08);
+}
+.type-sample:last-child { border-bottom: none; }
+.type-meta {
+  width: 160px;
+  flex-shrink: 0;
+}
+.type-role  { font-size: 12px; font-weight: 700; color: var(--steel); letter-spacing: 1.5px; text-transform: uppercase; }
+.type-spec  { font-size: 12px; font-weight: 500; color: #9aabb8; margin-top: 4px; font-family: var(--f-mono); }
+.type-right { display: flex; flex-direction: column; gap: 24px; }
+.type-scale-card {
+  background: white;
+  border-radius: var(--r-lg);
+  padding: 28px 32px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.scale-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0EAE4;
+}
+.scale-row:last-child { border-bottom: none; }
+.scale-size { font-family: var(--f-mono); font-size: 13px; color: var(--steel); width: 70px; flex-shrink: 0; }
+.scale-name { font-size: 13px; font-weight: 700; color: var(--ink); width: 80px; }
+.scale-preview { font-weight: 600; color: var(--ink); }
+
+/* ══════════════════════════════════════════
+   SLIDE 05 — SPACING & LAYOUT
+══════════════════════════════════════════ */
+#s05 {
+  background: var(--white);
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+}
+.spacing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  flex: 1;
+  margin-top: 48px;
+}
+.spacing-table {
+  background: var(--cream-light);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.sp-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 28px;
+  border-bottom: 1px solid rgba(28,40,48,0.06);
+}
+.sp-row:last-child { border-bottom: none; }
+.sp-bar-wrap { display: flex; align-items: center; gap: 12px; flex: 1; }
+.sp-bar { height: 8px; border-radius: var(--r-full); background: linear-gradient(90deg, var(--lavender-light), var(--steel)); }
+.sp-token { font-family: var(--f-mono); font-size: 14px; color: var(--steel); width: 64px; }
+.sp-px    { font-family: var(--f-mono); font-size: 14px; color: #9aabb8; width: 44px; }
+.sp-name  { font-size: 14px; font-weight: 600; color: var(--ink); width: 120px; }
+
+.radius-card {
+  background: var(--cream-light);
+  border-radius: var(--r-xl);
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.r-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.r-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.r-box  { background: var(--steel); opacity: 0.18; width: 64px; height: 64px; }
+.r-label { font-size: 12px; font-weight: 700; color: #9aabb8; text-align: center; font-family: var(--f-mono); }
+
+/* ══════════════════════════════════════════
+   SLIDE 06 — COMPONENTS
+══════════════════════════════════════════ */
+#s06 {
+  background: #F5F1ED;
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+}
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 28px;
+  flex: 1;
+  margin-top: 48px;
+}
+.comp-card {
+  background: white;
+  border-radius: var(--r-xl);
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.comp-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.35;
+  margin-bottom: 4px;
+}
+
+/* Buttons */
+.btn-group { display: flex; flex-direction: column; gap: 14px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--r-full);
+  font-family: var(--f-sans);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--lavender-light), var(--steel));
+  color: white;
+  box-shadow: 0 4px 16px rgba(75,142,186,0.35);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid rgba(28,40,48,0.15);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--steel);
+  border: none;
+  padding: 14px 0;
+}
+.btn-danger {
+  background: #FDEAEA;
+  color: #C43C3C;
+}
+.btn-sm { padding: 9px 20px; font-size: 13px; }
+.btn-lg { padding: 18px 36px; font-size: 17px; }
+
+/* Inputs */
+.input-group { display: flex; flex-direction: column; gap: 14px; }
+.input-wrap  { display: flex; flex-direction: column; gap: 6px; }
+.input-label { font-size: 12px; font-weight: 700; color: #8a9aa6; letter-spacing: 0.5px; }
+.input-field {
+  padding: 13px 16px;
+  border-radius: var(--r-md);
+  border: 1.5px solid rgba(28,40,48,0.12);
+  font-family: var(--f-sans);
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+}
+.input-field:focus { border-color: var(--steel); box-shadow: 0 0 0 3px rgba(75,142,186,0.15); }
+.input-field.input-error { border-color: #E05050; box-shadow: 0 0 0 3px rgba(224,80,80,0.1); }
+.input-hint { font-size: 12px; font-weight: 500; color: #9aabb8; }
+.input-hint.err { color: #D04040; }
+
+/* Cards */
+.card-demo { display: flex; flex-direction: column; gap: 14px; }
+.book-card {
+  background: white;
+  border-radius: var(--r-lg);
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+  border: 1.5px solid rgba(28,40,48,0.06);
+}
+.book-spine {
+  width: 48px;
+  height: 64px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.book-info { flex: 1; }
+.book-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 3px; }
+.book-author { font-size: 13px; color: #9aabb8; font-weight: 500; }
+.book-badges { display: flex; gap: 6px; margin-top: 8px; }
+.badge {
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 700;
+}
+.badge-available { background: rgba(80,180,120,0.12); color: #2E8B57; }
+.badge-ref       { background: rgba(162,159,236,0.15); color: #6060C0; }
+.badge-new       { background: rgba(246,185,59,0.15); color: #9A6A00; }
+
+/* Nav */
+.nav-demo {
+  background: var(--ink);
+  border-radius: var(--r-lg);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  gap: 0;
+}
+.nav-logo-wrap { display: flex; align-items: center; gap: 10px; margin-right: 32px; }
+.nav-logo-name { font-size: 17px; font-weight: 900; color: var(--white); letter-spacing: -0.5px; }
+.nav-item {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.42);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.nav-item.active { background: rgba(255,255,255,0.1); color: var(--white); }
+.nav-spacer { flex: 1; }
+.nav-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-full);
+  background: linear-gradient(135deg, var(--lavender-light), var(--steel));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: white;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE 07 — DO'S AND DON'TS
+══════════════════════════════════════════ */
+#s07 {
+  background: var(--ink);
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+}
+.dd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  flex: 1;
+  margin-top: 48px;
+}
+.dd-col { display: flex; flex-direction: column; gap: 20px; }
+.dd-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+.dd-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.dd-icon-do   { background: rgba(80,180,120,0.15); }
+.dd-icon-dont { background: rgba(220,80,80,0.15); }
+.dd-head-text { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+.dd-head-do   { color: #6ECF9A; }
+.dd-head-dont { color: #E07070; }
+
+.dd-item {
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.dd-do-item   { background: rgba(80,180,120,0.06); border: 1px solid rgba(80,180,120,0.15); }
+.dd-dont-item { background: rgba(220,80,80,0.06);  border: 1px solid rgba(220,80,80,0.12); }
+.dd-marker { font-size: 16px; margin-top: 2px; flex-shrink: 0; }
+.dd-text { font-size: 16px; font-weight: 600; line-height: 1.6; }
+.dd-text-do   { color: rgba(255,255,255,0.82); }
+.dd-text-dont { color: rgba(255,255,255,0.65); }
+.dd-text strong { font-weight: 800; }
+.dd-text-do strong   { color: #6ECF9A; }
+.dd-text-dont strong { color: #E07070; }
+
+/* Slide header pattern */
+.slide-header { display: flex; flex-direction: column; gap: 10px; }
+.slide-header h2 {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+.slide-header h2.light { color: var(--white); }
+.slide-header h2.dark  { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<deck-stage>
+
+  <!-- ════════════════════════════════════
+       01 — COVER
+  ════════════════════════════════════ -->
+  <section id="s01" data-screen-label="01 Cover">
+    <div class="s01-left">
+      <div class="eyebrow eyebrow-light">Internal · v1.0 · 2026</div>
+      <div class="s01-title">
+        <em>Brand</em><br/>Guide
+      </div>
+      <div class="s01-sub">Orbit Library Management System<br/>Design language, components &amp; usage rules</div>
+      <div class="s01-meta">
+        <span class="pill pill-lav">Logo</span>
+        <span class="pill pill-blue">Color</span>
+        <span class="pill pill-gold">Type</span>
+        <span class="pill pill-green">Components</span>
+      </div>
+    </div>
+    <div class="s01-right">
+      <!-- Large hero mark -->
+      <svg width="520" height="520" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cov-body" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#C4C0FB"/>
+            <stop offset="38%"  stop-color="#4B8EBA"/>
+            <stop offset="100%" stop-color="#2C3A47"/>
+          </linearGradient>
+          <linearGradient id="cov-arc" x1="10" y1="35" x2="150" y2="125" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="rgba(255,255,255,0.9)"/>
+            <stop offset="40%"  stop-color="#FFD060"/>
+            <stop offset="100%" stop-color="rgba(255,208,96,0.3)"/>
+          </linearGradient>
+          <radialGradient id="cov-inner" cx="40%" cy="36%" r="62%">
+            <stop offset="0%"   stop-color="#243240"/>
+            <stop offset="100%" stop-color="#1C2830"/>
+          </radialGradient>
+        </defs>
+        <circle cx="80" cy="80" r="76" fill="url(#cov-body)"/>
+        <circle cx="80" cy="80" r="44" fill="url(#cov-inner)"/>
+        <ellipse cx="80" cy="80" rx="92" ry="23" stroke="url(#cov-arc)" stroke-width="7.5" fill="none" stroke-linecap="round" transform="rotate(-40 80 80)"/>
+        <circle cx="140" cy="42" r="9.5" fill="#FFD060"/>
+        <circle cx="138" cy="40" r="3.8" fill="rgba(255,255,255,0.55)"/>
+      </svg>
+    </div>
+    <div class="slide-num" style="color:white;">01 / 07</div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       02 — LOGO & MARK
+  ════════════════════════════════════ -->
+  <section id="s02" data-screen-label="02 Logo">
+    <div class="slide-header">
+      <div class="eyebrow eyebrow-dark">02 — Logo &amp; Mark</div>
+      <h2 class="dark">The Orbit Mark</h2>
+    </div>
+    <div class="s02-grid">
+      <!-- Left: mark on light + dark -->
+      <div style="display:flex; flex-direction:column; gap:24px;">
+        <div class="logo-stage ls-light" style="flex-direction:row; gap:40px; justify-content:space-around;">
+          <!-- Mark only -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+            <svg width="120" height="120" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="l2a-body" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="38%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#1C2830"/></linearGradient>
+                <linearGradient id="l2a-arc" x1="10" y1="35" x2="150" y2="125" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(255,255,255,0.95)"/><stop offset="40%" stop-color="#F6B93B"/><stop offset="100%" stop-color="rgba(246,185,59,0.4)"/></linearGradient>
+                <radialGradient id="l2a-inner" cx="40%" cy="36%" r="62%"><stop offset="0%" stop-color="#F9F5F1"/><stop offset="100%" stop-color="#EDE6DF"/></radialGradient>
+              </defs>
+              <circle cx="80" cy="80" r="76" fill="url(#l2a-body)"/>
+              <circle cx="80" cy="80" r="44" fill="url(#l2a-inner)"/>
+              <ellipse cx="80" cy="80" rx="92" ry="23" stroke="url(#l2a-arc)" stroke-width="7.5" fill="none" stroke-linecap="round" transform="rotate(-40 80 80)"/>
+              <circle cx="140" cy="42" r="9.5" fill="#F6B93B"/>
+              <circle cx="138" cy="40" r="3.8" fill="rgba(255,255,255,0.65)"/>
+            </svg>
+            <div class="logo-label logo-label-light">Mark only</div>
+          </div>
+          <!-- Horizontal lockup -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;justify-content:center;">
+            <div style="display:flex;align-items:center;gap:18px;">
+              <svg width="72" height="72" viewBox="0 0 160 160" fill="none">
+                <defs>
+                  <linearGradient id="l2b-body" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="38%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#1C2830"/></linearGradient>
+                  <linearGradient id="l2b-arc" x1="10" y1="35" x2="150" y2="125" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(255,255,255,0.95)"/><stop offset="40%" stop-color="#F6B93B"/><stop offset="100%" stop-color="rgba(246,185,59,0.4)"/></linearGradient>
+                  <radialGradient id="l2b-inner" cx="40%" cy="36%" r="62%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#F5F1ED"/></radialGradient>
+                </defs>
+                <circle cx="80" cy="80" r="76" fill="url(#l2b-body)"/>
+                <circle cx="80" cy="80" r="44" fill="url(#l2b-inner)"/>
+                <ellipse cx="80" cy="80" rx="92" ry="23" stroke="url(#l2b-arc)" stroke-width="7.5" fill="none" stroke-linecap="round" transform="rotate(-40 80 80)"/>
+                <circle cx="140" cy="42" r="9.5" fill="#F6B93B"/>
+                <circle cx="138" cy="40" r="3.8" fill="rgba(255,255,255,0.65)"/>
+              </svg>
+              <div>
+                <div style="font-family:var(--f-sans);font-weight:900;font-size:36px;color:var(--ink);letter-spacing:-1px;">Orbit</div>
+                <div style="font-family:var(--f-sans);font-weight:600;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#9aabb8;margin-top:4px;">Library</div>
+              </div>
+            </div>
+            <div class="logo-label logo-label-light">Horizontal</div>
+          </div>
+        </div>
+
+        <div class="logo-stage ls-dark" style="flex-direction:row; gap:40px; justify-content:space-around;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+            <svg width="100" height="100" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="l2c-body" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="38%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#2C3A47"/></linearGradient>
+                <linearGradient id="l2c-arc" x1="10" y1="35" x2="150" y2="125" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(255,255,255,0.9)"/><stop offset="40%" stop-color="#FFD060"/><stop offset="100%" stop-color="rgba(255,208,96,0.35)"/></linearGradient>
+                <radialGradient id="l2c-inner" cx="40%" cy="36%" r="62%"><stop offset="0%" stop-color="#26343E"/><stop offset="100%" stop-color="#1C2830"/></radialGradient>
+              </defs>
+              <circle cx="80" cy="80" r="76" fill="url(#l2c-body)"/>
+              <circle cx="80" cy="80" r="44" fill="url(#l2c-inner)"/>
+              <ellipse cx="80" cy="80" rx="92" ry="23" stroke="url(#l2c-arc)" stroke-width="7.5" fill="none" stroke-linecap="round" transform="rotate(-40 80 80)"/>
+              <circle cx="140" cy="42" r="9.5" fill="#FFD060"/>
+              <circle cx="138" cy="40" r="3.8" fill="rgba(255,255,255,0.55)"/>
+            </svg>
+            <div class="logo-label logo-label-dark">On dark</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;justify-content:center;">
+            <div style="display:flex;align-items:center;gap:18px;">
+              <svg width="56" height="56" viewBox="0 0 160 160" fill="none">
+                <defs>
+                  <linearGradient id="l2d-body" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="38%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#2C3A47"/></linearGradient>
+                  <linearGradient id="l2d-arc" x1="10" y1="35" x2="150" y2="125" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(255,255,255,0.9)"/><stop offset="40%" stop-color="#FFD060"/><stop offset="100%" stop-color="rgba(255,208,96,0.35)"/></linearGradient>
+                  <radialGradient id="l2d-inner" cx="40%" cy="36%" r="62%"><stop offset="0%" stop-color="#2C3A47"/><stop offset="100%" stop-color="#2C3A47"/></radialGradient>
+                </defs>
+                <circle cx="80" cy="80" r="76" fill="url(#l2d-body)"/>
+                <circle cx="80" cy="80" r="44" fill="url(#l2d-inner)"/>
+                <ellipse cx="80" cy="80" rx="92" ry="23" stroke="url(#l2d-arc)" stroke-width="7.5" fill="none" stroke-linecap="round" transform="rotate(-40 80 80)"/>
+                <circle cx="140" cy="42" r="9.5" fill="#FFD060"/>
+              </svg>
+              <div>
+                <div style="font-family:var(--f-sans);font-weight:900;font-size:30px;color:var(--cream);letter-spacing:-1px;">Orbit</div>
+                <div style="font-family:var(--f-sans);font-weight:600;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(240,229,223,0.38);margin-top:3px;">Library</div>
+              </div>
+            </div>
+            <div class="logo-label logo-label-dark">On dark</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: specs -->
+      <div class="logo-specs">
+        <div class="spec-item">
+          <div class="spec-num">01</div>
+          <div>
+            <div class="spec-title">Gradient Body</div>
+            <div class="spec-desc">Lavender #C4C0FB → Steel #4B8EBA → Ink #1C2830 — diagonal 135°. Never replace with flat color.</div>
+          </div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-num">02</div>
+          <div>
+            <div class="spec-title">Orbit Arc</div>
+            <div class="spec-desc">White → Golden gradient ellipse at −40° rotation. Represents orbital motion. Stroke weight: 7.5px at 160px canvas.</div>
+          </div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-num">03</div>
+          <div>
+            <div class="spec-title">Golden Dot</div>
+            <div class="spec-desc">#F6B93B, 9.5px radius. Always sits at the arc tip — top right quadrant. It's the anchor and the accent.</div>
+          </div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-num">04</div>
+          <div>
+            <div class="spec-title">Clear Space</div>
+            <div class="spec-desc">Minimum clear space = ½ the mark radius on all sides. Never place competing marks within this zone.</div>
+          </div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-num">05</div>
+          <div>
+            <div class="spec-title">Minimum Size</div>
+            <div class="spec-desc">Mark only: 24px. Horizontal lockup: 32px mark height. Below 24px, use favicon-optimised flat version.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">02 / 07</div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       03 — COLOR
+  ════════════════════════════════════ -->
+  <section id="s03" data-screen-label="03 Color">
+    <div class="slide-header">
+      <div class="eyebrow eyebrow-light">03 — Color</div>
+      <h2 class="light">Brand Palette</h2>
+    </div>
+    <div class="color-grid">
+
+      <div class="color-card">
+        <div class="color-swatch" style="background: linear-gradient(135deg,#C4C0FB,#A29FEC);"></div>
+        <div class="color-info">
+          <div class="color-name">Lavender</div>
+          <div class="color-hex">#A29FEC · #C4C0FB</div>
+          <div class="color-use">Primary gradient start. Accent on interactive states.</div>
+          <div class="color-role">--lavender</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background: linear-gradient(135deg,#6AADD4,#4B8EBA);"></div>
+        <div class="color-info">
+          <div class="color-name">Steel</div>
+          <div class="color-hex">#4B8EBA · #6AADD4</div>
+          <div class="color-use">Links, focus rings, info badges, gradient midpoint.</div>
+          <div class="color-role">--steel</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background: linear-gradient(135deg,#3D5060,#1C2830);"></div>
+        <div class="color-info">
+          <div class="color-name">Ink / Slate</div>
+          <div class="color-hex">#1C2830 · #2C3A47</div>
+          <div class="color-use">Primary text, dark backgrounds, nav. Gradient end.</div>
+          <div class="color-role">--ink / --slate</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background: linear-gradient(135deg,#FFD060,#F6B93B);"></div>
+        <div class="color-info">
+          <div class="color-name">Golden</div>
+          <div class="color-hex">#F6B93B · #FFD060</div>
+          <div class="color-use">Orbit dot accent, warnings, highlights. Never on dark text.</div>
+          <div class="color-role">--golden</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background: linear-gradient(135deg,#F9F5F1,#F0E5DF);"></div>
+        <div class="color-info">
+          <div class="color-name">Cream</div>
+          <div class="color-hex">#F0E5DF · #F9F5F1</div>
+          <div class="color-use">Light backgrounds, inner mark cutout, page canvas.</div>
+          <div class="color-role">--cream</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Token row -->
+    <div style="margin-top:28px; display:flex; gap:16px; flex-wrap:wrap;">
+      <div class="code code-dark" style="flex:1; font-size:14px;">
+        <span class="code-key">--lavender</span><span style="color:rgba(255,255,255,0.3)">:</span> <span class="code-str">#A29FEC</span>;<br/>
+        <span class="code-key">--steel</span><span style="color:rgba(255,255,255,0.3)">:</span> <span class="code-str">#4B8EBA</span>;<br/>
+        <span class="code-key">--ink</span><span style="color:rgba(255,255,255,0.3)">:</span> <span class="code-str">#1C2830</span>;
+      </div>
+      <div class="code code-dark" style="flex:1; font-size:14px;">
+        <span class="code-key">--golden</span><span style="color:rgba(255,255,255,0.3)">:</span> <span class="code-str">#F6B93B</span>;<br/>
+        <span class="code-key">--cream</span><span style="color:rgba(255,255,255,0.3)">:</span> <span class="code-str">#F0E5DF</span>;<br/>
+        <span class="code-key">--slate</span><span style="color:rgba(255,255,255,0.3)">:</span> <span class="code-str">#2C3A47</span>;
+      </div>
+      <div class="code code-dark" style="flex:1.5; font-size:14px;">
+        <span class="code-key">--gradient-primary</span><span style="color:rgba(255,255,255,0.3)">:</span><br/>
+        &nbsp;&nbsp;<span class="code-val">linear-gradient</span>(<span class="code-str">135deg</span>, <span class="code-str">#C4C0FB</span>, <span class="code-str">#4B8EBA</span>, <span class="code-str">#1C2830</span>);
+      </div>
+    </div>
+
+    <div class="slide-num" style="color:white;">03 / 07</div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       04 — TYPOGRAPHY
+  ════════════════════════════════════ -->
+  <section id="s04" data-screen-label="04 Typography">
+    <div class="slide-header">
+      <div class="eyebrow eyebrow-dark">04 — Typography</div>
+      <h2 class="dark">Type System</h2>
+    </div>
+    <div class="type-grid">
+      <div class="type-showcase">
+        <div class="type-sample">
+          <div class="type-meta">
+            <div class="type-role">Display</div>
+            <div class="type-spec">96px / 900 / −3px</div>
+          </div>
+          <div style="font-size:76px; font-weight:900; letter-spacing:-2.5px; color:var(--ink); line-height:1;">Orbit</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-meta">
+            <div class="type-role">Heading 1</div>
+            <div class="type-spec">48px / 900 / −1.5px</div>
+          </div>
+          <div style="font-size:48px; font-weight:900; letter-spacing:-1.5px; color:var(--ink); line-height:1;">Library Catalog</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-meta">
+            <div class="type-role">Heading 2</div>
+            <div class="type-spec">32px / 800 / −0.8px</div>
+          </div>
+          <div style="font-size:32px; font-weight:800; letter-spacing:-0.8px; color:var(--ink); line-height:1.1;">Browse Collections</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-meta">
+            <div class="type-role">Body</div>
+            <div class="type-spec">16px / 500 / 0px</div>
+          </div>
+          <div style="font-size:16px; font-weight:500; color:#5a6a74; line-height:1.7; max-width:520px;">Use Montserrat Medium for body copy. Line height 1.7 for readability. Never go below 14px for paragraph text.</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-meta">
+            <div class="type-role">Label / UI</div>
+            <div class="type-spec">12px / 700 / 3px UC</div>
+          </div>
+          <div style="font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--steel);">Section Label</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-meta">
+            <div class="type-role">Mono / Code</div>
+            <div class="type-spec">JetBrains Mono / 14px</div>
+          </div>
+          <div style="font-family:var(--f-mono); font-size:16px; color:var(--slate);">#A29FEC · ISBN-13</div>
+        </div>
+      </div>
+
+      <div class="type-right">
+        <div class="type-scale-card">
+          <div style="font-size:14px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--ink); opacity:0.3; margin-bottom:12px;">Scale</div>
+          <div class="scale-row"><span class="scale-size">96px</span><span class="scale-name">Display</span><span class="scale-preview" style="font-size:36px;font-weight:900;letter-spacing:-1px;">Aa</span></div>
+          <div class="scale-row"><span class="scale-size">48px</span><span class="scale-name">H1</span><span class="scale-preview" style="font-size:30px;font-weight:900;">Aa</span></div>
+          <div class="scale-row"><span class="scale-size">32px</span><span class="scale-name">H2</span><span class="scale-preview" style="font-size:24px;font-weight:800;">Aa</span></div>
+          <div class="scale-row"><span class="scale-size">24px</span><span class="scale-name">H3</span><span class="scale-preview" style="font-size:20px;font-weight:700;">Aa</span></div>
+          <div class="scale-row"><span class="scale-size">18px</span><span class="scale-name">H4</span><span class="scale-preview" style="font-size:17px;font-weight:700;">Aa</span></div>
+          <div class="scale-row"><span class="scale-size">16px</span><span class="scale-name">Body</span><span class="scale-preview" style="font-size:15px;font-weight:500;">Aa</span></div>
+          <div class="scale-row"><span class="scale-size">14px</span><span class="scale-name">Small</span><span class="scale-preview" style="font-size:13px;font-weight:500;">Aa</span></div>
+          <div class="scale-row"><span class="scale-size">12px</span><span class="scale-name">Label</span><span class="scale-preview" style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">AA</span></div>
+        </div>
+
+        <div class="code" style="font-size:14px;">
+          <span class="code-key">font-family</span>: <span class="code-str">'Montserrat'</span>, sans-serif;<br/>
+          <span style="color:#9aabb8;">/* Weights in use */</span><br/>
+          <span class="code-key">font-weight</span>: <span class="code-val">500</span> | <span class="code-val">600</span> | <span class="code-val">700</span> | <span class="code-val">800</span> | <span class="code-val">900</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">04 / 07</div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       05 — SPACING & LAYOUT
+  ════════════════════════════════════ -->
+  <section id="s05" data-screen-label="05 Spacing">
+    <div class="slide-header">
+      <div class="eyebrow eyebrow-dark">05 — Spacing &amp; Layout</div>
+      <h2 class="dark">Space &amp; Radius</h2>
+    </div>
+    <div class="spacing-grid">
+      <!-- Spacing table -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:0.3;">Spacing Scale</div>
+        <div class="spacing-table">
+          <div class="sp-row"><span class="sp-token">--sp-1</span><span class="sp-px">4px</span><span class="sp-name">Micro</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:8px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-2</span><span class="sp-px">8px</span><span class="sp-name">XSmall</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:16px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-3</span><span class="sp-px">12px</span><span class="sp-name">Small</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:24px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-4</span><span class="sp-px">16px</span><span class="sp-name">Base</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:32px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-5</span><span class="sp-px">24px</span><span class="sp-name">Medium</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:48px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-6</span><span class="sp-px">32px</span><span class="sp-name">Large</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:64px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-7</span><span class="sp-px">48px</span><span class="sp-name">XLarge</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:96px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-8</span><span class="sp-px">64px</span><span class="sp-name">2XL</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:128px;"></div></div></div>
+          <div class="sp-row"><span class="sp-token">--sp-9</span><span class="sp-px">96px</span><span class="sp-name">3XL</span><div class="sp-bar-wrap"><div class="sp-bar" style="width:160px;"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Radius + Grid -->
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div style="font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:0.3;">Border Radius</div>
+        <div class="radius-card">
+          <div class="r-grid">
+            <div class="r-item"><div class="r-box" style="border-radius:6px;opacity:1;background:linear-gradient(135deg,var(--lavender-light),var(--steel));"></div><div class="r-label">--r-sm<br/>6px</div></div>
+            <div class="r-item"><div class="r-box" style="border-radius:12px;opacity:1;background:linear-gradient(135deg,var(--lavender-light),var(--steel));"></div><div class="r-label">--r-md<br/>12px</div></div>
+            <div class="r-item"><div class="r-box" style="border-radius:20px;opacity:1;background:linear-gradient(135deg,var(--lavender-light),var(--steel));"></div><div class="r-label">--r-lg<br/>20px</div></div>
+            <div class="r-item"><div class="r-box" style="border-radius:28px;opacity:1;background:linear-gradient(135deg,var(--lavender-light),var(--steel));"></div><div class="r-label">--r-xl<br/>28px</div></div>
+            <div class="r-item"><div class="r-box" style="border-radius:9999px;width:80px;height:40px;opacity:1;background:linear-gradient(135deg,var(--lavender-light),var(--steel));"></div><div class="r-label">--r-full<br/>pill</div></div>
+            <div class="r-item"><div class="r-box" style="border-radius:50%;opacity:1;background:linear-gradient(135deg,var(--golden-light),var(--golden));"></div><div class="r-label">circle<br/>50%</div></div>
+          </div>
+        </div>
+
+        <div class="code" style="font-size:14px;">
+          <span style="color:#9aabb8;">/* 4px base unit */</span><br/>
+          <span class="code-key">--sp-N</span>: <span class="code-val">N × 4px</span>  (sp-1=4, sp-2=8...)<br/>
+          <span class="code-key">grid-gap</span>: always use <span class="code-val">--sp-*</span> tokens<br/>
+          <span class="code-key">padding</span>: <span class="code-val">--sp-4</span> (16) to <span class="code-val">--sp-6</span> (32) on cards
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">05 / 07</div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       06 — COMPONENTS
+  ════════════════════════════════════ -->
+  <section id="s06" data-screen-label="06 Components">
+    <div class="slide-header">
+      <div class="eyebrow eyebrow-dark">06 — Components</div>
+      <h2 class="dark">UI Components</h2>
+    </div>
+    <div class="comp-grid">
+
+      <!-- Buttons -->
+      <div class="comp-card">
+        <div class="comp-title">Buttons</div>
+        <div class="btn-group">
+          <button class="btn btn-primary">Search Catalog</button>
+          <button class="btn btn-secondary">Borrow Book</button>
+          <button class="btn btn-danger btn-sm">Remove Hold</button>
+          <button class="btn btn-ghost">View Details →</button>
+        </div>
+        <div class="code" style="font-size:13px; margin-top:auto;">
+          <span class="code-key">primary</span>: gradient + shadow<br/>
+          <span class="code-key">secondary</span>: border + transparent<br/>
+          <span class="code-key">ghost</span>: text only, steel color<br/>
+          <span class="code-key">radius</span>: <span class="code-val">--r-full</span>
+        </div>
+      </div>
+
+      <!-- Inputs + Nav -->
+      <div class="comp-card">
+        <div class="comp-title">Inputs</div>
+        <div class="input-group">
+          <div class="input-wrap">
+            <div class="input-label">Search books</div>
+            <input class="input-field" type="text" value="The Design of Everyday Things" readonly/>
+            <div class="input-hint">Press ⌘K to open quick search</div>
+          </div>
+          <div class="input-wrap">
+            <div class="input-label">Member ID</div>
+            <input class="input-field input-error" type="text" value="LIB-0042X" readonly/>
+            <div class="input-hint err">Member ID not found in system</div>
+          </div>
+        </div>
+        <div class="code" style="font-size:13px; margin-top:auto;">
+          <span class="code-key">border</span>: <span class="code-val">1.5px</span> rgba(28,40,48,0.12)<br/>
+          <span class="code-key">focus</span>: steel + <span class="code-val">3px</span> ring<br/>
+          <span class="code-key">radius</span>: <span class="code-val">--r-md</span> (12px)
+        </div>
+      </div>
+
+      <!-- Cards + Nav -->
+      <div class="comp-card">
+        <div class="comp-title">Cards &amp; Nav</div>
+
+        <div class="nav-demo">
+          <div class="nav-logo-wrap">
+            <svg width="24" height="24" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="nav-b" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="38%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#2C3A47"/></linearGradient>
+                <linearGradient id="nav-a" x1="10" y1="35" x2="150" y2="125" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(255,255,255,0.9)"/><stop offset="40%" stop-color="#FFD060"/><stop offset="100%" stop-color="rgba(255,208,96,0.3)"/></linearGradient>
+              </defs>
+              <circle cx="80" cy="80" r="76" fill="url(#nav-b)"/>
+              <circle cx="80" cy="80" r="44" fill="#1C2830"/>
+              <ellipse cx="80" cy="80" rx="92" ry="23" stroke="url(#nav-a)" stroke-width="7.5" fill="none" stroke-linecap="round" transform="rotate(-40 80 80)"/>
+              <circle cx="140" cy="42" r="9.5" fill="#FFD060"/>
+            </svg>
+            <div class="nav-logo-name">Orbit</div>
+          </div>
+          <div class="nav-item active">Catalog</div>
+          <div class="nav-item">My Loans</div>
+          <div class="nav-item">Reserve</div>
+          <div class="nav-spacer"></div>
+          <div class="nav-avatar">TK</div>
+        </div>
+
+        <div class="card-demo">
+          <div class="book-card">
+            <div class="book-spine" style="background:linear-gradient(135deg,var(--lavender-light),var(--steel));"></div>
+            <div class="book-info">
+              <div class="book-title">The Design of Everyday Things</div>
+              <div class="book-author">Don Norman · 2013</div>
+              <div class="book-badges">
+                <span class="badge badge-available">Available</span>
+                <span class="badge badge-ref">Reference</span>
+              </div>
+            </div>
+          </div>
+          <div class="book-card">
+            <div class="book-spine" style="background:linear-gradient(135deg,var(--golden-light),var(--golden));"></div>
+            <div class="book-info">
+              <div class="book-title">Thinking, Fast and Slow</div>
+              <div class="book-author">Daniel Kahneman · 2011</div>
+              <div class="book-badges">
+                <span class="badge badge-new">New Arrival</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">06 / 07</div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       07 — DO'S AND DON'TS
+  ════════════════════════════════════ -->
+  <section id="s07" data-screen-label="07 Dos and Donts">
+    <div class="slide-header">
+      <div class="eyebrow eyebrow-light">07 — Usage Rules</div>
+      <h2 class="light">Do's &amp; Don'ts</h2>
+    </div>
+    <div class="dd-grid">
+
+      <div class="dd-col">
+        <div class="dd-header">
+          <div class="dd-icon dd-icon-do">✓</div>
+          <div class="dd-head-text dd-head-do">Do</div>
+        </div>
+        <div class="dd-item dd-do-item">
+          <div class="dd-marker">✓</div>
+          <div class="dd-text dd-text-do">Always use the <strong>gradient body</strong> — Lavender → Steel → Ink at 135°. The mark only works with this gradient.</div>
+        </div>
+        <div class="dd-item dd-do-item">
+          <div class="dd-marker">✓</div>
+          <div class="dd-text dd-text-do">Use the mark at <strong>minimum 24px</strong>. Below 24px, use the simplified favicon version without the arc detail.</div>
+        </div>
+        <div class="dd-item dd-do-item">
+          <div class="dd-marker">✓</div>
+          <div class="dd-text dd-text-do">Pair the mark with <strong>Montserrat 900</strong> for the wordmark. Maintain −1px letter-spacing at 24px+.</div>
+        </div>
+        <div class="dd-item dd-do-item">
+          <div class="dd-marker">✓</div>
+          <div class="dd-text dd-text-do">Use <strong>Golden #F6B93B</strong> exclusively for the orbit dot and highlight accents — never as a text color on white.</div>
+        </div>
+        <div class="dd-item dd-do-item">
+          <div class="dd-marker">✓</div>
+          <div class="dd-text dd-text-do">Apply <strong>--r-full</strong> (pill) radius for all primary action buttons. Use --r-lg for cards and containers.</div>
+        </div>
+      </div>
+
+      <div class="dd-col">
+        <div class="dd-header">
+          <div class="dd-icon dd-icon-dont">✕</div>
+          <div class="dd-head-text dd-head-dont">Don't</div>
+        </div>
+        <div class="dd-item dd-dont-item">
+          <div class="dd-marker">✕</div>
+          <div class="dd-text dd-text-dont">Never replace the gradient with a <strong>flat single color</strong> fill — not even the brand colors individually.</div>
+        </div>
+        <div class="dd-item dd-dont-item">
+          <div class="dd-marker">✕</div>
+          <div class="dd-text dd-text-dont">Never <strong>rotate, skew, stretch, or add drop shadows</strong> to the mark. The orbit arc angle is fixed at −40°.</div>
+        </div>
+        <div class="dd-item dd-dont-item">
+          <div class="dd-marker">✕</div>
+          <div class="dd-text dd-text-dont">Don't place the mark on <strong>busy backgrounds</strong> or images without a clear zone. Ensure contrast ≥ 3:1.</div>
+        </div>
+        <div class="dd-item dd-dont-item">
+          <div class="dd-marker">✕</div>
+          <div class="dd-text dd-text-dont">Don't use <strong>more than two accent colors</strong> on a single surface. Lavender and Golden together — not all five.</div>
+        </div>
+        <div class="dd-item dd-dont-item">
+          <div class="dd-marker">✕</div>
+          <div class="dd-text dd-text-dont">Never use <strong>system fonts or Arial</strong> in any designed surface. Montserrat must be loaded for all UI text.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="slide-num" style="color:white;">07 / 07</div>
+  </section>
+
+</deck-stage>
+
+</body>
+</html>

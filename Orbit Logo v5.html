@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Orbit Library · Logo v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --steel:    #4B8EBA;
+  --golden:   #F6B93B;
+  --lavender: #A29FEC;
+  --cream:    #F0E5DF;
+  --slate:    #2C3A47;
+  --ink:      #1C2830;
+  --bg:       #EDEAE6;
+  --f: 'Montserrat', sans-serif;
+}
+body {
+  font-family: var(--f);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+.page { max-width: 1100px; margin: 0 auto; padding: 72px 40px 120px; }
+
+.hdr { margin-bottom: 56px; }
+.hdr-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #b8ada4; margin-bottom: 8px; }
+.hdr-title   { font-size: 26px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; }
+.hdr-sub     { font-size: 12px; font-weight: 500; color: #a8a09a; margin-top: 5px; }
+
+.rule { font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #c0b4ac; display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.rule::after { content:''; flex:1; height:1px; background:#ddd4cc; }
+
+section { margin-bottom: 72px; }
+
+/* Concept grid */
+.concepts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px; }
+
+.ccard {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+.stage-light {
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5F1ED;
+}
+.stage-dark {
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+}
+
+.cfoot {
+  padding: 18px 22px 22px;
+  background: white;
+  border-top: 1px solid #F0EAE4;
+}
+.cfoot-dark {
+  padding: 18px 22px 22px;
+  background: #141E26;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.cn { font-size: 12px; font-weight: 800; color: var(--ink); }
+.cn-inv { font-size: 12px; font-weight: 800; color: var(--cream); }
+.cd { font-size: 11px; font-weight: 500; color: #b8ada4; margin-top: 4px; line-height: 1.5; }
+.cd-inv { font-size: 11px; font-weight: 500; color: rgba(240,229,223,0.4); margin-top: 4px; line-height: 1.5; }
+.cpill { display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 99px; font-size: 9px; font-weight: 700; background: rgba(75,142,186,0.12); color: var(--steel); }
+
+/* Lockup row */
+.lockup-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.lcard {
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+}
+.lcard-light { background: #F5F1ED; }
+.lcard-dark  { background: var(--slate); }
+.lcard-white { background: white; }
+
+.wm-name {
+  font-family: var(--f);
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.wm-sub {
+  font-family: var(--f);
+  font-weight: 600;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* Favicon strip */
+.fstrip {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 32px;
+  display: flex;
+  gap: 28px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.fi { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.fl { font-size: 9px; font-weight: 700; color: #c0b4ac; letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* Spec row */
+.spec-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.schip {
+  background: white;
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  flex: 1;
+  min-width: 140px;
+}
+.sdot { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; }
+.sn { font-size: 11px; font-weight: 700; color: var(--ink); }
+.sh { font-size: 10px; color: #b8ada4; font-family: monospace; margin-top: 2px; }
+
+/* Tweaks */
+#tw { display: none; position: fixed; bottom: 24px; right: 24px; z-index: 900; background: white; border-radius: 16px; padding: 18px 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.13), 0 0 0 1px rgba(0,0,0,0.06); width: 248px; font-family: var(--f); }
+#tw.on { display: block; }
+.twh { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink); margin-bottom: 14px; }
+.twg { margin-bottom: 12px; }
+.twl { font-size: 9.5px; font-weight: 700; color: #b0a498; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+.twl span { color: var(--ink); }
+input[type=range] { width: 100%; accent-color: var(--steel); cursor: pointer; }
+.twos { display: flex; gap: 4px; flex-wrap: wrap; }
+.two { padding: 3px 8px; border-radius: 6px; font-size: 9.5px; font-weight: 700; border: 1.5px solid #e5ddd7; cursor: pointer; background: white; color: #b0a498; font-family: var(--f); transition: all 0.1s; }
+.two.on { background: var(--slate); color: white; border-color: var(--slate); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hdr">
+    <div class="hdr-eyebrow">Brand Identity · v5</div>
+    <div class="hdr-title">Orbit Library Management System</div>
+    <div class="hdr-sub">Bold geometric "O" mark — three directions, light + dark</div>
+  </div>
+
+  <!-- ═══════════════════════════════ CONCEPT A ═══════════════════════════════ -->
+  <section>
+    <div class="rule">A — Gradient Ring</div>
+    <div class="concepts">
+
+      <!-- Light -->
+      <div class="ccard">
+        <div class="stage-light">
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="a-ring-grad" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#A29FEC"/>
+                <stop offset="40%"  stop-color="#4B8EBA"/>
+                <stop offset="100%" stop-color="#F6B93B"/>
+              </linearGradient>
+            </defs>
+            <!-- Thick O ring -->
+            <circle cx="80" cy="80" r="60" stroke="url(#a-ring-grad)" stroke-width="22" fill="none"/>
+          </svg>
+        </div>
+        <div class="cfoot">
+          <div class="cn">A1 — Light</div>
+          <div class="cd">Pure geometric ring, gradient arcs from Lavender → Steel → Golden.</div>
+        </div>
+      </div>
+
+      <!-- Dark -->
+      <div class="ccard">
+        <div class="stage-dark">
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="a-ring-grad-d" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#C4C0FB"/>
+                <stop offset="40%"  stop-color="#6AADD4"/>
+                <stop offset="100%" stop-color="#FFD060"/>
+              </linearGradient>
+            </defs>
+            <circle cx="80" cy="80" r="60" stroke="url(#a-ring-grad-d)" stroke-width="22" fill="none"/>
+          </svg>
+        </div>
+        <div class="cfoot-dark">
+          <div class="cn-inv">A1 — Dark</div>
+          <div class="cd-inv">Same mark, slightly brightened gradient on dark ink background.</div>
+        </div>
+      </div>
+
+      <!-- Lockup preview -->
+      <div class="ccard">
+        <div class="stage-light" style="flex-direction:column; gap:20px; padding:32px;">
+          <!-- Horizontal lockup -->
+          <div style="display:flex; align-items:center; gap:16px;">
+            <svg width="52" height="52" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="a-lk1" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#A29FEC"/>
+                  <stop offset="40%"  stop-color="#4B8EBA"/>
+                  <stop offset="100%" stop-color="#F6B93B"/>
+                </linearGradient>
+              </defs>
+              <circle cx="80" cy="80" r="60" stroke="url(#a-lk1)" stroke-width="22" fill="none"/>
+            </svg>
+            <div>
+              <div class="wm-name" style="color:#1C2830;">Orbit</div>
+              <div class="wm-sub" style="color:#9aabb8;">Library</div>
+            </div>
+          </div>
+          <!-- Stacked lockup -->
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+            <svg width="40" height="40" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="a-lk2" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#A29FEC"/>
+                  <stop offset="40%"  stop-color="#4B8EBA"/>
+                  <stop offset="100%" stop-color="#F6B93B"/>
+                </linearGradient>
+              </defs>
+              <circle cx="80" cy="80" r="60" stroke="url(#a-lk2)" stroke-width="22" fill="none"/>
+            </svg>
+            <div class="wm-name" style="color:#1C2830; font-size:20px; letter-spacing:-0.5px;">Orbit</div>
+          </div>
+        </div>
+        <div class="cfoot">
+          <div class="cn">A1 — Lockup</div>
+          <div class="cd">Horizontal + stacked variants. Mark scales cleanly at any size.</div>
+          <div class="cpill">Clean · Versatile</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ CONCEPT B ═══════════════════════════════ -->
+  <section>
+    <div class="rule">B — Filled O with Orbit Arc</div>
+    <div class="concepts">
+
+      <!-- Light -->
+      <div class="ccard">
+        <div class="stage-light">
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="b-fill-grad" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#2C3A47"/>
+                <stop offset="100%" stop-color="#1C2830"/>
+              </linearGradient>
+              <linearGradient id="b-arc-grad" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#A29FEC"/>
+                <stop offset="50%"  stop-color="#4B8EBA"/>
+                <stop offset="100%" stop-color="#F6B93B"/>
+              </linearGradient>
+            </defs>
+            <!-- Filled circle (the O body) -->
+            <circle cx="80" cy="80" r="62" fill="url(#b-fill-grad)"/>
+            <!-- Inner cutout to make O -->
+            <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+            <!-- Orbit arc sweeping across -->
+            <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#b-arc-grad)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+            <!-- Arc dot highlight -->
+            <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+          </svg>
+        </div>
+        <div class="cfoot">
+          <div class="cn">B1 — Light</div>
+          <div class="cd">Slate-filled O with inner cutout; a gradient ellipse orbit rings it with a golden dot.</div>
+          <div class="cpill">Recommended</div>
+        </div>
+      </div>
+
+      <!-- Dark -->
+      <div class="ccard">
+        <div class="stage-dark">
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="b-fill-grad-d" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#3D5060"/>
+                <stop offset="100%" stop-color="#2C3A47"/>
+              </linearGradient>
+              <linearGradient id="b-arc-grad-d" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#C4C0FB"/>
+                <stop offset="50%"  stop-color="#6AADD4"/>
+                <stop offset="100%" stop-color="#FFD060"/>
+              </linearGradient>
+            </defs>
+            <circle cx="80" cy="80" r="62" fill="url(#b-fill-grad-d)"/>
+            <circle cx="80" cy="80" r="36" fill="var(--ink)"/>
+            <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#b-arc-grad-d)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+            <circle cx="128" cy="56" r="7" fill="#FFD060"/>
+          </svg>
+        </div>
+        <div class="cfoot-dark">
+          <div class="cn-inv">B1 — Dark</div>
+          <div class="cd-inv">Slate body lifts on dark; orbit arc brightens to full-spectrum gradient.</div>
+        </div>
+      </div>
+
+      <!-- Lockup -->
+      <div class="ccard">
+        <div class="stage-light" style="flex-direction:column; gap:20px; padding:32px;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <svg width="52" height="52" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="b-lk-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#2C3A47"/>
+                  <stop offset="100%" stop-color="#1C2830"/>
+                </linearGradient>
+                <linearGradient id="b-lk-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#A29FEC"/>
+                  <stop offset="50%"  stop-color="#4B8EBA"/>
+                  <stop offset="100%" stop-color="#F6B93B"/>
+                </linearGradient>
+              </defs>
+              <circle cx="80" cy="80" r="62" fill="url(#b-lk-fill)"/>
+              <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+              <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#b-lk-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+              <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+            </svg>
+            <div>
+              <div class="wm-name" style="color:#1C2830;">Orbit</div>
+              <div class="wm-sub" style="color:#9aabb8;">Library</div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+            <svg width="40" height="40" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="b-lk-fill2" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#2C3A47"/>
+                  <stop offset="100%" stop-color="#1C2830"/>
+                </linearGradient>
+                <linearGradient id="b-lk-arc2" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#A29FEC"/>
+                  <stop offset="50%"  stop-color="#4B8EBA"/>
+                  <stop offset="100%" stop-color="#F6B93B"/>
+                </linearGradient>
+              </defs>
+              <circle cx="80" cy="80" r="62" fill="url(#b-lk-fill2)"/>
+              <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+              <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#b-lk-arc2)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+              <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+            </svg>
+            <div class="wm-name" style="color:#1C2830; font-size:20px; letter-spacing:-0.5px;">Orbit</div>
+          </div>
+        </div>
+        <div class="cfoot">
+          <div class="cn">B1 — Lockup</div>
+          <div class="cd">Orbit arc gives motion + depth. Golden dot anchors the composition.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ CONCEPT C ═══════════════════════════════ -->
+  <section>
+    <div class="rule">C — Gradient Fill O</div>
+    <div class="concepts">
+
+      <!-- Light -->
+      <div class="ccard">
+        <div class="stage-light">
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="c-outer-grad" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#A29FEC"/>
+                <stop offset="35%"  stop-color="#4B8EBA"/>
+                <stop offset="70%"  stop-color="#2C3A47"/>
+                <stop offset="100%" stop-color="#F6B93B"/>
+              </linearGradient>
+            </defs>
+            <!-- Gradient-filled O ring, thick -->
+            <circle cx="80" cy="80" r="66" fill="url(#c-outer-grad)"/>
+            <!-- White inner cutout -->
+            <circle cx="80" cy="80" r="40" fill="#F5F1ED"/>
+          </svg>
+        </div>
+        <div class="cfoot">
+          <div class="cn">C1 — Light</div>
+          <div class="cd">Full-gradient body — all four brand colors sweep around the O. Clean white cutout.</div>
+        </div>
+      </div>
+
+      <!-- Dark -->
+      <div class="ccard">
+        <div class="stage-dark">
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="c-outer-grad-d" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#C4C0FB"/>
+                <stop offset="35%"  stop-color="#6AADD4"/>
+                <stop offset="70%"  stop-color="#3D5060"/>
+                <stop offset="100%" stop-color="#FFD060"/>
+              </linearGradient>
+            </defs>
+            <circle cx="80" cy="80" r="66" fill="url(#c-outer-grad-d)"/>
+            <circle cx="80" cy="80" r="40" fill="var(--ink)"/>
+          </svg>
+        </div>
+        <div class="cfoot-dark">
+          <div class="cn-inv">C1 — Dark</div>
+          <div class="cd-inv">Gradient brightens; cutout reveals the dark bg for a seamless look.</div>
+        </div>
+      </div>
+
+      <!-- Lockup -->
+      <div class="ccard">
+        <div class="stage-light" style="flex-direction:column; gap:20px; padding:32px;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <svg width="52" height="52" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="c-lk1" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#A29FEC"/>
+                  <stop offset="35%"  stop-color="#4B8EBA"/>
+                  <stop offset="70%"  stop-color="#2C3A47"/>
+                  <stop offset="100%" stop-color="#F6B93B"/>
+                </linearGradient>
+              </defs>
+              <circle cx="80" cy="80" r="66" fill="url(#c-lk1)"/>
+              <circle cx="80" cy="80" r="40" fill="#F5F1ED"/>
+            </svg>
+            <div>
+              <div class="wm-name" style="color:#1C2830;">Orbit</div>
+              <div class="wm-sub" style="color:#9aabb8;">Library</div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+            <svg width="40" height="40" viewBox="0 0 160 160" fill="none">
+              <defs>
+                <linearGradient id="c-lk2" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stop-color="#A29FEC"/>
+                  <stop offset="35%"  stop-color="#4B8EBA"/>
+                  <stop offset="70%"  stop-color="#2C3A47"/>
+                  <stop offset="100%" stop-color="#F6B93B"/>
+                </linearGradient>
+              </defs>
+              <circle cx="80" cy="80" r="66" fill="url(#c-lk2)"/>
+              <circle cx="80" cy="80" r="40" fill="#F5F1ED"/>
+            </svg>
+            <div class="wm-name" style="color:#1C2830; font-size:20px; letter-spacing:-0.5px;">Orbit</div>
+          </div>
+        </div>
+        <div class="cfoot">
+          <div class="cn">C1 — Lockup</div>
+          <div class="cd">All brand colors visible in the mark; instantly recognizable even at small sizes.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ LOCKUP GALLERY ═══════════════════════════════ -->
+  <section>
+    <div class="rule">Lockup Gallery · Concept B (Recommended)</div>
+    <div class="lockup-row">
+      <!-- Light bg, horizontal -->
+      <div class="lcard lcard-white">
+        <svg width="48" height="48" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="lk-g1-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#2C3A47"/>
+              <stop offset="100%" stop-color="#1C2830"/>
+            </linearGradient>
+            <linearGradient id="lk-g1-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#A29FEC"/>
+              <stop offset="50%"  stop-color="#4B8EBA"/>
+              <stop offset="100%" stop-color="#F6B93B"/>
+            </linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="62" fill="url(#lk-g1-fill)"/>
+          <circle cx="80" cy="80" r="36" fill="white"/>
+          <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#lk-g1-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+          <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+        </svg>
+        <div>
+          <div class="wm-name" style="color:#1C2830; font-size:24px;">Orbit</div>
+          <div class="wm-sub" style="color:#9aabb8;">Library</div>
+        </div>
+      </div>
+
+      <!-- Slate bg -->
+      <div class="lcard lcard-dark">
+        <svg width="48" height="48" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="lk-g2-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#3D5060"/>
+              <stop offset="100%" stop-color="#2C3A47"/>
+            </linearGradient>
+            <linearGradient id="lk-g2-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#C4C0FB"/>
+              <stop offset="50%"  stop-color="#6AADD4"/>
+              <stop offset="100%" stop-color="#FFD060"/>
+            </linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="62" fill="url(#lk-g2-fill)"/>
+          <circle cx="80" cy="80" r="36" fill="#2C3A47"/>
+          <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#lk-g2-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+          <circle cx="128" cy="56" r="7" fill="#FFD060"/>
+        </svg>
+        <div>
+          <div class="wm-name" style="color:#F0E5DF; font-size:24px;">Orbit</div>
+          <div class="wm-sub" style="color:rgba(240,229,223,0.4);">Library</div>
+        </div>
+      </div>
+
+      <!-- Cream bg -->
+      <div class="lcard lcard-light">
+        <svg width="48" height="48" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="lk-g3-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#2C3A47"/>
+              <stop offset="100%" stop-color="#1C2830"/>
+            </linearGradient>
+            <linearGradient id="lk-g3-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#A29FEC"/>
+              <stop offset="50%"  stop-color="#4B8EBA"/>
+              <stop offset="100%" stop-color="#F6B93B"/>
+            </linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="62" fill="url(#lk-g3-fill)"/>
+          <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+          <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#lk-g3-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+          <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+        </svg>
+        <div>
+          <div class="wm-name" style="color:#1C2830; font-size:24px;">Orbit</div>
+          <div class="wm-sub" style="color:#9aabb8;">Library</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ FAVICON ═══════════════════════════════ -->
+  <section>
+    <div class="rule">Favicon · App Icon · Concept B</div>
+    <div class="fstrip">
+      <!-- 16px -->
+      <div class="fi">
+        <svg width="16" height="16" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="fav16-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2C3A47"/><stop offset="100%" stop-color="#1C2830"/></linearGradient>
+            <linearGradient id="fav16-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#A29FEC"/><stop offset="50%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#F6B93B"/></linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="62" fill="url(#fav16-fill)"/>
+          <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+          <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#fav16-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+          <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+        </svg>
+        <div class="fl">16</div>
+      </div>
+      <!-- 32px -->
+      <div class="fi">
+        <svg width="32" height="32" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="fav32-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2C3A47"/><stop offset="100%" stop-color="#1C2830"/></linearGradient>
+            <linearGradient id="fav32-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#A29FEC"/><stop offset="50%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#F6B93B"/></linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="62" fill="url(#fav32-fill)"/>
+          <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+          <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#fav32-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+          <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+        </svg>
+        <div class="fl">32</div>
+      </div>
+      <!-- 64px -->
+      <div class="fi">
+        <svg width="64" height="64" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="fav64-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2C3A47"/><stop offset="100%" stop-color="#1C2830"/></linearGradient>
+            <linearGradient id="fav64-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#A29FEC"/><stop offset="50%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#F6B93B"/></linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="62" fill="url(#fav64-fill)"/>
+          <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+          <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#fav64-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+          <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+        </svg>
+        <div class="fl">64</div>
+      </div>
+      <!-- 128px -->
+      <div class="fi">
+        <svg width="128" height="128" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="fav128-fill" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2C3A47"/><stop offset="100%" stop-color="#1C2830"/></linearGradient>
+            <linearGradient id="fav128-arc" x1="0" y1="30" x2="160" y2="130" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#A29FEC"/><stop offset="50%" stop-color="#4B8EBA"/><stop offset="100%" stop-color="#F6B93B"/></linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="62" fill="url(#fav128-fill)"/>
+          <circle cx="80" cy="80" r="36" fill="#F5F1ED"/>
+          <ellipse cx="80" cy="80" rx="76" ry="18" stroke="url(#fav128-arc)" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-30 80 80)"/>
+          <circle cx="128" cy="56" r="7" fill="#F6B93B"/>
+        </svg>
+        <div class="fl">128</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ COLOR SPEC ═══════════════════════════════ -->
+  <section>
+    <div class="rule">Brand Colors</div>
+    <div class="spec-row">
+      <div class="schip">
+        <div class="sdot" style="background:#A29FEC;"></div>
+        <div><div class="sn">Lavender</div><div class="sh">#A29FEC</div></div>
+      </div>
+      <div class="schip">
+        <div class="sdot" style="background:#4B8EBA;"></div>
+        <div><div class="sn">Steel</div><div class="sh">#4B8EBA</div></div>
+      </div>
+      <div class="schip">
+        <div class="sdot" style="background:#2C3A47;"></div>
+        <div><div class="sn">Slate</div><div class="sh">#2C3A47</div></div>
+      </div>
+      <div class="schip">
+        <div class="sdot" style="background:#F6B93B;"></div>
+        <div><div class="sn">Golden</div><div class="sh">#F6B93B</div></div>
+      </div>
+      <div class="schip">
+        <div class="sdot" style="background:#F0E5DF; border:1px solid #e0d8d2;"></div>
+        <div><div class="sn">Cream</div><div class="sh">#F0E5DF</div></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ═══ TWEAKS ═══ -->
+<div id="tw">
+  <div class="twh">Tweaks</div>
+
+  <div class="twg">
+    <div class="twl">Concept <span id="tw-concept-val">B</span></div>
+    <div class="twos">
+      <button class="two" onclick="setConcept('A')">A — Ring</button>
+      <button class="two on" onclick="setConcept('B')">B — Orbit</button>
+      <button class="two" onclick="setConcept('C')">C — Gradient</button>
+    </div>
+  </div>
+
+  <div class="twg">
+    <div class="twl">Arc angle <span id="tw-angle-val">−30°</span></div>
+    <input type="range" min="-90" max="90" value="-30" step="5" oninput="setAngle(this.value)"/>
+  </div>
+
+  <div class="twg">
+    <div class="twl">Ring weight <span id="tw-weight-val">22</span></div>
+    <input type="range" min="10" max="40" value="22" step="1" oninput="setWeight(this.value)"/>
+  </div>
+</div>
+
+<script>
+  // Tweaks protocol
+  window.addEventListener('message', e => {
+    if (e.data?.type === '__activate_edit_mode')   document.getElementById('tw').classList.add('on');
+    if (e.data?.type === '__deactivate_edit_mode') document.getElementById('tw').classList.remove('on');
+  });
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+  function setConcept(c) {
+    document.querySelectorAll('.two').forEach(b => b.classList.remove('on'));
+    event.target.classList.add('on');
+    document.getElementById('tw-concept-val').textContent = c;
+    // highlight relevant section
+    document.querySelectorAll('section').forEach((s,i) => {
+      s.style.opacity = (c === 'A' && i===0) || (c === 'B' && i===1) || (c === 'C' && i===2) ? '1' : (i > 3 ? '1' : '0.35');
+    });
+  }
+
+  function setAngle(v) {
+    document.getElementById('tw-angle-val').textContent = v + '°';
+    document.querySelectorAll('ellipse').forEach(el => {
+      if (el.getAttribute('rx') === '76') {
+        el.setAttribute('transform', `rotate(${v} 80 80)`);
+      }
+    });
+  }
+
+  function setWeight(v) {
+    document.getElementById('tw-weight-val').textContent = v;
+    document.querySelectorAll('circle[r="62"], circle[r="66"]').forEach(el => {
+      // ring weight for concept A
+    });
+    document.querySelectorAll('circle[stroke-width]').forEach(el => {
+      el.setAttribute('stroke-width', v);
+    });
+  }
+</script>
+
+</body>
+</html>

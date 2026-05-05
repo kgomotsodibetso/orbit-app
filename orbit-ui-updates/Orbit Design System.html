@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Orbit Tech · Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --steel:    #4B8EBA;
+    --golden:   #F6B93B;
+    --lavender: #A29FEC;
+    --cream:    #F0E5DF;
+    --slate:    #2C3A47;
+
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger:  #ef4444;
+
+    --radius-sm:   6px;
+    --radius-md:   12px;
+    --radius-lg:   20px;
+    --radius-xl:   32px;
+    --radius-full: 9999px;
+
+    --font: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: #f7f3f0;
+    color: var(--slate);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ── */
+  .page { max-width: 1120px; margin: 0 auto; padding: 56px 32px 96px; }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 64px;
+  }
+  .logo-mark {
+    width: 48px; height: 48px;
+    background: var(--slate);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-rocket { font-size: 22px; }
+  .page-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: var(--slate); }
+  .page-subtitle { font-size: 13px; font-weight: 500; color: #8a9aaa; margin-top: 2px; }
+
+  /* ── Section ── */
+  section { margin-bottom: 64px; }
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: #8a9aaa; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: #e2d9d3;
+  }
+
+  /* ── Colour Palette ── */
+  .palette { display: flex; gap: 12px; flex-wrap: wrap; }
+  .swatch {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    min-width: 130px; flex: 1;
+  }
+  .swatch-color { height: 80px; }
+  .swatch-meta {
+    background: white;
+    padding: 10px 12px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+  .swatch-name { font-size: 12px; font-weight: 700; color: var(--slate); }
+  .swatch-hex  { font-size: 11px; font-weight: 500; color: #8a9aaa; font-variant-numeric: tabular-nums; }
+  .swatch-role { font-size: 10px; font-weight: 600; color: #aab5bf; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Status colours row */
+  .status-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .status-swatch {
+    display: flex; align-items: center; gap: 10px;
+    background: white; border-radius: var(--radius-md);
+    padding: 10px 14px; border: 1px solid #ede7e3;
+    flex: 1; min-width: 140px;
+  }
+  .status-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .status-info {}
+  .status-name { font-size: 12px; font-weight: 700; color: var(--slate); }
+  .status-hex  { font-size: 11px; color: #8a9aaa; }
+
+  /* ── Typography ── */
+  .type-table { width: 100%; border-collapse: collapse; }
+  .type-table th {
+    text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #8a9aaa;
+    padding: 0 12px 10px;
+    border-bottom: 1px solid #e2d9d3;
+  }
+  .type-table td { padding: 14px 12px; border-bottom: 1px solid #f0e9e4; vertical-align: middle; }
+  .type-table tr:last-child td { border-bottom: none; }
+  .type-table td:first-child { width: 120px; }
+  .type-tag {
+    display: inline-block;
+    background: rgba(44,58,71,0.07);
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--slate);
+    font-family: monospace;
+  }
+  .type-spec { font-size: 11px; color: #8a9aaa; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ── Radius ── */
+  .radius-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .radius-card {
+    background: white; border: 1px solid #ede7e3;
+    padding: 20px 24px; flex: 1; min-width: 100px;
+    border-radius: var(--radius-md);
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .radius-box { width: 52px; height: 52px; background: var(--steel); opacity: 0.18; }
+  .radius-name { font-size: 12px; font-weight: 700; color: var(--slate); }
+  .radius-value { font-size: 11px; color: #8a9aaa; font-family: monospace; }
+
+  /* ── Components ── */
+  .component-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .component-card {
+    background: white; border-radius: var(--radius-lg);
+    border: 1px solid #ede7e3;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .component-header {
+    padding: 12px 16px;
+    background: #faf7f5;
+    border-bottom: 1px solid #ede7e3;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #8a9aaa;
+  }
+  .component-body { padding: 24px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--font); font-weight: 600; font-size: 14px;
+    border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-sm  { padding: 6px 12px;  font-size: 12px; border-radius: var(--radius-sm); }
+  .btn-md  { padding: 10px 18px; font-size: 14px; border-radius: var(--radius-md); }
+  .btn-lg  { padding: 13px 26px; font-size: 16px; border-radius: var(--radius-md); }
+  .btn-primary   { background: var(--steel);  color: white; }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-secondary { background: var(--cream); color: var(--slate); border: 1px solid rgba(44,58,71,0.2); }
+  .btn-ghost     { background: transparent; color: var(--steel); }
+  .btn-ghost:hover { background: rgba(75,142,186,0.1); }
+  .btn-danger    { background: var(--danger); color: white; }
+  .btn-loading   { opacity: 0.7; }
+  .spinner {
+    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white; border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; font-size: 12px; font-weight: 700;
+    border-radius: var(--radius-full); border: 1px solid;
+    font-family: var(--font);
+  }
+  .badge-steel    { background: rgba(75,142,186,0.1);  color: var(--steel);   border-color: rgba(75,142,186,0.2); }
+  .badge-golden   { background: rgba(246,185,59,0.1);  color: #92680a;        border-color: rgba(246,185,59,0.3); }
+  .badge-lavender { background: rgba(162,159,236,0.1); color: #4845a0;        border-color: rgba(162,159,236,0.3); }
+  .badge-success  { background: #f0fdf4; color: #15803d;  border-color: #bbf7d0; }
+  .badge-warning  { background: #fffbeb; color: #92400e;  border-color: #fde68a; }
+  .badge-danger   { background: #fef2f2; color: #b91c1c;  border-color: #fecaca; }
+  .badge-neutral  { background: rgba(44,58,71,0.07); color: var(--slate); border-color: rgba(44,58,71,0.15); }
+
+  /* ── Status chips ── */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; font-size: 12px; font-weight: 700;
+    border-radius: var(--radius-full); font-family: var(--font);
+  }
+  .chip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .chip-active   { background: rgba(75,142,186,0.1);  color: var(--steel);  }
+  .chip-active .chip-dot   { background: var(--steel); }
+  .chip-returned { background: #f0fdf4; color: #15803d; }
+  .chip-returned .chip-dot { background: #22c55e; }
+  .chip-overdue  { background: #fef2f2; color: #b91c1c; }
+  .chip-overdue .chip-dot  { background: #ef4444; }
+  .chip-lost     { background: rgba(44,58,71,0.07); color: rgba(44,58,71,0.6); }
+  .chip-lost .chip-dot     { background: rgba(44,58,71,0.4); }
+
+  /* ── Input ── */
+  .input-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .input-label { font-size: 13px; font-weight: 700; color: var(--slate); }
+  .input-field-wrap { position: relative; }
+  .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: rgba(44,58,71,0.35); font-size: 14px; }
+  .input-field {
+    width: 100%; border-radius: var(--radius-md);
+    border: 1px solid rgba(44,58,71,0.2);
+    background: white; padding: 10px 16px;
+    font-size: 14px; font-family: var(--font); color: var(--slate);
+    outline: none; transition: all 0.15s;
+  }
+  .input-field.has-icon { padding-left: 36px; }
+  .input-field:focus { border-color: transparent; box-shadow: 0 0 0 2px var(--steel); }
+  .input-field.error { border-color: var(--danger); }
+  .input-error { font-size: 12px; color: var(--danger); }
+  .input-field::placeholder { color: rgba(44,58,71,0.35); }
+
+  /* ── Card variants ── */
+  .card-demo-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .card-default {
+    background: white; border: 1px solid rgba(44,58,71,0.1);
+    border-radius: var(--radius-lg); padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .card-glass {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-lg); padding: 18px; color: white;
+  }
+  .card-dark {
+    background: var(--slate); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-lg); padding: 18px; color: var(--cream);
+  }
+  .card-glass-bg {
+    background: linear-gradient(135deg, var(--steel) 0%, #2C3A47 100%);
+    border-radius: var(--radius-md);
+    padding: 6px;
+  }
+  .card-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .card-sub   { font-size: 12px; opacity: 0.55; }
+
+  /* ── StatCard ── */
+  .stat-card {
+    background: white; border-radius: var(--radius-lg); padding: 20px;
+    border: 1px solid rgba(44,58,71,0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s;
+  }
+  .stat-icon-wrap {
+    width: 40px; height: 40px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+    font-size: 18px;
+  }
+  .stat-value { font-size: 30px; font-weight: 800; color: var(--slate); }
+  .stat-label { font-size: 13px; font-weight: 500; color: rgba(44,58,71,0.55); margin-top: 2px; }
+  .stat-sub   { font-size: 11px; color: rgba(44,58,71,0.35); margin-top: 4px; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+  /* ── Sidebar preview ── */
+  .sidebar-preview {
+    background: var(--slate); border-radius: var(--radius-lg); padding: 0;
+    overflow: hidden; width: 200px; min-height: 360px; display: flex; flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .sidebar-logo-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .sidebar-logo-icon {
+    width: 30px; height: 30px; background: var(--steel);
+    border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .sidebar-logo-text { font-size: 13px; font-weight: 700; color: var(--cream); letter-spacing: 0.3px; }
+  .sidebar-nav { flex: 1; padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.12s;
+  }
+  .sidebar-item.active { background: var(--steel); color: white; }
+  .sidebar-item.inactive { color: rgba(240,229,223,0.6); }
+  .sidebar-item.inactive:hover { background: rgba(255,255,255,0.08); color: var(--cream); }
+  .sidebar-item-icon { font-size: 14px; }
+  .sidebar-portal {
+    padding: 8px; border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .sidebar-portal-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border-radius: var(--radius-md); font-size: 12px; font-weight: 600;
+    color: rgba(162,159,236,0.7);
+  }
+  .sidebar-footer { padding: 8px; }
+  .sidebar-footer-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border-radius: var(--radius-md); font-size: 12px; font-weight: 600;
+    color: rgba(240,229,223,0.4);
+  }
+
+  /* ── Glow utilities ── */
+  .glow-steel  { box-shadow: 0 0 20px rgba(75,142,186,0.35); }
+  .glow-golden { box-shadow: 0 0 20px rgba(246,185,59,0.35); }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid #e2d9d3; margin: 40px 0; }
+
+  /* ── Token table ── */
+  .token-table { width: 100%; border-collapse: collapse; }
+  .token-table th {
+    text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #8a9aaa; padding: 0 12px 10px;
+    border-bottom: 1px solid #e2d9d3;
+  }
+  .token-table td { padding: 10px 12px; border-bottom: 1px solid #f0e9e4; font-size: 13px; vertical-align: middle; }
+  .token-table tr:last-child td { border-bottom: none; }
+  .token-name { font-family: monospace; font-size: 12px; color: var(--steel); font-weight: 700; }
+  .token-val  { font-family: monospace; font-size: 12px; color: #8a9aaa; }
+
+  /* ── Scan line ── */
+  .scanner-demo {
+    background: #0a0f14; border-radius: var(--radius-md);
+    position: relative; height: 90px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scan-bar {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--steel) 20%, #7ec8f4 50%, var(--steel) 80%, transparent);
+    box-shadow: 0 0 8px var(--steel);
+    animation: scan 2.4s ease-in-out infinite;
+    top: 4%;
+  }
+  @keyframes scan {
+    0%, 100% { top: 4%; }
+    50%       { top: 92%; }
+  }
+  .scan-corner {
+    position: absolute; width: 20px; height: 20px;
+    border-color: var(--steel); border-style: solid; border-width: 0; opacity: 0.7;
+  }
+  .scan-corner.tl { top: 8px; left: 8px; border-top-width: 2px; border-left-width: 2px; border-radius: 2px 0 0 0; }
+  .scan-corner.tr { top: 8px; right: 8px; border-top-width: 2px; border-right-width: 2px; border-radius: 0 2px 0 0; }
+  .scan-corner.bl { bottom: 8px; left: 8px; border-bottom-width: 2px; border-left-width: 2px; border-radius: 0 0 0 2px; }
+  .scan-corner.br { bottom: 8px; right: 8px; border-bottom-width: 2px; border-right-width: 2px; border-radius: 0 0 2px 0; }
+  .scan-label { color: rgba(75,142,186,0.5); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+
+  /* ── Loading spinner ── */
+  .loading-row { display: flex; align-items: center; gap: 20px; }
+  .spin-sm { width: 16px; height: 16px; border: 2px solid rgba(75,142,186,0.2); border-top-color: var(--steel); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .spin-md { width: 30px; height: 30px; border: 3px solid rgba(75,142,186,0.2); border-top-color: var(--steel); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .spin-lg { width: 44px; height: 44px; border: 4px solid rgba(75,142,186,0.2); border-top-color: var(--steel); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+  /* Nav tabs for component section */
+  .comp-tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .comp-tab {
+    padding: 6px 14px; border-radius: var(--radius-full);
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.12s;
+    border: 1px solid transparent;
+    background: transparent; color: #8a9aaa; font-family: var(--font);
+  }
+  .comp-tab.active { background: var(--slate); color: var(--cream); }
+  .comp-tab:hover:not(.active) { background: rgba(44,58,71,0.08); color: var(--slate); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="logo-mark">
+      <span class="logo-rocket">🚀</span>
+    </div>
+    <div>
+      <div class="page-title">Orbit Tech · Design System</div>
+      <div class="page-subtitle">Brand theme extracted from codebase — April 2026</div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════ COLOURS ═══════════════════════════════════ -->
+  <section>
+    <div class="section-label">Brand Colours</div>
+    <div class="palette">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#4B8EBA;"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">Steel</div>
+          <div class="swatch-hex">#4B8EBA</div>
+          <div class="swatch-role">Primary · Nav · Links</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F6B93B;"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">Golden</div>
+          <div class="swatch-hex">#F6B93B</div>
+          <div class="swatch-role">Accent · Badges · Achievements</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#A29FEC;"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">Lavender</div>
+          <div class="swatch-hex">#A29FEC</div>
+          <div class="swatch-role">AI / Assistant · Secondary accent</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F0E5DF;"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">Cream</div>
+          <div class="swatch-hex">#F0E5DF</div>
+          <div class="swatch-role">Light surfaces · Card bg</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#2C3A47;"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">Slate</div>
+          <div class="swatch-hex">#2C3A47</div>
+          <div class="swatch-role">Dark bg · Sidebar · Body text</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="section-label" style="font-size:9px;">Status Colours</div>
+      <div class="status-row">
+        <div class="status-swatch">
+          <div class="status-dot" style="background:#22c55e;"></div>
+          <div class="status-info"><div class="status-name">Success</div><div class="status-hex">#22c55e</div></div>
+        </div>
+        <div class="status-swatch">
+          <div class="status-dot" style="background:#f59e0b;"></div>
+          <div class="status-info"><div class="status-name">Warning</div><div class="status-hex">#f59e0b</div></div>
+        </div>
+        <div class="status-swatch">
+          <div class="status-dot" style="background:#ef4444;"></div>
+          <div class="status-info"><div class="status-name">Danger</div><div class="status-hex">#ef4444</div></div>
+        </div>
+        <div class="status-swatch">
+          <div class="status-dot" style="background:#4B8EBA;"></div>
+          <div class="status-info"><div class="status-name">Info</div><div class="status-hex">→ Steel</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ TYPOGRAPHY ═══════════════════════════════════ -->
+  <section>
+    <div class="section-label">Typography</div>
+    <div style="background:white; border-radius:var(--radius-lg); border:1px solid #ede7e3; overflow:hidden; margin-bottom:20px; padding: 24px 28px;">
+      <div style="font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#8a9aaa; margin-bottom:14px;">Font Family</div>
+      <div style="font-size:32px; font-weight:800; color:var(--slate); letter-spacing:-1px;">Montserrat</div>
+      <div style="font-size:13px; color:#8a9aaa; margin-top:4px; font-weight:500;">Google Fonts · Latin subset · Weights 400 / 500 / 600 / 700 / 800</div>
+      <div style="font-size:13px; color:#aab5bf; margin-top:2px; font-weight:500;">Fallback: ui-sans-serif, system-ui, sans-serif</div>
+      <div style="margin-top:20px; font-size:18px; font-weight:800; color:var(--slate); letter-spacing:0.05em;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+      <div style="font-size:18px; font-weight:400; color:var(--slate);">abcdefghijklmnopqrstuvwxyz 0123456789</div>
+    </div>
+
+    <table class="type-table" style="background:white; border-radius:var(--radius-lg); border:1px solid #ede7e3; overflow:hidden;">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Preview</th>
+          <th>Spec</th>
+          <th>Usage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="type-tag">display</span></td>
+          <td><span style="font-size:28px; font-weight:800; color:var(--slate); line-height:1;">Mission Control</span></td>
+          <td><span class="type-spec">28px / 800</span></td>
+          <td style="font-size:12px; color:#8a9aaa;">Page hero, stat values</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag">h1</span></td>
+          <td><span style="font-size:22px; font-weight:700; color:var(--slate);">Dashboard</span></td>
+          <td><span class="type-spec">22px / 700</span></td>
+          <td style="font-size:12px; color:#8a9aaa;">Page titles</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag">h2</span></td>
+          <td><span style="font-size:17px; font-weight:700; color:var(--slate);">Recent Activity</span></td>
+          <td><span class="type-spec">17px / 700</span></td>
+          <td style="font-size:12px; color:#8a9aaa;">Section headings, card titles</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag">body</span></td>
+          <td><span style="font-size:14px; font-weight:400; color:var(--slate);">Smart library management for South African schools.</span></td>
+          <td><span class="type-spec">14px / 400</span></td>
+          <td style="font-size:12px; color:#8a9aaa;">Body copy, descriptions</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag">label</span></td>
+          <td><span style="font-size:13px; font-weight:600; color:var(--slate);">Due Date</span></td>
+          <td><span class="type-spec">13px / 600</span></td>
+          <td style="font-size:12px; color:#8a9aaa;">Form labels, table headers</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag">caption</span></td>
+          <td><span style="font-size:11px; font-weight:500; color:#8a9aaa;">Checked out 3 days ago</span></td>
+          <td><span class="type-spec">11px / 500</span></td>
+          <td style="font-size:12px; color:#8a9aaa;">Subtitles, meta info</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag">overline</span></td>
+          <td><span style="font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#8a9aaa;">Section Title</span></td>
+          <td><span class="type-spec">10px / 700 / +2px</span></td>
+          <td style="font-size:12px; color:#8a9aaa;">Section dividers, category labels</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════════════════════════════ SPACING / RADIUS ═══════════════════════════════════ -->
+  <section>
+    <div class="section-label">Border Radius</div>
+    <div class="radius-row">
+      <div class="radius-card">
+        <div class="radius-box" style="border-radius:6px;"></div>
+        <div class="radius-name">sm</div>
+        <div class="radius-value">6px</div>
+      </div>
+      <div class="radius-card">
+        <div class="radius-box" style="border-radius:12px;"></div>
+        <div class="radius-name">md</div>
+        <div class="radius-value">12px</div>
+      </div>
+      <div class="radius-card">
+        <div class="radius-box" style="border-radius:20px;"></div>
+        <div class="radius-name">lg</div>
+        <div class="radius-value">20px</div>
+      </div>
+      <div class="radius-card">
+        <div class="radius-box" style="border-radius:32px;"></div>
+        <div class="radius-name">xl</div>
+        <div class="radius-value">32px</div>
+      </div>
+      <div class="radius-card">
+        <div class="radius-box" style="border-radius:9999px;"></div>
+        <div class="radius-name">full</div>
+        <div class="radius-value">9999px</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ COMPONENTS ═══════════════════════════════════ -->
+  <section>
+    <div class="section-label">Components</div>
+    <div class="component-grid">
+
+      <!-- Buttons -->
+      <div class="component-card">
+        <div class="component-header">Button</div>
+        <div class="component-body">
+          <div>
+            <div style="font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#aab5bf; margin-bottom:10px;">Variants</div>
+            <div class="btn-row">
+              <button class="btn btn-md btn-primary">Primary</button>
+              <button class="btn btn-md btn-secondary">Secondary</button>
+              <button class="btn btn-md btn-ghost">Ghost</button>
+              <button class="btn btn-md btn-danger">Danger</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#aab5bf; margin-bottom:10px;">Sizes</div>
+            <div class="btn-row" style="align-items:flex-end;">
+              <button class="btn btn-sm btn-primary">Small</button>
+              <button class="btn btn-md btn-primary">Medium</button>
+              <button class="btn btn-lg btn-primary">Large</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#aab5bf; margin-bottom:10px;">States</div>
+            <div class="btn-row">
+              <button class="btn btn-md btn-primary btn-loading">
+                <span class="spinner"></span> Loading
+              </button>
+              <button class="btn btn-md btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">Disabled</button>
+            </div>
+          </div>
+          <div style="font-size:11px; color:#aab5bf; border-top:1px solid #f0e9e4; padding-top:12px;">
+            Focus ring: <code style="background:#f0e9e4; padding:1px 5px; border-radius:4px;">2px var(--steel)</code> · Transition: 150ms · Active scale: 0.98
+          </div>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="component-card">
+        <div class="component-header">Badge</div>
+        <div class="component-body">
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span class="badge badge-steel">Steel</span>
+            <span class="badge badge-golden">Golden</span>
+            <span class="badge badge-lavender">Lavender</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-danger">Danger</span>
+            <span class="badge badge-neutral">Neutral</span>
+          </div>
+          <div style="font-size:11px; color:#aab5bf; border-top:1px solid #f0e9e4; padding-top:12px;">
+            12px · 700 weight · pill shape · border + bg tinted from brand colour
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Chips -->
+      <div class="component-card">
+        <div class="component-header">StatusChip · Loan States</div>
+        <div class="component-body">
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span class="chip chip-active"><span class="chip-dot"></span>Active</span>
+            <span class="chip chip-returned"><span class="chip-dot"></span>Returned</span>
+            <span class="chip chip-overdue"><span class="chip-dot"></span>Overdue</span>
+            <span class="chip chip-lost"><span class="chip-dot"></span>Lost</span>
+          </div>
+          <div style="font-size:11px; color:#aab5bf; border-top:1px solid #f0e9e4; padding-top:12px;">
+            Leading colour dot · pill shape · used on loan rows and activity feeds
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="component-card">
+        <div class="component-header">Input</div>
+        <div class="component-body">
+          <div class="input-wrap">
+            <label class="input-label">Default</label>
+            <input class="input-field" placeholder="Search books…" />
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">With Icon</label>
+            <div class="input-field-wrap">
+              <span class="input-icon">🔍</span>
+              <input class="input-field has-icon" placeholder="Search learners…" />
+            </div>
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Error State</label>
+            <input class="input-field error" value="Invalid ISBN" />
+            <span class="input-error">Please enter a valid ISBN</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="component-card">
+        <div class="component-header">Card · Variants</div>
+        <div class="component-body">
+          <div class="card-demo-wrap">
+            <div class="card-default">
+              <div class="card-title">Default Card</div>
+              <div class="card-sub" style="color:rgba(44,58,71,0.5);">White bg · slate border · sm shadow</div>
+            </div>
+            <div class="card-glass-bg">
+              <div class="card-glass">
+                <div class="card-title">Glass Card</div>
+                <div class="card-sub">8% white bg · blur(12px) · white border</div>
+              </div>
+            </div>
+            <div class="card-dark">
+              <div class="card-title">Dark Card</div>
+              <div class="card-sub">Slate bg · cream text · white/10 border</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- StatCard -->
+      <div class="component-card">
+        <div class="component-header">StatCard · Dashboard</div>
+        <div class="component-body" style="padding:16px;">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-icon-wrap" style="background:rgba(75,142,186,0.1);">📚</div>
+              <div class="stat-value">1,204</div>
+              <div class="stat-label">Total Books</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap" style="background:rgba(246,185,59,0.1);">📖</div>
+              <div class="stat-value">87</div>
+              <div class="stat-label">Active Loans</div>
+              <div class="stat-sub">Due this week: 12</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap" style="background:rgba(162,159,236,0.1);">👩‍🎓</div>
+              <div class="stat-value">342</div>
+              <div class="stat-label">Learners</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap" style="background:rgba(239,68,68,0.1);">⚠️</div>
+              <div class="stat-value" style="color:#b91c1c;">5</div>
+              <div class="stat-label">Overdue</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="component-card">
+        <div class="component-header">Sidebar · CollapsibleSidebar</div>
+        <div class="component-body" style="align-items:flex-start;">
+          <div class="sidebar-preview">
+            <div class="sidebar-logo-row">
+              <div class="sidebar-logo-icon">🚀</div>
+              <div class="sidebar-logo-text">Orbit Tech</div>
+            </div>
+            <nav class="sidebar-nav">
+              <div class="sidebar-item active"><span class="sidebar-item-icon">▦</span> Mission Control</div>
+              <div class="sidebar-item inactive"><span class="sidebar-item-icon">📚</span> Catalogue</div>
+              <div class="sidebar-item inactive"><span class="sidebar-item-icon">↔</span> Loans</div>
+              <div class="sidebar-item inactive"><span class="sidebar-item-icon">👥</span> Learners</div>
+              <div class="sidebar-item inactive"><span class="sidebar-item-icon">📄</span> Reports</div>
+              <div class="sidebar-item inactive"><span class="sidebar-item-icon">⚙</span> Settings</div>
+            </nav>
+            <div class="sidebar-portal">
+              <div class="sidebar-portal-item"><span>🎓</span> Learner Portal ↗</div>
+            </div>
+            <div class="sidebar-footer">
+              <div class="sidebar-footer-item"><span>↩</span> Sign out</div>
+            </div>
+          </div>
+          <div style="font-size:11px; color:#aab5bf; margin-top:4px;">
+            Slate bg · collapsible to 64px · active items use Steel · collapse toggle at bottom
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div class="component-card">
+        <div class="component-header">LoadingSpinner</div>
+        <div class="component-body">
+          <div class="loading-row">
+            <div><div class="spin-sm"></div><div style="font-size:10px;color:#aab5bf;margin-top:6px;text-align:center;">sm</div></div>
+            <div><div class="spin-md"></div><div style="font-size:10px;color:#aab5bf;margin-top:6px;text-align:center;">md</div></div>
+            <div><div class="spin-lg"></div><div style="font-size:10px;color:#aab5bf;margin-top:6px;text-align:center;">lg</div></div>
+          </div>
+          <div style="font-size:11px; color:#aab5bf; border-top:1px solid #f0e9e4; padding-top:12px;">
+            Steel colour · 20% border opacity · top segment full opacity · CSS spin
+          </div>
+        </div>
+      </div>
+
+      <!-- Scanner -->
+      <div class="component-card">
+        <div class="component-header">ISBN Scanner · scan-line animation</div>
+        <div class="component-body">
+          <div class="scanner-demo">
+            <div class="scan-bar"></div>
+            <div class="scan-corner tl"></div>
+            <div class="scan-corner tr"></div>
+            <div class="scan-corner bl"></div>
+            <div class="scan-corner br"></div>
+            <span class="scan-label">Scanning…</span>
+          </div>
+          <div style="font-size:11px; color:#aab5bf;">
+            <code style="background:#f0e9e4; padding:1px 5px; border-radius:4px;">.scan-line</code> · 2.4s ease-in-out infinite · top 4% ↔ 92%
+          </div>
+        </div>
+      </div>
+
+      <!-- Glow utilities -->
+      <div class="component-card">
+        <div class="component-header">Glow Utilities</div>
+        <div class="component-body">
+          <div style="display:flex; gap:12px;">
+            <div style="flex:1; height:52px; background:var(--steel); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700;" class="glow-steel">glow-steel</div>
+            <div style="flex:1; height:52px; background:var(--golden); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700;" class="glow-golden">glow-golden</div>
+          </div>
+          <div style="font-size:11px; color:#aab5bf; border-top:1px solid #f0e9e4; padding-top:12px;">
+            box-shadow 0 0 20px · 35% opacity · applied to interactive or featured elements
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ CSS TOKENS ═══════════════════════════════════ -->
+  <section>
+    <div class="section-label">CSS Custom Properties</div>
+    <div style="background:var(--slate); border-radius:var(--radius-lg); overflow:hidden;">
+      <table class="token-table">
+        <thead>
+          <tr>
+            <th style="color:rgba(240,229,223,0.4);">Token</th>
+            <th style="color:rgba(240,229,223,0.4);">Value</th>
+            <th style="color:rgba(240,229,223,0.4);">Alias</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#A29FEC;">--color-steel</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#4B8EBA</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.3);">--color-primary, --color-info</span></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#F6B93B;">--color-golden</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#F6B93B</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.3);">--color-accent</span></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#A29FEC;">--color-lavender</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#A29FEC</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.3);">--color-ai</span></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#F0E5DF;">--color-cream</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#F0E5DF</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.3);">--color-surface</span></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#7ec8f4;">--color-slate</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#2C3A47</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.3);">--color-background</span></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#22c55e;">--color-success</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#22c55e</span></td>
+            <td></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#f59e0b;">--color-warning</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#f59e0b</span></td>
+            <td></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:#ef4444;">--color-danger</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#ef4444</span></td>
+            <td></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.6);">--font-sans / --font-display</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">"Montserrat", ui-sans-serif</span></td>
+            <td></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06);">
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.6);">--radius-sm/md/lg/xl/full</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">6 / 12 / 20 / 32 / 9999px</span></td>
+            <td></td>
+          </tr>
+          <tr style="border-color:rgba(255,255,255,0.06); border-bottom: none;">
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.6);">--color-scheme (theme-color)</span></td>
+            <td><span style="font-family:monospace; font-size:12px; color:rgba(240,229,223,0.5);">#4B8EBA (PWA theme)</span></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div style="text-align:center; font-size:11px; color:#aab5bf; margin-top:24px;">
+    Orbit Tech · Design System Reference · Extracted April 2026 · <em>tshiamisoastronauts.org</em>
+  </div>
+
+</div>
+</body>
+</html>

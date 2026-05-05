@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Orbit Library · Logo v4</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --steel:    #4B8EBA;
+  --golden:   #F6B93B;
+  --lavender: #A29FEC;
+  --cream:    #F0E5DF;
+  --slate:    #2C3A47;
+  --ink:      #1C2830;
+  --bg:       #EDEAE6;
+  --f: 'Montserrat', sans-serif;
+}
+body { font-family: var(--f); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.page { max-width: 1040px; margin: 0 auto; padding: 80px 40px 120px; }
+.hdr { margin-bottom: 64px; }
+.hdr-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #b8ada4; margin-bottom: 8px; }
+.hdr-title   { font-size: 26px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; }
+.hdr-sub     { font-size: 12px; font-weight: 500; color: #a8a09a; margin-top: 5px; }
+
+.rule { font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #c0b4ac; display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+.rule::after { content:''; flex:1; height:1px; background:#ddd4cc; }
+section { margin-bottom: 64px; }
+
+/* Hero */
+.hero {
+  border-radius: 20px; margin-bottom: 64px; min-height: 320px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.1); transition: background 0.2s; padding: 56px 48px;
+}
+.hero.h-ink   { background: var(--ink); }
+.hero.h-dark  { background: var(--slate); }
+.hero.h-light { background: #F5F1ED; }
+.hero.h-white { background: white; }
+.hero.h-cream { background: var(--cream); }
+
+.lockup-i { display: flex; align-items: center; gap: 20px; }
+.lockup-s { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.wm-a { font-family: var(--f); font-weight: 800; font-size: 28px; letter-spacing: -0.6px; line-height: 1; transition: color 0.2s; }
+.wm-b { font-family: var(--f); font-weight: 600; font-size: 8.5px; letter-spacing: 3.2px; text-transform: uppercase; margin-top: 4px; transition: color 0.2s; }
+
+/* Concept grid */
+.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.concept { background: white; border-radius: 20px; box-shadow: 0 1px 8px rgba(0,0,0,0.07); overflow: hidden; transition: box-shadow 0.18s, transform 0.18s; cursor: pointer; }
+.concept:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.11); transform: translateY(-2px); }
+.stage { height: 260px; display: flex; align-items: center; justify-content: center; padding: 32px; }
+.s-ink   { background: var(--ink); }
+.s-dark  { background: var(--slate); }
+.s-light { background: #F5F1ED; }
+.s-cream { background: var(--cream); }
+.foot { padding: 16px 20px 20px; border-top: 1px solid #F0EAE4; }
+.foot-inv { padding: 16px 20px 20px; border-top: 1px solid rgba(255,255,255,0.07); }
+.cn { font-size: 12px; font-weight: 800; color: var(--ink); }
+.cn-inv { font-size: 12px; font-weight: 800; color: var(--cream); }
+.cd { font-size: 10.5px; font-weight: 500; color: #b8ada4; margin-top: 3px; line-height: 1.45; }
+.cd-inv { font-size: 10.5px; font-weight: 500; color: rgba(240,229,223,0.45); margin-top: 3px; line-height: 1.45; }
+.cpill { display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 99px; font-size: 9px; font-weight: 700; background: rgba(75,142,186,0.1); color: var(--steel); }
+
+/* Lockup cards */
+.lcard { border-radius: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; padding: 28px 20px; min-height: 100px; }
+.ll { background: #F5F1ED; } .ld { background: var(--slate); } .ls { background: var(--steel); }
+.li { display: flex; align-items: center; gap: 11px; }
+
+/* Favicon row */
+.frow { background: white; border-radius: 16px; padding: 28px 24px; display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; }
+.fi   { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.fl   { font-size: 9px; font-weight: 700; color: #c0b4ac; letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* Spec */
+.srow { display: flex; gap: 10px; flex-wrap: wrap; }
+.schip { background: white; border-radius: 12px; padding: 13px 17px; display: flex; align-items: center; gap: 11px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); flex: 1; min-width: 140px; }
+.sdot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; }
+.sn { font-size: 11px; font-weight: 700; color: var(--ink); }
+.sh { font-size: 10px; color: #b8ada4; font-family: monospace; margin-top: 1px; }
+.sr { font-size: 9px; color: #c8beba; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-top: 1px; }
+
+/* Tweaks */
+#tw { display: none; position: fixed; bottom: 24px; right: 24px; z-index: 900; background: white; border-radius: 16px; padding: 18px 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.13), 0 0 0 1px rgba(0,0,0,0.06); width: 248px; font-family: var(--f); }
+#tw.on { display: block; }
+.twh { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink); margin-bottom: 14px; }
+.twg { margin-bottom: 12px; }
+.twl { font-size: 9.5px; font-weight: 700; color: #b0a498; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+.twl span { color: var(--ink); }
+input[type=range] { width: 100%; accent-color: var(--steel); cursor: pointer; }
+.twos { display: flex; gap: 4px; flex-wrap: wrap; }
+.two { padding: 3px 8px; border-radius: 6px; font-size: 9.5px; font-weight: 700; border: 1.5px solid #e5ddd7; cursor: pointer; background: white; color: #b0a498; font-family: var(--f); transition: all 0.1s; }
+.two.on { background: var(--slate); color: white; border-color: var(--slate); }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hdr">
+  <div class="hdr-eyebrow">Brand Identity · v4</div>
+  <div class="hdr-title">Orbit Library Management System</div>
+  <div class="hdr-sub">Hyper-realistic bookshelf mark — all five brand colours, one per spine</div>
+</div>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero h-ink" id="hero">
+  <div class="lockup-i" id="hero-lockup">
+    <svg id="hero-svg" width="140" height="100" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Lavender vertical gradient -->
+        <linearGradient id="hgLav" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="100%" stop-color="#7470BE"/></linearGradient>
+        <!-- Steel vertical gradient -->
+        <linearGradient id="hgSteel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6AADD4"/><stop offset="100%" stop-color="#2E6A90"/></linearGradient>
+        <!-- Slate vertical gradient -->
+        <linearGradient id="hgSlate" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3D5060"/><stop offset="100%" stop-color="#141E26"/></linearGradient>
+        <!-- Golden vertical gradient -->
+        <linearGradient id="hgGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD060"/><stop offset="100%" stop-color="#A86808"/></linearGradient>
+        <!-- Cream vertical gradient -->
+        <linearGradient id="hgCream" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FAF3ED"/><stop offset="100%" stop-color="#C0B0A6"/></linearGradient>
+        <!-- Spine curvature overlay (objectBoundingBox = scales to each rect) -->
+        <linearGradient id="hgCurve" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="rgba(0,0,0,0.38)"/>
+          <stop offset="14%"  stop-color="rgba(0,0,0,0.04)"/>
+          <stop offset="35%"  stop-color="rgba(255,255,255,0.09)"/>
+          <stop offset="78%"  stop-color="rgba(0,0,0,0.02)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,0.22)"/>
+        </linearGradient>
+        <!-- Subtle top-to-bottom sheen -->
+        <linearGradient id="hgSheen" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="rgba(255,255,255,0.12)"/>
+          <stop offset="40%"  stop-color="rgba(255,255,255,0)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,0.18)"/>
+        </linearGradient>
+        <!-- Cast shadow (right side of each book) gradientUnits userSpaceOnUse per book -->
+        <linearGradient id="hgCastA" x1="22" y1="0" x2="28" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.28)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+        <linearGradient id="hgCastB" x1="44" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.28)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+        <linearGradient id="hgCastC" x1="69" y1="0" x2="78" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.32)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+        <linearGradient id="hgCastD" x1="93" y1="0" x2="101" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.28)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+      </defs>
+
+      <!-- Shelf board -->
+      <rect x="0" y="95" width="140" height="5" rx="1" fill="#0E1820"/>
+      <rect x="0" y="95" width="140" height="2" rx="1" fill="rgba(255,255,255,0.06)"/>
+
+      <!-- ── BOOK 1: Lavender ── x=4, y=42, w=18, h=53 -->
+      <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#hgLav)"/>
+      <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#hgCurve)"/>
+      <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#hgSheen)"/>
+      <!-- Page block top -->
+      <rect x="5"  y="40" width="16" height="3.5" rx="0.8" fill="#E5DDD6"/>
+      <line x1="5" y1="41"  x2="21" y2="41"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <line x1="5" y1="42"  x2="21" y2="42"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <!-- Title band -->
+      <rect x="6"  y="49"  width="14" height="2.5" rx="0.5" fill="rgba(255,255,255,0.22)"/>
+      <rect x="6"  y="53.5" width="14" height="1.4" rx="0.5" fill="rgba(255,255,255,0.13)"/>
+      <rect x="6"  y="56.5" width="10" height="1.4" rx="0.5" fill="rgba(255,255,255,0.09)"/>
+      <!-- Bottom rule -->
+      <rect x="6"  y="87"  width="14" height="1.5" rx="0.5" fill="rgba(255,255,255,0.14)"/>
+      <!-- Cast shadow -->
+      <rect x="22" y="42" width="8"  height="53" fill="url(#hgCastA)"/>
+
+      <!-- ── BOOK 2: Steel ── x=24, y=28, w=20, h=67 -->
+      <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#hgSteel)"/>
+      <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#hgCurve)"/>
+      <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#hgSheen)"/>
+      <rect x="25" y="25.5" width="18" height="4" rx="0.8" fill="#E5DDD6"/>
+      <line x1="25" y1="27"  x2="43" y2="27"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <line x1="25" y1="28"  x2="43" y2="28"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <rect x="27" y="36"  width="16" height="2.5" rx="0.5" fill="rgba(255,255,255,0.24)"/>
+      <rect x="27" y="40.5" width="16" height="1.4" rx="0.5" fill="rgba(255,255,255,0.14)"/>
+      <rect x="27" y="43.5" width="11" height="1.4" rx="0.5" fill="rgba(255,255,255,0.1)"/>
+      <!-- Bottom band with author -->
+      <rect x="24" y="84"  width="20" height="11" rx="1.5" fill="rgba(0,0,0,0.18)"/>
+      <rect x="27" y="86.5" width="14" height="1.4" rx="0.5" fill="rgba(255,255,255,0.18)"/>
+      <rect x="44" y="28" width="10" height="67" fill="url(#hgCastB)"/>
+
+      <!-- ── BOOK 3: Slate (tallest, centre) ── x=47, y=6, w=22, h=89 -->
+      <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#hgSlate)"/>
+      <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#hgCurve)"/>
+      <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#hgSheen)"/>
+      <rect x="48" y="3.5" width="20" height="4"  rx="0.8" fill="#E5DDD6"/>
+      <line x1="48" y1="5"   x2="68" y2="5"   stroke="#CEC6BE" stroke-width="0.4"/>
+      <line x1="48" y1="6"   x2="68" y2="6"   stroke="#CEC6BE" stroke-width="0.4"/>
+      <!-- Golden accent band at top -->
+      <rect x="47" y="6"  width="22" height="9"  rx="1.5" fill="#F6B93B"/>
+      <rect x="47" y="12" width="22" height="3"  fill="#D4940A" opacity="0.35"/>
+      <!-- Title lines (on dark) -->
+      <rect x="50" y="21"  width="16" height="2.5" rx="0.5" fill="rgba(255,255,255,0.28)"/>
+      <rect x="50" y="25.5" width="16" height="1.4" rx="0.5" fill="rgba(255,255,255,0.16)"/>
+      <rect x="50" y="28.5" width="12" height="1.4" rx="0.5" fill="rgba(255,255,255,0.1)"/>
+      <!-- Mid decorative line -->
+      <rect x="50" y="55"  width="16" height="0.8" rx="0.4" fill="rgba(255,255,255,0.1)"/>
+      <!-- Bottom author area -->
+      <rect x="47" y="84"  width="22" height="11" rx="1.5" fill="rgba(0,0,0,0.2)"/>
+      <rect x="50" y="86.5" width="16" height="1.4" rx="0.5" fill="rgba(255,255,255,0.18)"/>
+      <rect x="69" y="6"  width="10" height="89" fill="url(#hgCastC)"/>
+
+      <!-- ── BOOK 4: Golden ── x=72, y=22, w=20, h=73 -->
+      <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#hgGold)"/>
+      <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#hgCurve)"/>
+      <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#hgSheen)"/>
+      <rect x="73" y="19.5" width="18" height="4" rx="0.8" fill="#E5DDD6"/>
+      <line x1="73" y1="21"  x2="91" y2="21"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <line x1="73" y1="22"  x2="91" y2="22"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <!-- Title lines (dark on gold) -->
+      <rect x="75" y="30"  width="16" height="2.5" rx="0.5" fill="rgba(0,0,0,0.2)"/>
+      <rect x="75" y="34.5" width="16" height="1.4" rx="0.5" fill="rgba(0,0,0,0.12)"/>
+      <rect x="75" y="37.5" width="11" height="1.4" rx="0.5" fill="rgba(0,0,0,0.08)"/>
+      <!-- Thin dividing line mid-spine -->
+      <rect x="75" y="60"  width="16" height="0.8" rx="0.4" fill="rgba(0,0,0,0.1)"/>
+      <!-- Bottom author band -->
+      <rect x="72" y="84"  width="20" height="11" rx="1.5" fill="rgba(0,0,0,0.14)"/>
+      <rect x="75" y="86.5" width="14" height="1.4" rx="0.5" fill="rgba(0,0,0,0.2)"/>
+      <rect x="92" y="22" width="9"  height="73" fill="url(#hgCastD)"/>
+
+      <!-- ── BOOK 5: Cream ── x=94, y=38, w=18, h=57 -->
+      <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#hgCream)"/>
+      <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#hgCurve)"/>
+      <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#hgSheen)"/>
+      <rect x="95" y="35.5" width="16" height="4"  rx="0.8" fill="#E5DDD6"/>
+      <line x1="95" y1="37"  x2="111" y2="37"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <line x1="95" y1="38"  x2="111" y2="38"  stroke="#CEC6BE" stroke-width="0.4"/>
+      <!-- Title lines (dark on cream) -->
+      <rect x="97" y="46"  width="13" height="2.5" rx="0.5" fill="rgba(44,58,71,0.22)"/>
+      <rect x="97" y="50.5" width="13" height="1.4" rx="0.5" fill="rgba(44,58,71,0.13)"/>
+      <rect x="97" y="53.5" width="9"  height="1.4" rx="0.5" fill="rgba(44,58,71,0.09)"/>
+      <!-- Slate accent band top -->
+      <rect x="94" y="38" width="18" height="6"  rx="1.5" fill="rgba(44,58,71,0.18)"/>
+      <rect x="94" y="38" width="18" height="3.5" rx="1.5" fill="rgba(44,58,71,0.25)"/>
+      <!-- Bottom band -->
+      <rect x="94" y="84"  width="18" height="11" rx="1.5" fill="rgba(44,58,71,0.1)"/>
+      <rect x="97" y="86.5" width="13" height="1.4" rx="0.5" fill="rgba(44,58,71,0.2)"/>
+
+      <!-- Ambient occlusion under all books on shelf -->
+      <rect x="4" y="93" width="108" height="2" rx="1" fill="rgba(0,0,0,0.18)"/>
+    </svg>
+
+    <div id="hero-wm">
+      <div class="wm-a" id="wma" style="color:#F0E5DF;">Orbit</div>
+      <div class="wm-b" id="wmb" style="color:rgba(240,229,223,0.42);">Library Management System</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CONCEPTS ══════════ -->
+<section>
+  <div class="rule">Four Directions</div>
+  <div class="grid2">
+
+    <!-- 1: Five Spines (with all brand colors) -->
+    <div class="concept">
+      <div class="stage s-ink">
+        <svg width="140" height="100" viewBox="0 0 140 100" fill="none">
+          <defs>
+            <linearGradient id="cgLav"   x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="100%" stop-color="#7470BE"/></linearGradient>
+            <linearGradient id="cgSteel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6AADD4"/><stop offset="100%" stop-color="#2E6A90"/></linearGradient>
+            <linearGradient id="cgSlate" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3D5060"/><stop offset="100%" stop-color="#141E26"/></linearGradient>
+            <linearGradient id="cgGold"  x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD060"/><stop offset="100%" stop-color="#A86808"/></linearGradient>
+            <linearGradient id="cgCream" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FAF3ED"/><stop offset="100%" stop-color="#C0B0A6"/></linearGradient>
+            <linearGradient id="cgCurve" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0.38)"/><stop offset="14%" stop-color="rgba(0,0,0,0.04)"/><stop offset="35%" stop-color="rgba(255,255,255,0.09)"/><stop offset="78%" stop-color="rgba(0,0,0,0.02)"/><stop offset="100%" stop-color="rgba(0,0,0,0.22)"/></linearGradient>
+            <linearGradient id="cgSheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,0.12)"/><stop offset="40%" stop-color="rgba(255,255,255,0)"/><stop offset="100%" stop-color="rgba(0,0,0,0.18)"/></linearGradient>
+            <linearGradient id="cCst1" x1="22" y1="0" x2="28" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.26)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+            <linearGradient id="cCst2" x1="44" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.26)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+            <linearGradient id="cCst3" x1="69" y1="0" x2="77" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.3)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+            <linearGradient id="cCst4" x1="92" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(0,0,0,0.26)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></linearGradient>
+          </defs>
+          <rect x="0" y="95" width="140" height="5" rx="1" fill="#0E1820"/>
+          <rect x="0" y="95" width="140" height="1.5" fill="rgba(255,255,255,0.06)"/>
+          <!-- Lavender -->
+          <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#cgLav)"/>
+          <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#cgCurve)"/>
+          <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#cgSheen)"/>
+          <rect x="5"  y="40" width="16" height="3"  rx="0.8" fill="#E5DDD6"/>
+          <rect x="6"  y="49" width="14" height="2.5" rx="0.5" fill="rgba(255,255,255,0.22)"/>
+          <rect x="6"  y="53.5" width="10" height="1.4" rx="0.5" fill="rgba(255,255,255,0.12)"/>
+          <rect x="22" y="42" width="8" height="53" fill="url(#cCst1)"/>
+          <!-- Steel -->
+          <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#cgSteel)"/>
+          <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#cgCurve)"/>
+          <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#cgSheen)"/>
+          <rect x="25" y="25.5" width="18" height="3" rx="0.8" fill="#E5DDD6"/>
+          <rect x="27" y="36" width="16" height="2.5" rx="0.5" fill="rgba(255,255,255,0.24)"/>
+          <rect x="27" y="40.5" width="11" height="1.4" rx="0.5" fill="rgba(255,255,255,0.13)"/>
+          <rect x="24" y="84" width="20" height="11" rx="1.5" fill="rgba(0,0,0,0.18)"/>
+          <rect x="44" y="28" width="10" height="67" fill="url(#cCst2)"/>
+          <!-- Slate hero -->
+          <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#cgSlate)"/>
+          <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#cgCurve)"/>
+          <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#cgSheen)"/>
+          <rect x="48" y="3.5" width="20" height="4"  rx="0.8" fill="#E5DDD6"/>
+          <rect x="47" y="6"  width="22" height="9"  rx="1.5" fill="#F6B93B"/>
+          <rect x="47" y="12" width="22" height="3"  fill="#D4940A" opacity="0.35"/>
+          <rect x="50" y="21" width="16" height="2.5" rx="0.5" fill="rgba(255,255,255,0.28)"/>
+          <rect x="50" y="25.5" width="12" height="1.4" rx="0.5" fill="rgba(255,255,255,0.15)"/>
+          <rect x="47" y="84" width="22" height="11" rx="1.5" fill="rgba(0,0,0,0.2)"/>
+          <rect x="69" y="6"  width="10" height="89" fill="url(#cCst3)"/>
+          <!-- Golden -->
+          <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#cgGold)"/>
+          <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#cgCurve)"/>
+          <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#cgSheen)"/>
+          <rect x="73" y="19.5" width="18" height="3.5" rx="0.8" fill="#E5DDD6"/>
+          <rect x="75" y="30" width="16" height="2.5" rx="0.5" fill="rgba(0,0,0,0.2)"/>
+          <rect x="75" y="34.5" width="11" height="1.4" rx="0.5" fill="rgba(0,0,0,0.12)"/>
+          <rect x="72" y="84" width="20" height="11" rx="1.5" fill="rgba(0,0,0,0.14)"/>
+          <rect x="92" y="22" width="9" height="73" fill="url(#cCst4)"/>
+          <!-- Cream -->
+          <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#cgCream)"/>
+          <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#cgCurve)"/>
+          <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#cgSheen)"/>
+          <rect x="95" y="35.5" width="16" height="3.5" rx="0.8" fill="#E5DDD6"/>
+          <rect x="97" y="46" width="13" height="2.5" rx="0.5" fill="rgba(44,58,71,0.22)"/>
+          <rect x="97" y="50.5" width="9" height="1.4" rx="0.5" fill="rgba(44,58,71,0.12)"/>
+          <rect x="94" y="38" width="18" height="6" rx="1.5" fill="rgba(44,58,71,0.22)"/>
+          <rect x="94" y="84" width="18" height="11" rx="1.5" fill="rgba(44,58,71,0.1)"/>
+          <!-- AO shadow -->
+          <rect x="4" y="93" width="108" height="2" rx="1" fill="rgba(0,0,0,0.2)"/>
+        </svg>
+      </div>
+      <div class="foot">
+        <div class="cn">1 — Five Spines</div>
+        <div class="cd">Each spine uses a brand colour: Lavender, Steel, Slate (hero with golden band), Golden, Cream. Spine curvature gradients, page blocks, title rules, cast shadows.</div>
+        <div class="cpill">Recommended</div>
+      </div>
+    </div>
+
+    <!-- 2: Open Book -->
+    <div class="concept">
+      <div class="stage s-light">
+        <svg width="130" height="110" viewBox="0 0 64 58" fill="none">
+          <defs>
+            <linearGradient id="ob-lpg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#E0EEF7"/><stop offset="100%" stop-color="#F8F4F0"/></linearGradient>
+            <linearGradient id="ob-rpg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#F8F4F0"/><stop offset="100%" stop-color="#E4EBF0"/></linearGradient>
+            <linearGradient id="ob-spg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3A5A70"/><stop offset="100%" stop-color="#2C3A47"/></linearGradient>
+            <filter id="ob-sh"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/></filter>
+          </defs>
+          <!-- Left page -->
+          <path d="M 5 47 L 32 43.5 L 32 10 L 5 13.5 Z" fill="url(#ob-lpg)" filter="url(#ob-sh)"/>
+          <path d="M 5 47 L 32 43.5 L 32 10 L 5 13.5 Z" fill="none" stroke="#2C3A47" stroke-width="1.2" stroke-linejoin="round" opacity="0.6"/>
+          <!-- Right page -->
+          <path d="M 59 47 L 32 43.5 L 32 10 L 59 13.5 Z" fill="url(#ob-rpg)" filter="url(#ob-sh)"/>
+          <path d="M 59 47 L 32 43.5 L 32 10 L 59 13.5 Z" fill="none" stroke="#2C3A47" stroke-width="1.2" stroke-linejoin="round" opacity="0.6"/>
+          <!-- Spine shadow -->
+          <path d="M 32 10 L 32 43.5" stroke="url(#ob-spg)" stroke-width="3" stroke-linecap="round"/>
+          <!-- Left page lines -->
+          <line x1="9"  y1="19"  x2="30.5" y2="16.5" stroke="#4B8EBA" stroke-width="0.9" opacity="0.35" stroke-linecap="round"/>
+          <line x1="9"  y1="23"  x2="30.5" y2="20.8" stroke="#2C3A47" stroke-width="0.7" opacity="0.2"  stroke-linecap="round"/>
+          <line x1="9"  y1="27"  x2="30.5" y2="25"   stroke="#2C3A47" stroke-width="0.7" opacity="0.16" stroke-linecap="round"/>
+          <line x1="9"  y1="31"  x2="30.5" y2="29"   stroke="#2C3A47" stroke-width="0.7" opacity="0.14" stroke-linecap="round"/>
+          <line x1="9"  y1="35"  x2="30.5" y2="33.2" stroke="#2C3A47" stroke-width="0.7" opacity="0.12" stroke-linecap="round"/>
+          <!-- Right page lines -->
+          <line x1="55" y1="19"  x2="33.5" y2="16.5" stroke="#F6B93B" stroke-width="0.9" opacity="0.4"  stroke-linecap="round"/>
+          <line x1="55" y1="23"  x2="33.5" y2="20.8" stroke="#2C3A47" stroke-width="0.7" opacity="0.2"  stroke-linecap="round"/>
+          <line x1="55" y1="27"  x2="33.5" y2="25"   stroke="#2C3A47" stroke-width="0.7" opacity="0.16" stroke-linecap="round"/>
+          <line x1="55" y1="31"  x2="33.5" y2="29"   stroke="#2C3A47" stroke-width="0.7" opacity="0.14" stroke-linecap="round"/>
+          <line x1="55" y1="35"  x2="33.5" y2="33.2" stroke="#2C3A47" stroke-width="0.7" opacity="0.12" stroke-linecap="round"/>
+          <!-- Cover board bottom -->
+          <path d="M 5 47 L 32 43.5 L 32 48.5 L 5 52 Z" fill="#D4C8C0" opacity="0.5"/>
+          <path d="M 59 47 L 32 43.5 L 32 48.5 L 59 52 Z" fill="#D0C4BC" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="foot">
+        <div class="cn">2 — Open Book</div>
+        <div class="cd">Open pages with page fill gradients, spine shadow, rule lines in brand colours. Cover boards visible at the bottom edge.</div>
+      </div>
+    </div>
+
+    <!-- 3: Hardcover -->
+    <div class="concept">
+      <div class="stage s-light">
+        <svg width="90" height="118" viewBox="0 0 54 70" fill="none">
+          <defs>
+            <linearGradient id="hc-cov" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5FA3CE"/><stop offset="100%" stop-color="#2A6488"/></linearGradient>
+            <linearGradient id="hc-spi" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1A3A4E"/><stop offset="100%" stop-color="#2C3A47"/></linearGradient>
+            <linearGradient id="hc-pgs" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#EAE0D8"/><stop offset="100%" stop-color="#F5F0EC"/></linearGradient>
+            <linearGradient id="hc-shd" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,0.18)"/></linearGradient>
+            <filter id="hc-drp"><feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.18"/></filter>
+          </defs>
+          <!-- Page block right -->
+          <rect x="40" y="6"  width="10" height="60" rx="1" fill="url(#hc-pgs)"/>
+          <rect x="40" y="6"  width="10" height="60" rx="1" fill="url(#hc-shd)"/>
+          <!-- Page edge lines -->
+          <line x1="40" y1="14" x2="50" y2="14" stroke="#D4C8C0" stroke-width="0.5"/>
+          <line x1="40" y1="21" x2="50" y2="21" stroke="#D4C8C0" stroke-width="0.5"/>
+          <line x1="40" y1="28" x2="50" y2="28" stroke="#D4C8C0" stroke-width="0.5"/>
+          <line x1="40" y1="35" x2="50" y2="35" stroke="#D4C8C0" stroke-width="0.5"/>
+          <line x1="40" y1="42" x2="50" y2="42" stroke="#D4C8C0" stroke-width="0.5"/>
+          <line x1="40" y1="49" x2="50" y2="49" stroke="#D4C8C0" stroke-width="0.5"/>
+          <line x1="40" y1="56" x2="50" y2="56" stroke="#D4C8C0" stroke-width="0.5"/>
+          <!-- Cover -->
+          <rect x="4"  y="4"  width="38" height="62" rx="1.5" fill="url(#hc-cov)" filter="url(#hc-drp)"/>
+          <!-- Spine -->
+          <rect x="4"  y="4"  width="7"  height="62" rx="1.5" fill="url(#hc-spi)"/>
+          <rect x="8"  y="4"  width="3"  height="62" fill="rgba(0,0,0,0.12)"/>
+          <!-- Golden top band -->
+          <rect x="4"  y="4"  width="38" height="10" rx="1.5" fill="#F6B93B"/>
+          <rect x="4"  y="11" width="38" height="3"  fill="rgba(0,0,0,0.1)"/>
+          <!-- Lavender thin strip below golden -->
+          <rect x="4"  y="14" width="38" height="2.5" fill="#A29FEC" opacity="0.7"/>
+          <!-- Cover title lines -->
+          <rect x="14" y="22" width="22" height="2.5" rx="0.5" fill="rgba(255,255,255,0.3)"/>
+          <rect x="14" y="26.5" width="22" height="1.4" rx="0.5" fill="rgba(255,255,255,0.18)"/>
+          <rect x="14" y="29.5" width="16" height="1.4" rx="0.5" fill="rgba(255,255,255,0.12)"/>
+          <!-- Bottom author band -->
+          <rect x="4"  y="54" width="38" height="12" rx="1.5" fill="rgba(0,0,0,0.2)"/>
+          <rect x="14" y="57" width="22" height="1.5" rx="0.5" fill="rgba(255,255,255,0.2)"/>
+          <!-- Cover surface sheen -->
+          <rect x="4" y="4" width="38" height="62" rx="1.5" fill="url(#hc-shd)" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="foot">
+        <div class="cn">3 — Hardcover</div>
+        <div class="cd">Closed hardcover: Steel cover, golden top band, lavender accent strip, page block with edge lines. All brand colours used.</div>
+      </div>
+    </div>
+
+    <!-- 4: Arch + Three Spines -->
+    <div class="concept" style="background:var(--slate);">
+      <div class="stage s-dark">
+        <svg width="130" height="100" viewBox="0 0 120 86" fill="none">
+          <defs>
+            <linearGradient id="a3-lav" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="100%" stop-color="#7470BE"/></linearGradient>
+            <linearGradient id="a3-slt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3D5060"/><stop offset="100%" stop-color="#141E26"/></linearGradient>
+            <linearGradient id="a3-stl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6AADD4"/><stop offset="100%" stop-color="#2E6A90"/></linearGradient>
+            <linearGradient id="a3-crv" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0.38)"/><stop offset="14%" stop-color="rgba(0,0,0,0.04)"/><stop offset="35%" stop-color="rgba(255,255,255,0.09)"/><stop offset="78%" stop-color="rgba(0,0,0,0.02)"/><stop offset="100%" stop-color="rgba(0,0,0,0.22)"/></linearGradient>
+            <linearGradient id="a3-shn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,0.12)"/><stop offset="40%" stop-color="rgba(255,255,255,0)"/><stop offset="100%" stop-color="rgba(0,0,0,0.18)"/></linearGradient>
+            <linearGradient id="a3-arch" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD060"/><stop offset="100%" stop-color="#F6B93B"/></linearGradient>
+          </defs>
+          <!-- Shelf -->
+          <rect x="6" y="80" width="108" height="4" rx="1" fill="#0E1820"/>
+          <!-- Left spine — Lavender -->
+          <rect x="10" y="32" width="22" height="48" rx="1.5" fill="url(#a3-lav)"/>
+          <rect x="10" y="32" width="22" height="48" rx="1.5" fill="url(#a3-crv)"/>
+          <rect x="10" y="32" width="22" height="48" rx="1.5" fill="url(#a3-shn)"/>
+          <rect x="11" y="29.5" width="20" height="4" rx="0.8" fill="#E5DDD6"/>
+          <rect x="13" y="39" width="16" height="2.5" rx="0.5" fill="rgba(255,255,255,0.22)"/>
+          <rect x="13" y="43.5" width="12" height="1.4" rx="0.5" fill="rgba(255,255,255,0.12)"/>
+          <!-- Centre spine — Slate + golden band (tallest) -->
+          <rect x="37" y="10" width="26" height="70" rx="1.5" fill="url(#a3-slt)"/>
+          <rect x="37" y="10" width="26" height="70" rx="1.5" fill="url(#a3-crv)"/>
+          <rect x="37" y="10" width="26" height="70" rx="1.5" fill="url(#a3-shn)"/>
+          <rect x="38" y="7.5" width="24" height="4" rx="0.8" fill="#E5DDD6"/>
+          <rect x="37" y="10" width="26" height="10" rx="1.5" fill="#F6B93B"/>
+          <rect x="40" y="26" width="20" height="2.5" rx="0.5" fill="rgba(255,255,255,0.28)"/>
+          <rect x="40" y="30.5" width="16" height="1.4" rx="0.5" fill="rgba(255,255,255,0.15)"/>
+          <!-- Right spine — Steel -->
+          <rect x="68" y="26" width="22" height="54" rx="1.5" fill="url(#a3-stl)"/>
+          <rect x="68" y="26" width="22" height="54" rx="1.5" fill="url(#a3-crv)"/>
+          <rect x="68" y="26" width="22" height="54" rx="1.5" fill="url(#a3-shn)"/>
+          <rect x="69" y="23.5" width="20" height="4" rx="0.8" fill="#E5DDD6"/>
+          <rect x="71" y="33" width="16" height="2.5" rx="0.5" fill="rgba(255,255,255,0.24)"/>
+          <rect x="71" y="37.5" width="12" height="1.4" rx="0.5" fill="rgba(255,255,255,0.13)"/>
+          <!-- Arch — precise golden parabola -->
+          <path d="M 10 32 Q 50 4 90 26" stroke="url(#a3-arch)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Arch apex dot -->
+          <circle cx="50" cy="8" r="4" fill="#F6B93B"/>
+          <circle cx="49" cy="7" r="1.3" fill="rgba(255,255,255,0.5)"/>
+          <!-- AO -->
+          <rect x="10" y="77" width="80" height="2" rx="1" fill="rgba(0,0,0,0.22)"/>
+        </svg>
+      </div>
+      <div class="foot-inv">
+        <div class="cn-inv">4 — Arch + Shelf</div>
+        <div class="cd-inv">Three spines with a golden arch above — reads as library doorway. All brand colours: Lavender left, Slate centre, Steel right. Dark native.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ LOCKUPS ══════════ -->
+<section>
+  <div class="rule">Wordmark Lockups · Concept 1</div>
+  <div class="grid3">
+    <div class="lcard ll">
+      <div class="li">
+        <svg width="52" height="37" viewBox="0 0 140 100" fill="none">
+          <defs>
+            <linearGradient id="lk1-lav" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#B0ACEE"/><stop offset="100%" stop-color="#6A68AE"/></linearGradient>
+            <linearGradient id="lk1-stl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A9DC4"/><stop offset="100%" stop-color="#266080"/></linearGradient>
+            <linearGradient id="lk1-slt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D4050"/><stop offset="100%" stop-color="#0E181E"/></linearGradient>
+            <linearGradient id="lk1-gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFC850"/><stop offset="100%" stop-color="#986000"/></linearGradient>
+            <linearGradient id="lk1-crm" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0E8E0"/><stop offset="100%" stop-color="#B0A098"/></linearGradient>
+            <linearGradient id="lk1-crv" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0.35)"/><stop offset="14%" stop-color="rgba(0,0,0,0.03)"/><stop offset="35%" stop-color="rgba(255,255,255,0.08)"/><stop offset="100%" stop-color="rgba(0,0,0,0.2)"/></linearGradient>
+          </defs>
+          <rect x="0" y="95" width="140" height="5" rx="1" fill="#1C2830"/>
+          <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#lk1-lav)"/><rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#lk1-crv)"/>
+          <rect x="5"  y="40" width="16" height="3"  rx="0.8" fill="#D8CFC8"/>
+          <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#lk1-stl)"/><rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#lk1-crv)"/>
+          <rect x="25" y="25.5" width="18" height="3" rx="0.8" fill="#D8CFC8"/>
+          <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#lk1-slt)"/><rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#lk1-crv)"/>
+          <rect x="48" y="3.5" width="20" height="4"  rx="0.8" fill="#D8CFC8"/>
+          <rect x="47" y="6"  width="22" height="9"  rx="1.5" fill="#F6B93B"/>
+          <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#lk1-gld)"/><rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#lk1-crv)"/>
+          <rect x="73" y="19.5" width="18" height="3.5" rx="0.8" fill="#D8CFC8"/>
+          <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#lk1-crm)"/><rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#lk1-crv)"/>
+          <rect x="95" y="35.5" width="16" height="3.5" rx="0.8" fill="#D8CFC8"/>
+        </svg>
+        <div>
+          <div style="font-family:var(--f);font-weight:800;font-size:18px;color:#1C2830;letter-spacing:-0.4px;">Orbit</div>
+          <div style="font-family:var(--f);font-weight:600;font-size:7.5px;color:#9aabb8;letter-spacing:2.8px;text-transform:uppercase;margin-top:3px;">Library Management System</div>
+        </div>
+      </div>
+    </div>
+    <div class="lcard ld">
+      <div class="li">
+        <svg width="52" height="37" viewBox="0 0 140 100" fill="none">
+          <defs>
+            <linearGradient id="lk2-lav" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="100%" stop-color="#7470BE"/></linearGradient>
+            <linearGradient id="lk2-stl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6AADD4"/><stop offset="100%" stop-color="#2E6A90"/></linearGradient>
+            <linearGradient id="lk2-slt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3D5060"/><stop offset="100%" stop-color="#141E26"/></linearGradient>
+            <linearGradient id="lk2-gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD060"/><stop offset="100%" stop-color="#A86808"/></linearGradient>
+            <linearGradient id="lk2-crm" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FAF3ED"/><stop offset="100%" stop-color="#C0B0A6"/></linearGradient>
+            <linearGradient id="lk2-crv" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0.38)"/><stop offset="14%" stop-color="rgba(0,0,0,0.04)"/><stop offset="35%" stop-color="rgba(255,255,255,0.09)"/><stop offset="100%" stop-color="rgba(0,0,0,0.22)"/></linearGradient>
+          </defs>
+          <rect x="0" y="95" width="140" height="5" rx="1" fill="#0E1820"/>
+          <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#lk2-lav)"/><rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#lk2-crv)"/>
+          <rect x="5"  y="40" width="16" height="3"  rx="0.8" fill="#E5DDD6"/>
+          <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#lk2-stl)"/><rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#lk2-crv)"/>
+          <rect x="25" y="25.5" width="18" height="3" rx="0.8" fill="#E5DDD6"/>
+          <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#lk2-slt)"/><rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#lk2-crv)"/>
+          <rect x="48" y="3.5" width="20" height="4"  rx="0.8" fill="#E5DDD6"/>
+          <rect x="47" y="6"  width="22" height="9"  rx="1.5" fill="#F6B93B"/>
+          <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#lk2-gld)"/><rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#lk2-crv)"/>
+          <rect x="73" y="19.5" width="18" height="3.5" rx="0.8" fill="#E5DDD6"/>
+          <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#lk2-crm)"/><rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#lk2-crv)"/>
+          <rect x="95" y="35.5" width="16" height="3.5" rx="0.8" fill="#E5DDD6"/>
+        </svg>
+        <div>
+          <div style="font-family:var(--f);font-weight:800;font-size:18px;color:#F0E5DF;letter-spacing:-0.4px;">Orbit</div>
+          <div style="font-family:var(--f);font-weight:600;font-size:7.5px;color:rgba(240,229,223,0.38);letter-spacing:2.8px;text-transform:uppercase;margin-top:3px;">Library Management System</div>
+        </div>
+      </div>
+    </div>
+    <div class="lcard ls">
+      <div class="li">
+        <svg width="52" height="37" viewBox="0 0 140 100" fill="none">
+          <defs>
+            <linearGradient id="lk3-lav" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,0.9)"/><stop offset="100%" stop-color="rgba(255,255,255,0.55)"/></linearGradient>
+            <linearGradient id="lk3-crv" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0.28)"/><stop offset="14%" stop-color="rgba(0,0,0,0.02)"/><stop offset="35%" stop-color="rgba(255,255,255,0.12)"/><stop offset="100%" stop-color="rgba(0,0,0,0.15)"/></linearGradient>
+          </defs>
+          <rect x="0" y="95" width="140" height="5" rx="1" fill="rgba(0,0,0,0.25)"/>
+          <rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#lk3-lav)"/><rect x="4"  y="42" width="18" height="53" rx="1.5" fill="url(#lk3-crv)"/>
+          <rect x="5"  y="40" width="16" height="3"  rx="0.8" fill="rgba(255,255,255,0.6)"/>
+          <rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#lk3-lav)"/><rect x="24" y="28" width="20" height="67" rx="1.5" fill="url(#lk3-crv)"/>
+          <rect x="25" y="25.5" width="18" height="3" rx="0.8" fill="rgba(255,255,255,0.6)"/>
+          <rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#lk3-lav)"/><rect x="47" y="6"  width="22" height="89" rx="1.5" fill="url(#lk3-crv)"/>
+          <rect x="48" y="3.5" width="20" height="4"  rx="0.8" fill="rgba(255,255,255,0.6)"/>
+          <rect x="47" y="6"  width="22" height="9"  rx="1.5" fill="#F6B93B"/>
+          <rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#lk3-lav)"/><rect x="72" y="22" width="20" height="73" rx="1.5" fill="url(#lk3-crv)"/>
+          <rect x="73" y="19.5" width="18" height="3.5" rx="0.8" fill="rgba(255,255,255,0.6)"/>
+          <rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#lk3-lav)"/><rect x="94" y="38" width="18" height="57" rx="1.5" fill="url(#lk3-crv)"/>
+          <rect x="95" y="35.5" width="16" height="3.5" rx="0.8" fill="rgba(255,255,255,0.6)"/>
+        </svg>
+        <div>
+          <div style="font-family:var(--f);font-weight:800;font-size:18px;color:white;letter-spacing:-0.4px;">Orbit</div>
+          <div style="font-family:var(--f);font-weight:600;font-size:7.5px;color:rgba(255,255,255,0.5);letter-spacing:2.8px;text-transform:uppercase;margin-top:3px;">Library Management System</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FAVICON ══════════ -->
+<section>
+  <div class="rule">Favicon · App Icon</div>
+  <div class="frow">
+    <div class="fi">
+      <svg width="16" height="16" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#1C2830"/><rect x="0" y="29" width="32" height="3" fill="#0E1820"/><rect x="2" y="15" width="5" height="14" rx="1" fill="#A29FEC"/><rect x="8" y="10" width="6" height="19" rx="1" fill="#4B8EBA"/><rect x="15" y="4"  width="8" height="25" rx="1" fill="#F0E5DF"/><rect x="15" y="4" width="8" height="5" fill="#F6B93B" rx="1"/><rect x="24" y="8"  width="6" height="21" rx="1" fill="#F6B93B" opacity="0.85"/></svg>
+      <div class="fl">16</div>
+    </div>
+    <div class="fi">
+      <svg width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#1C2830"/><rect x="0" y="29" width="32" height="3" fill="#0E1820"/><rect x="2" y="15" width="5" height="14" rx="1" fill="#A29FEC"/><rect x="8" y="10" width="6" height="19" rx="1" fill="#4B8EBA"/><rect x="15" y="4"  width="8" height="25" rx="1" fill="#F0E5DF"/><rect x="15" y="4" width="8" height="5" fill="#F6B93B" rx="1"/><rect x="24" y="8"  width="6" height="21" rx="1" fill="#F6B93B" opacity="0.85"/></svg>
+      <div class="fl">32</div>
+    </div>
+    <div class="fi">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <defs><linearGradient id="f64bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#263440"/><stop offset="100%" stop-color="#1C2830"/></linearGradient></defs>
+        <rect width="64" height="64" rx="14" fill="url(#f64bg)"/>
+        <rect x="0" y="59" width="64" height="5" rx="0" fill="#0E1820"/>
+        <rect x="3"  y="28" width="9"  height="31" rx="1.5" fill="#A29FEC" opacity="0.9"/>
+        <rect x="14" y="18" width="10" height="41" rx="1.5" fill="#4B8EBA"/>
+        <rect x="26" y="6"  width="14" height="53" rx="1.5" fill="#F0E5DF"/>
+        <rect x="26" y="6"  width="14" height="8"  rx="1.5" fill="#F6B93B"/>
+        <rect x="42" y="14" width="10" height="45" rx="1.5" fill="#F6B93B" opacity="0.85"/>
+        <rect x="54" y="24" width="8"  height="35" rx="1.5" fill="#A29FEC" opacity="0.6"/>
+      </svg>
+      <div class="fl">64</div>
+    </div>
+    <div class="fi">
+      <svg width="128" height="128" viewBox="0 0 128 128">
+        <defs>
+          <linearGradient id="f128bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#28384A"/><stop offset="100%" stop-color="#1C2830"/></linearGradient>
+          <linearGradient id="f128lav" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="100%" stop-color="#7470BE"/></linearGradient>
+          <linearGradient id="f128stl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6AADD4"/><stop offset="100%" stop-color="#2E6A90"/></linearGradient>
+          <linearGradient id="f128slt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3D5060"/><stop offset="100%" stop-color="#141E26"/></linearGradient>
+          <linearGradient id="f128gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD060"/><stop offset="100%" stop-color="#A86808"/></linearGradient>
+          <linearGradient id="f128crm" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FAF3ED"/><stop offset="100%" stop-color="#C0B0A6"/></linearGradient>
+          <linearGradient id="f128crv" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0.38)"/><stop offset="14%" stop-color="rgba(0,0,0,0.04)"/><stop offset="35%" stop-color="rgba(255,255,255,0.09)"/><stop offset="100%" stop-color="rgba(0,0,0,0.22)"/></linearGradient>
+        </defs>
+        <rect width="128" height="128" rx="28" fill="url(#f128bg)"/>
+        <rect x="0" y="118" width="128" height="10" rx="0" fill="#0E1820"/>
+        <rect x="6"  y="56" width="18" height="62" rx="3" fill="url(#f128lav)"/><rect x="6" y="56" width="18" height="62" rx="3" fill="url(#f128crv)"/>
+        <rect x="7"  y="52" width="16" height="6"  rx="1.5" fill="#D8CFC8"/>
+        <rect x="28" y="36" width="20" height="82" rx="3" fill="url(#f128stl)"/><rect x="28" y="36" width="20" height="82" rx="3" fill="url(#f128crv)"/>
+        <rect x="29" y="32" width="18" height="6"  rx="1.5" fill="#D8CFC8"/>
+        <rect x="52" y="12" width="24" height="106" rx="3" fill="url(#f128slt)"/><rect x="52" y="12" width="24" height="106" rx="3" fill="url(#f128crv)"/>
+        <rect x="53" y="8"  width="22" height="6"  rx="1.5" fill="#D8CFC8"/>
+        <rect x="52" y="12" width="24" height="16" rx="3" fill="#F6B93B"/>
+        <rect x="80" y="28" width="20" height="90" rx="3" fill="url(#f128gld)"/><rect x="80" y="28" width="20" height="90" rx="3" fill="url(#f128crv)"/>
+        <rect x="81" y="24" width="18" height="6"  rx="1.5" fill="#D8CFC8"/>
+        <rect x="104" y="48" width="18" height="70" rx="3" fill="url(#f128crm)"/><rect x="104" y="48" width="18" height="70" rx="3" fill="url(#f128crv)"/>
+        <rect x="105" y="44" width="16" height="6"  rx="1.5" fill="#D8CFC8"/>
+      </svg>
+      <div class="fl">128</div>
+    </div>
+    <div class="fi">
+      <svg width="180" height="180" viewBox="0 0 256 256">
+        <defs>
+          <radialGradient id="f256bg" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#2E4056"/><stop offset="100%" stop-color="#1C2830"/></radialGradient>
+          <linearGradient id="f256lav" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C4C0FB"/><stop offset="100%" stop-color="#7470BE"/></linearGradient>
+          <linearGradient id="f256stl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6AADD4"/><stop offset="100%" stop-color="#2E6A90"/></linearGradient>
+          <linearGradient id="f256slt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3D5060"/><stop offset="100%" stop-color="#141E26"/></linearGradient>
+          <linearGradient id="f256gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD060"/><stop offset="100%" stop-color="#A86808"/></linearGradient>
+          <linearGradient id="f256crm" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FAF3ED"/><stop offset="100%" stop-color="#C0B0A6"/></linearGradient>
+          <linearGradient id="f256crv" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(0,0,0,0.38)"/><stop offset="14%" stop-color="rgba(0,0,0,0.04)"/><stop offset="35%" stop-color="rgba(255,255,255,0.09)"/><stop offset="100%" stop-color="rgba(0,0,0,0.22)"/></linearGradient>
+        </defs>
+        <rect width="256" height="256" rx="56" fill="url(#f256bg)"/>
+        <rect x="0" y="234" width="256" height="22" rx="0" fill="#0E1820"/>
+        <rect x="8"   y="108" width="36"  height="126" rx="6" fill="url(#f256lav)"/><rect x="8" y="108" width="36" height="126" rx="6" fill="url(#f256crv)"/>
+        <rect x="9"   y="98"  width="34"  height="14"  rx="3" fill="#D0C8C0"/>
+        <rect x="52"  y="68"  width="40"  height="166" rx="6" fill="url(#f256stl)"/><rect x="52" y="68" width="40" height="166" rx="6" fill="url(#f256crv)"/>
+        <rect x="53"  y="58"  width="38"  height="14"  rx="3" fill="#D0C8C0"/>
+        <rect x="100" y="22"  width="48"  height="212" rx="6" fill="url(#f256slt)"/><rect x="100" y="22" width="48" height="212" rx="6" fill="url(#f256crv)"/>
+        <rect x="101" y="12"  width="46"  height="14"  rx="3" fill="#D0C8C0"/>
+        <rect x="100" y="22"  width="48"  height="32"  rx="6" fill="#F6B93B"/>
+        <rect x="100" y="46"  width="48"  height="8"   fill="rgba(0,0,0,0.12)"/>
+        <rect x="156" y="52"  width="40"  height="182" rx="6" fill="url(#f256gld)"/><rect x="156" y="52" width="40" height="182" rx="6" fill="url(#f256crv)"/>
+        <rect x="157" y="42"  width="38"  height="14"  rx="3" fill="#D0C8C0"/>
+        <rect x="204" y="92"  width="36"  height="142" rx="6" fill="url(#f256crm)"/><rect x="204" y="92" width="36" height="142" rx="6" fill="url(#f256crv)"/>
+        <rect x="205" y="82"  width="34"  height="14"  rx="3" fill="#D0C8C0"/>
+      </svg>
+      <div class="fl">256</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SPEC ══════════ -->
+<section>
+  <div class="rule">Colour Assignment</div>
+  <div class="srow">
+    <div class="schip"><div class="sdot" style="background:linear-gradient(#C4C0FB,#7470BE);"></div><div><div class="sn">Spine 1 — Lavender</div><div class="sh">#A29FEC base</div><div class="sr">Far left · AI / secondary</div></div></div>
+    <div class="schip"><div class="sdot" style="background:linear-gradient(#6AADD4,#2E6A90);"></div><div><div class="sn">Spine 2 — Steel</div><div class="sh">#4B8EBA base</div><div class="sr">Primary action colour</div></div></div>
+    <div class="schip"><div class="sdot" style="background:linear-gradient(#3D5060,#141E26);"></div><div><div class="sn">Spine 3 — Slate</div><div class="sh">#2C3A47 base</div><div class="sr">Centre · hero book · golden band</div></div></div>
+    <div class="schip"><div class="sdot" style="background:linear-gradient(#FFD060,#A86808);"></div><div><div class="sn">Spine 4 — Golden</div><div class="sh">#F6B93B base</div><div class="sr">Accent · achievements</div></div></div>
+    <div class="schip"><div class="sdot" style="background:linear-gradient(#FAF3ED,#C0B0A6);"></div><div><div class="sn">Spine 5 — Cream</div><div class="sh">#F0E5DF base</div><div class="sr">Far right · light surface</div></div></div>
+  </div>
+</section>
+
+</div><!-- /page -->
+
+<!-- TWEAKS -->
+<div id="tw">
+  <div class="twh">Tweaks</div>
+  <div class="twg">
+    <div class="twl">Background</div>
+    <div class="twos">
+      <button class="two on" data-bg="ink">Ink</button>
+      <button class="two" data-bg="dark">Dark</button>
+      <button class="two" data-bg="light">Light</button>
+      <button class="two" data-bg="white">White</button>
+      <button class="two" data-bg="cream">Cream</button>
+    </div>
+  </div>
+  <div class="twg">
+    <div class="twl">Layout</div>
+    <div class="twos">
+      <button class="two on" data-lyt="inline">Inline</button>
+      <button class="two" data-lyt="stacked">Stacked</button>
+      <button class="two" data-lyt="mark">Mark Only</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "bg": "cream",
+  "layout": "inline"
+}/*EDITMODE-END*/;
+let S = { ...TWEAK_DEFAULTS };
+
+function applyState() {
+  const { bg, layout } = S;
+  document.getElementById('hero').className = `hero h-${bg}`;
+  const dark = bg === 'ink' || bg === 'dark';
+  document.getElementById('wma').style.color = dark ? '#F0E5DF' : '#1C2830';
+  document.getElementById('wmb').style.color = dark ? 'rgba(240,229,223,0.42)' : '#9aabb8';
+  const wm = document.getElementById('hero-wm');
+  const lk = document.getElementById('hero-lockup');
+  wm.style.display = layout === 'mark' ? 'none' : '';
+  lk.className = layout === 'stacked' ? 'lockup-s' : 'lockup-i';
+  document.querySelectorAll('[data-bg]').forEach(b => b.classList.toggle('on', b.dataset.bg === bg));
+  document.querySelectorAll('[data-lyt]').forEach(b => b.classList.toggle('on', b.dataset.lyt === layout));
+}
+
+document.querySelectorAll('[data-bg]').forEach(b => b.addEventListener('click', () => {
+  S.bg = b.dataset.bg; applyState();
+  window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { bg: S.bg } }, '*');
+}));
+document.querySelectorAll('[data-lyt]').forEach(b => b.addEventListener('click', () => {
+  S.layout = b.dataset.lyt; applyState();
+  window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { layout: S.layout } }, '*');
+}));
+
+window.addEventListener('message', e => {
+  if (e.data?.type === '__activate_edit_mode')   document.getElementById('tw').classList.add('on');
+  if (e.data?.type === '__deactivate_edit_mode') document.getElementById('tw').classList.remove('on');
+});
+window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+applyState();
+</script>
+</body>
+</html>
