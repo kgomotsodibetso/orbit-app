@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Lock, Eye, EyeOff } from 'lucide-react';
+import { LockSimple, Eye, EyeSlash } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import OrbitLogo from '@/components/ui/OrbitLogo';
 import Input from '@/components/ui/Input';
@@ -83,10 +83,10 @@ export default function ResetPasswordPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  icon={<Lock className="w-4 h-4" />}
+                  icon={<LockSimple weight="light" className="w-4 h-4" />}
                   rightElement={
                     <button type="button" onClick={() => setShowPassword(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                     </button>
                   }
                   required
@@ -98,10 +98,10 @@ export default function ResetPasswordPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  icon={<Lock className="w-4 h-4" />}
+                  icon={<LockSimple weight="light" className="w-4 h-4" />}
                   rightElement={
                     <button type="button" onClick={() => setShowPassword(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                     </button>
                   }
                   required

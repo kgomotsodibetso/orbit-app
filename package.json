@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.49.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.0",
     "barcode-detector": "^3.1.2",

@@ -83,7 +83,7 @@ export default async function BookDetailPage({
       </div>
 
       {/* Main card */}
-      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6">
+      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
         <div className="flex gap-5">
           {/* Cover */}
           <div className="shrink-0 w-24 h-32 rounded-xl overflow-hidden bg-steel/10 flex items-center justify-center">
@@ -144,7 +144,7 @@ export default async function BookDetailPage({
       </div>
 
       {/* Metadata grid */}
-      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6">
+      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
         <h3 className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-4">
           Book Information
         </h3>
@@ -273,7 +273,7 @@ export default async function BookDetailPage({
               return (
                 <div
                   key={loan.id}
-                  className={`bg-white rounded-2xl border p-4 flex items-center gap-4 ${
+                  className={`bg-white rounded-2xl border p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 ${
                     isOverdue ? 'border-red-200 bg-red-50/30' : 'border-slate/10'
                   }`}
                 >

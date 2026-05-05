@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeSlash } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import OrbitLogo from '@/components/ui/OrbitLogo';
 import Input from '@/components/ui/Input';
@@ -170,7 +170,7 @@ export default function RegisterPage() {
                   required
                   rightElement={
                     <button type="button" onClick={() => setShowPassword(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                     </button>
                   }
                 />

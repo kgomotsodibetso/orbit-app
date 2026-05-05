@@ -4,28 +4,28 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard,
+  SquaresFour,
   BookOpen,
-  ArrowLeftRight,
-  Users,
+  ArrowsLeftRight,
+  UsersThree,
   FileText,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
+  Gear,
+  CaretLeft,
+  CaretRight,
   GraduationCap,
-  ExternalLink,
-  LogOut,
-} from 'lucide-react';
+  ArrowSquareOut,
+  SignOut,
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import OrbitLogo, { OrbitMark } from '@/components/ui/OrbitLogo';
 
 const navItems = [
-  { href: '/',                label: 'Mission Control', icon: LayoutDashboard },
+  { href: '/',                label: 'Mission Control', icon: SquaresFour },
   { href: '/catalogue',       label: 'Catalogue',        icon: BookOpen },
-  { href: '/loans',           label: 'Loans',            icon: ArrowLeftRight },
-  { href: '/learners',        label: 'Learners',         icon: Users },
+  { href: '/loans',           label: 'Loans',            icon: ArrowsLeftRight },
+  { href: '/learners',        label: 'Learners',         icon: UsersThree },
   { href: '/reports',         label: 'Reports',          icon: FileText },
-  { href: '/settings',        label: 'Settings',         icon: Settings },
+  { href: '/settings',        label: 'Settings',         icon: Gear },
 ];
 
 export default function CollapsibleSidebar() {
@@ -73,7 +73,7 @@ export default function CollapsibleSidebar() {
                   : 'text-cream/70 hover:bg-white/10 hover:text-cream border-l-transparent',
               ].join(' ')}
             >
-              <Icon className="w-4 h-4 shrink-0" />
+              <Icon weight="light" className="w-4 h-4 shrink-0" />
               {!collapsed && <span className="truncate">{label}</span>}
             </Link>
           );
@@ -89,11 +89,11 @@ export default function CollapsibleSidebar() {
           title={collapsed ? 'Learner Portal' : undefined}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-lavender/70 hover:bg-white/10 hover:text-lavender transition-colors"
         >
-          <GraduationCap className="w-4 h-4 shrink-0" />
+          <GraduationCap weight="light" className="w-4 h-4 shrink-0" />
           {!collapsed && (
             <span className="truncate flex items-center gap-1.5">
               Learner Portal
-              <ExternalLink className="w-3 h-3 opacity-60" />
+              <ArrowSquareOut weight="light" className="w-3 h-3 opacity-60" />
             </span>
           )}
         </a>
@@ -106,7 +106,7 @@ export default function CollapsibleSidebar() {
           title={collapsed ? 'Sign out' : undefined}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-cream/50 hover:bg-white/10 hover:text-red-400 transition-colors"
         >
-          <LogOut className="w-4 h-4 shrink-0" />
+          <SignOut weight="light" className="w-4 h-4 shrink-0" />
           {!collapsed && <span className="truncate">Sign out</span>}
         </button>
       </div>
@@ -118,9 +118,9 @@ export default function CollapsibleSidebar() {
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         {collapsed ? (
-          <ChevronRight className="w-4 h-4" />
+          <CaretRight weight="light" className="w-4 h-4" />
         ) : (
-          <ChevronLeft className="w-4 h-4" />
+          <CaretLeft weight="light" className="w-4 h-4" />
         )}
       </button>
     </aside>

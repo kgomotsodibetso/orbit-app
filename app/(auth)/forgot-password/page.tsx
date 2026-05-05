@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail } from 'lucide-react';
+import { Envelope } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="librarian@school.co.za"
-                  icon={<Mail className="w-4 h-4" />}
+                  icon={<Envelope weight="light" className="w-4 h-4" />}
                   required
                   autoComplete="email"
                 />

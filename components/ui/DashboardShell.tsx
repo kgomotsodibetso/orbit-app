@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { List } from '@phosphor-icons/react';
 import CollapsibleSidebar from './CollapsibleSidebar';
 import { OrbitMark } from '@/components/ui/OrbitLogo';
 
@@ -117,7 +117,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             className={`p-1.5 rounded-lg transition-colors ${darkSidebar ? 'text-cream/60 hover:text-cream hover:bg-white/10' : 'text-slate/60 hover:text-slate hover:bg-slate/5'}`}
             aria-label="Open navigation menu"
           >
-            <Menu className="w-5 h-5" />
+            <List weight="light" className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
             <OrbitMark width={28} dark={darkSidebar} />

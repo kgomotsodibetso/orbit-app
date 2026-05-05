@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ScanLine, Keyboard, Camera, X, RefreshCw } from 'lucide-react';
+import { Scan, Keyboard, Camera, X, ArrowCounterClockwise } from '@phosphor-icons/react';
 import Button from '@/components/ui/Button';
 
 interface ISBNScannerProps {
@@ -215,7 +215,7 @@ export default function ISBNScanner({
       {/* Mode tabs */}
       <div className="flex gap-2 mb-5 flex-wrap">
         {([
-          { key: 'hid'    as const, icon: ScanLine, label: 'Scanner' },
+          { key: 'hid'    as const, icon: Scan,     label: 'Scanner' },
           { key: 'camera' as const, icon: Camera,   label: 'Camera'  },
           { key: 'manual' as const, icon: Keyboard, label: 'Manual'  },
         ]).map(({ key, icon: Icon, label }) => (
@@ -230,7 +230,7 @@ export default function ISBNScanner({
                 : 'bg-white text-slate/60 border border-slate/20 hover:border-steel/40'
             }`}
           >
-            <Icon className="w-3.5 h-3.5" />
+            <Icon weight="light" className="w-3.5 h-3.5" />
             {label}
           </button>
         ))}
@@ -241,7 +241,7 @@ export default function ISBNScanner({
         <div className="text-center py-4">
           <div className="relative w-48 h-24 mx-auto mb-4 rounded-xl overflow-hidden bg-slate/5 border border-steel/20">
             <div className="absolute left-0 right-0 h-0.5 bg-steel/70 shadow-[0_0_8px_2px_rgba(75,142,186,0.5)] scan-line" />
-            <ScanLine className="w-8 h-8 text-steel/30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            <Scan weight="light" className="w-8 h-8 text-steel/30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
           <p className="text-sm font-medium text-slate/60">
             {buffer ? (
@@ -256,7 +256,7 @@ export default function ISBNScanner({
               onClick={() => setBuffer('')}
               className="mt-2 text-xs text-slate/40 hover:text-slate flex items-center gap-1 mx-auto"
             >
-              <X className="w-3 h-3" /> Clear
+              <X weight="light" className="w-3 h-3" /> Clear
             </button>
           )}
         </div>
@@ -292,14 +292,14 @@ export default function ISBNScanner({
                 onClick={stopCamera}
                 className="text-xs text-slate/40 hover:text-red-500 flex items-center gap-1 transition-colors"
               >
-                <X className="w-3 h-3" /> Stop
+                <X weight="light" className="w-3 h-3" /> Stop
               </button>
             </div>
           )}
 
           {cameraState === 'idle' && (
             <div className="text-center py-4">
-              <Camera className="w-10 h-10 text-steel/30 mx-auto mb-3" />
+              <Camera weight="light" className="w-10 h-10 text-steel/30 mx-auto mb-3" />
               {lastScanned && (
                 <p className="text-xs text-green-600 font-semibold mb-2">
                   ✓ Scanned {lastScanned}
@@ -311,7 +311,7 @@ export default function ISBNScanner({
                   : 'Use your phone camera to scan the ISBN barcode'}
               </p>
               <Button type="button" onClick={startCamera} size="sm">
-                <Camera className="w-3.5 h-3.5 mr-1.5" />
+                <Camera weight="light" className="w-3.5 h-3.5 mr-1.5" />
                 {lastScanned ? 'Scan Again' : 'Start Camera'}
               </Button>
             </div>
@@ -328,7 +328,7 @@ export default function ISBNScanner({
             <div className="text-center py-4">
               <p className="text-sm text-red-500 mb-3">{cameraError}</p>
               <Button type="button" variant="secondary" onClick={startCamera} size="sm">
-                <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                <ArrowCounterClockwise weight="light" className="w-3.5 h-3.5 mr-1.5" />
                 Try Again
               </Button>
             </div>
