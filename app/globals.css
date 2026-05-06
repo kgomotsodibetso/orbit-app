@@ -42,6 +42,11 @@
 /* Base styles */
 :root {
   color-scheme: light dark;
+
+  /* Custom easing curves — built-in CSS easings are too weak */
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 /* Eliminate 300 ms tap delay and iOS tap flash on every interactive element.
@@ -86,13 +91,33 @@ body {
   touch-action: manipulation; /* eliminates 300 ms tap delay on mobile */
 }
 .btn-primary:hover:not(:disabled)  { box-shadow: 0 6px 18px rgba(75, 142, 186, 0.42); opacity: 0.92; }
-.btn-primary:active:not(:disabled) { box-shadow: 0 2px 8px rgba(75, 142, 186, 0.22);  opacity: 0.85; }
+.btn-primary:active:not(:disabled) { box-shadow: 0 2px 8px rgba(75, 142, 186, 0.22);  opacity: 0.85; transform: scale(0.97); }
 
 /* Sidebar active nav item — gradient highlight + Lavender left border */
 .sidebar-nav-active {
   background: linear-gradient(135deg, rgba(196, 192, 251, 0.25), rgba(75, 142, 186, 0.35)) !important;
   border-left-color: #C4C0FB !important;
   color: #F0E5DF !important;
+}
+
+/* Stagger entry for list items */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-item {
+  animation: fade-up 250ms var(--ease-out) both;
+  animation-delay: calc(var(--stagger-i, 0) * 40ms);
+}
+
+/* Reduce motion — keep opacity/color, remove position animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Scan line animation for ISBN scanner */

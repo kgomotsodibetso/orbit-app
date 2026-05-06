@@ -52,10 +52,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={[
           'inline-flex items-center justify-center gap-2 font-semibold',
           'cursor-pointer select-none',
-          'transition-[background-color,border-color,color,box-shadow,opacity] duration-100',
+          'transition-[transform,background-color,box-shadow,opacity] duration-150',
+          'active:scale-[0.97]',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-steel focus-visible:ring-offset-2',
-          // opacity only — no pointer-events manipulation which can misfire in Tailwind v4
-          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100',
           variantClasses[variant],
           sizeClasses[size],
           className,

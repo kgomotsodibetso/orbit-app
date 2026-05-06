@@ -25,8 +25,12 @@ export default function RecentActivity({ loans }: { loans: LoanRow[] }) {
         <h2 className="font-semibold text-slate text-sm">Recent Activity</h2>
       </div>
       <ul className="divide-y divide-slate/5">
-        {loans.map((loan) => (
-          <li key={loan.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-cream/40 transition-colors">
+        {loans.map((loan, i) => (
+          <li
+            key={loan.id}
+            className="stagger-item flex items-center gap-4 px-5 py-3.5 hover:bg-cream/40 transition-colors"
+            style={{ '--stagger-i': i } as React.CSSProperties}
+          >
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-slate truncate">
                 {loan.books?.title ?? '—'}

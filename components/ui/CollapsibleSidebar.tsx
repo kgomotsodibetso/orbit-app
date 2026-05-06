@@ -43,9 +43,10 @@ export default function CollapsibleSidebar() {
   return (
     <aside
       className={[
-        'flex flex-col bg-slate text-cream transition-all duration-300 ease-in-out shrink-0',
+        'flex flex-col bg-slate text-cream shrink-0',
         collapsed ? 'w-16' : 'w-56',
       ].join(' ')}
+      style={{ transition: 'width 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-white/10">
