@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, ArrowsLeftRight, Warning, UsersThree, Scan, ArrowCounterClockwise } from '@phosphor-icons/react';
+import { BookOpen, ArrowsLeftRight, Warning, UsersThree, Scan, ArrowCounterClockwise } from '@phosphor-icons/react/ssr';
 import StatCard from '@/components/dashboard/StatCard';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import Button from '@/components/ui/Button';

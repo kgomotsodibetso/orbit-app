@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, User, BookOpen, Clock, WarningCircle, Pencil } from '@phosphor-icons/react';
+import { ArrowLeft, User, BookOpen, Clock, WarningCircle, Pencil } from '@phosphor-icons/react/ssr';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 import SetPinForm from './SetPinForm';

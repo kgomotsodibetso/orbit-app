@@ -11,7 +11,7 @@ import {
   UsersThree,
   Package,
   Pencil,
-} from '@phosphor-icons/react';
+} from '@phosphor-icons/react/ssr';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';

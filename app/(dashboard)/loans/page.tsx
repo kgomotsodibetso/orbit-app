@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { WarningCircle, ArrowsLeftRight, BookOpen, CheckCircle, Clock, Plus } from '@phosphor-icons/react';
+import { WarningCircle, ArrowsLeftRight, BookOpen, CheckCircle, Clock, Plus } from '@phosphor-icons/react/ssr';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 

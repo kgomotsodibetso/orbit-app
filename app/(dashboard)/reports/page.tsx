@@ -9,7 +9,7 @@ import {
   CheckCircle,
   FileText,
   ClipboardText,
-} from '@phosphor-icons/react';
+} from '@phosphor-icons/react/ssr';
 import { createClient } from '@/lib/supabase/server';
 import Badge from '@/components/ui/Badge';
 

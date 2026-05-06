@@ -4,7 +4,7 @@ import {
   DownloadSimple,
   FileText,
   BookOpen,
-} from '@phosphor-icons/react';
+} from '@phosphor-icons/react/ssr';
 import { createClient } from '@/lib/supabase/server';
 import { generateStocktakeReport } from './actions';
 

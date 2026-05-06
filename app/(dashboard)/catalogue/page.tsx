@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Plus, MagnifyingGlass } from '@phosphor-icons/react';
+import { Plus, MagnifyingGlass } from '@phosphor-icons/react/ssr';
 import { createClient } from '@/lib/supabase/server';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
