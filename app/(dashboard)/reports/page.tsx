@@ -211,13 +211,15 @@ function StatBlock({
 }) {
   const c = colourMap[colour];
   return (
-    <div className="bg-white rounded-2xl border border-slate/10 p-4 flex items-center gap-3">
-      <div className={`w-9 h-9 rounded-xl ${c.bg} flex items-center justify-center shrink-0`}>
-        <Icon weight="light" className={`w-4 h-4 ${c.icon}`} />
-      </div>
-      <div>
-        <p className={`text-xl font-bold ${c.text}`}>{value.toLocaleString()}</p>
-        <p className="text-xs text-slate/50">{label}</p>
+    <div className="bg-white rounded-2xl border border-slate/10 p-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+        <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${c.bg} flex items-center justify-center shrink-0`}>
+          <Icon weight="light" className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${c.icon}`} />
+        </div>
+        <div>
+          <p className={`text-xl font-bold leading-none ${c.text}`}>{value.toLocaleString()}</p>
+          <p className="text-xs text-slate/50 mt-0.5 leading-tight">{label}</p>
+        </div>
       </div>
     </div>
   );

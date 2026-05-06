@@ -101,36 +101,36 @@ export default async function LoansPage({
 
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
-        <div className="bg-white rounded-2xl border border-slate/10 p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-steel/10 flex items-center justify-center shrink-0">
-              <ArrowsLeftRight weight="light" className="w-4 h-4 text-steel" />
+        <div className="bg-white rounded-2xl border border-slate/10 p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-steel/10 flex items-center justify-center shrink-0">
+              <ArrowsLeftRight weight="light" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-steel" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate">{loans.length}</p>
-              <p className="text-xs text-slate/50">Total Active</p>
+              <p className="text-xl sm:text-2xl font-bold text-slate leading-none">{loans.length}</p>
+              <p className="text-[10px] sm:text-xs text-slate/50 mt-0.5 leading-tight">Total Active</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-red-100 p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-              <WarningCircle weight="light" className="w-4 h-4 text-red-500" />
+        <div className="bg-white rounded-2xl border border-red-100 p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+              <WarningCircle weight="light" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-red-600">{overdueLoans.length}</p>
-              <p className="text-xs text-slate/50">Overdue</p>
+              <p className="text-xl sm:text-2xl font-bold text-red-600 leading-none">{overdueLoans.length}</p>
+              <p className="text-[10px] sm:text-xs text-slate/50 mt-0.5 leading-tight">Overdue</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-golden/30 p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-golden/10 flex items-center justify-center shrink-0">
-              <Clock weight="light" className="w-4 h-4 text-golden" />
+        <div className="bg-white rounded-2xl border border-golden/30 p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-golden/10 flex items-center justify-center shrink-0">
+              <Clock weight="light" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-golden" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate">{dueTodayLoans.length}</p>
-              <p className="text-xs text-slate/50">Due Today</p>
+              <p className="text-xl sm:text-2xl font-bold text-slate leading-none">{dueTodayLoans.length}</p>
+              <p className="text-[10px] sm:text-xs text-slate/50 mt-0.5 leading-tight">Due Today</p>
             </div>
           </div>
         </div>

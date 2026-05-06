@@ -885,21 +885,21 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               <Button size="sm" type="button" onClick={() => setShowInvite(true)}>+ Invite Staff</Button>
             </div>
             {team.map((member, i) => (
-              <div key={member.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 20px', borderBottom: i < team.length - 1 ? '1px solid rgba(44,58,71,0.06)' : 'none' }}>
-                <AvatarCircle name={member.name} size={40} />
+              <div key={member.id} className="flex items-start gap-3 px-5 py-4" style={{ borderBottom: i < team.length - 1 ? '1px solid rgba(44,58,71,0.06)' : 'none' }}>
+                <AvatarCircle name={member.name} size={36} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div className="flex items-center gap-2 flex-wrap">
                     <p style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>{member.name}</p>
                     <Badge variant={member.status === 'active' ? 'steel' : 'warning'}>{member.status === 'active' ? 'Active' : 'Pending'}</Badge>
                   </div>
-                  <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 1 }}>{member.role} · {member.email}</p>
-                  <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.35)', marginTop: 1 }}>Last active: {member.last}</p>
-                </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  {member.status === 'pending' && (
-                    <Button size="sm" variant="secondary" type="button" onClick={() => { setTeam(t => t.map(m => m.id === member.id ? { ...m, status: 'active', last: 'Just now' } : m)); toast.show(`${member.name} approved`); }}>Approve</Button>
-                  )}
-                  <Button size="sm" variant="ghost" type="button" onClick={() => { setTeam(t => t.filter(m => m.id !== member.id)); toast.show(`${member.name} removed`); }}>Remove</Button>
+                  <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2 }}>{member.role}</p>
+                  <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{member.email}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    {member.status === 'pending' && (
+                      <Button size="sm" variant="secondary" type="button" onClick={() => { setTeam(t => t.map(m => m.id === member.id ? { ...m, status: 'active', last: 'Just now' } : m)); toast.show(`${member.name} approved`); }}>Approve</Button>
+                    )}
+                    <Button size="sm" variant="ghost" type="button" onClick={() => { setTeam(t => t.filter(m => m.id !== member.id)); toast.show(`${member.name} removed`); }}>Remove</Button>
+                  </div>
                 </div>
               </div>
             ))}
