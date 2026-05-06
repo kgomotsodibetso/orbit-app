@@ -470,16 +470,53 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
   };
 
   // ── Team state ───────────────────────────────────────────────────────────
-  const [team, setTeam] = useState([
-    { id: 't1', name: 'Naledi Dube',   role: 'Head Librarian', email: 'naledi.dube@tshiamiso.edu.za', status: 'active',  last: 'Today'     },
-    { id: 't2', name: 'Sipho Khumalo', role: 'Librarian',      email: 'sipho.k@tshiamiso.edu.za',     status: 'active',  last: 'Yesterday' },
-    { id: 't3', name: 'Amara Osei',    role: 'Volunteer',      email: 'amara.o@tshiamiso.edu.za',     status: 'pending', last: 'Never'     },
-  ]);
+  type TeamMember = {
+    id: string;
+    full_name: string;
+    email: string;
+    role: string;
+    is_active: boolean;
+    avatar_url: string | null;
+    last_login_at: string | null;
+    created_at: string;
+  };
+  const [team,        setTeam]        = useState<TeamMember[]>([]);
+  const [teamLoading, setTeamLoading] = useState(false);
+  const [teamError,   setTeamError]   = useState('');
   const [showInvite,   setShowInvite]   = useState(false);
   const [inviteEmail,  setInviteEmail]  = useState('');
   const [inviteRole,   setInviteRole]   = useState('Librarian');
   const [inviteSending, setInviteSending] = useState(false);
   const [inviteError,  setInviteError]  = useState('');
+  const [inviteSent,   setInviteSent]   = useState('');
+
+  const loadTeam = async () => {
+    setTeamLoading(true); setTeamError('');
+    const res = await fetch('/api/settings/team');
+    if (res.ok) {
+      const { members } = await res.json();
+      setTeam(members);
+    } else {
+      setTeamError('Failed to load team members');
+    }
+    setTeamLoading(false);
+  };
+
+  useEffect(() => {
+    if (tab === 'team') loadTeam();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
+
+  const handleRemoveMember = async (memberId: string, memberName: string) => {
+    const res = await fetch(`/api/settings/team/${memberId}`, { method: 'DELETE' });
+    if (res.ok) {
+      setTeam(t => t.filter(m => m.id !== memberId));
+      toast.show(`${memberName} removed`);
+    } else {
+      const data = await res.json();
+      toast.show(data.error ?? 'Remove failed', false);
+    }
+  };
 
   const ACCENT_SWATCHES = [
     { k: 'steel',    c: '#4B8EBA', l: 'Steel'    },
@@ -829,7 +866,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {ACCENT_SWATCHES.map(ac => (
                 <button key={ac.k} type="button" title={ac.l}
-                  onClick={() => { setAccentColor(ac.k); toast.show(`Accent changed to ${ac.l}`); }}
+                  onClick={() => setAccentColor(ac.k)}
                   style={{ width: 36, height: 36, borderRadius: '50%', background: ac.c, border: accentColor === ac.k ? '3px solid #2C3A47' : '2px solid rgba(44,58,71,0.1)', cursor: 'pointer', position: 'relative', transition: 'all 0.12s' }}>
                   {accentColor === ac.k && <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: 'white' }}>✓</span>}
                 </button>
@@ -880,26 +917,49 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(44,58,71,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47' }}>Staff Members</p>
-                <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 1 }}>{team.length} team members</p>
+                <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 1 }}>
+                  {teamLoading ? 'Loading…' : `${team.length} member${team.length !== 1 ? 's' : ''}`}
+                </p>
               </div>
-              <Button size="sm" type="button" onClick={() => setShowInvite(true)}>+ Invite Staff</Button>
+              <Button size="sm" type="button" onClick={() => { setShowInvite(true); setInviteSent(''); setInviteError(''); }}>+ Invite Staff</Button>
             </div>
-            {team.map((member, i) => (
+
+            {teamLoading && (
+              <div style={{ padding: '24px 20px', textAlign: 'center', color: 'rgba(44,58,71,0.4)', fontSize: 13 }}>Loading team…</div>
+            )}
+
+            {teamError && (
+              <div style={{ padding: '16px 20px', color: '#ef4444', fontSize: 13 }}>{teamError}</div>
+            )}
+
+            {!teamLoading && !teamError && team.length === 0 && (
+              <div style={{ padding: '32px 20px', textAlign: 'center', color: 'rgba(44,58,71,0.4)', fontSize: 13 }}>
+                No staff members yet. Invite your first colleague above.
+              </div>
+            )}
+
+            {!teamLoading && team.map((member, i) => (
               <div key={member.id} className="flex items-start gap-3 px-5 py-4" style={{ borderBottom: i < team.length - 1 ? '1px solid rgba(44,58,71,0.06)' : 'none' }}>
-                <AvatarCircle name={member.name} size={36} />
+                <AvatarCircle name={member.full_name} size={36} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>{member.name}</p>
-                    <Badge variant={member.status === 'active' ? 'steel' : 'warning'}>{member.status === 'active' ? 'Active' : 'Pending'}</Badge>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>{member.full_name}</p>
+                    <Badge variant={member.is_active ? 'steel' : 'neutral'}>{member.is_active ? 'Active' : 'Inactive'}</Badge>
                   </div>
-                  <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2 }}>{member.role}</p>
+                  <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{member.role.replace('_', ' ')}</p>
                   <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{member.email}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    {member.status === 'pending' && (
-                      <Button size="sm" variant="secondary" type="button" onClick={() => { setTeam(t => t.map(m => m.id === member.id ? { ...m, status: 'active', last: 'Just now' } : m)); toast.show(`${member.name} approved`); }}>Approve</Button>
-                    )}
-                    <Button size="sm" variant="ghost" type="button" onClick={() => { setTeam(t => t.filter(m => m.id !== member.id)); toast.show(`${member.name} removed`); }}>Remove</Button>
-                  </div>
+                  {member.last_login_at && (
+                    <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.3)', marginTop: 1 }}>
+                      Last active: {new Date(member.last_login_at).toLocaleDateString('en-ZA')}
+                    </p>
+                  )}
+                  {profile?.id !== member.id && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button size="sm" variant="ghost" type="button" onClick={() => handleRemoveMember(member.id, member.full_name)}>
+                        {member.is_active ? 'Deactivate' : 'Already inactive'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -923,43 +983,56 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
       )}
 
       {/* Invite modal */}
-      <Modal open={showInvite} onClose={() => setShowInvite(false)} title="Invite Staff Member">
+      <Modal open={showInvite} onClose={() => { setShowInvite(false); setInviteSent(''); setInviteEmail(''); setInviteError(''); }} title="Invite Staff Member">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <Input label="Email Address" type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="colleague@school.co.za" required />
-          <div>
-            <label className="text-sm font-semibold text-slate block mb-1.5">Role</label>
-            <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} className="w-full rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm text-slate focus:outline-none focus:ring-2 focus:ring-steel cursor-pointer" style={{ fontFamily: 'inherit' }}>
-              {['Librarian', 'Head Librarian', 'Volunteer'].map(r => <option key={r}>{r}</option>)}
-            </select>
-          </div>
-          <div style={{ background: 'rgba(240,229,223,0.6)', borderRadius: 12, padding: '10px 14px', fontSize: 12, color: 'rgba(44,58,71,0.65)' }}>
-            An invitation email will be sent to the address above with a link to sign up.
-          </div>
-          {inviteError && <p className="text-sm text-red-600">{inviteError}</p>}
-          <div className="grid grid-cols-2 gap-2.5">
-            <Button variant="secondary" type="button" onClick={() => setShowInvite(false)}>Cancel</Button>
-            <Button
-              type="button"
-              disabled={!inviteEmail}
-              loading={inviteSending}
-              onClick={async () => {
-                setInviteSending(true); setInviteError('');
-                const res = await fetch('/api/email/invite', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
-                });
-                const data = await res.json();
-                setInviteSending(false);
-                if (!res.ok) { setInviteError(data.error ?? 'Failed to send'); return; }
-                setTeam(t => [...t, { id: `t${Date.now()}`, name: inviteEmail.split('@')[0], role: inviteRole, email: inviteEmail, status: 'pending', last: 'Never' }]);
-                toast.show(`Invite sent to ${inviteEmail}`);
-                setShowInvite(false); setInviteEmail(''); setInviteError('');
-              }}
-            >
-              Send Invite
-            </Button>
-          </div>
+          {inviteSent ? (
+            <div style={{ padding: '20px 16px', background: 'rgba(34,197,94,0.08)', borderRadius: 12, border: '1px solid rgba(34,197,94,0.2)', textAlign: 'center' }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>Invite sent ✓</p>
+              <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.6)', marginTop: 4 }}>
+                An invitation email has been sent to <strong>{inviteSent}</strong>.<br />
+                They will appear here once they sign up.
+              </p>
+              <Button size="sm" variant="secondary" type="button" style={{ marginTop: 14 }} onClick={() => { setInviteSent(''); setInviteEmail(''); }}>
+                Invite Another
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Input label="Email Address" type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="colleague@school.co.za" required />
+              <div>
+                <label className="text-sm font-semibold text-slate block mb-1.5">Role</label>
+                <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} className="w-full rounded-xl border border-slate/20 bg-white px-4 py-2.5 text-sm text-slate focus:outline-none focus:ring-2 focus:ring-steel cursor-pointer" style={{ fontFamily: 'inherit' }}>
+                  {['Librarian', 'Head Librarian', 'Volunteer'].map(r => <option key={r}>{r}</option>)}
+                </select>
+              </div>
+              <div style={{ background: 'rgba(240,229,223,0.6)', borderRadius: 12, padding: '10px 14px', fontSize: 12, color: 'rgba(44,58,71,0.65)' }}>
+                An invitation email will be sent to the address above with a link to sign up.
+              </div>
+              {inviteError && <p className="text-sm text-red-600">{inviteError}</p>}
+              <div className="grid grid-cols-2 gap-2.5">
+                <Button variant="secondary" type="button" onClick={() => setShowInvite(false)}>Cancel</Button>
+                <Button
+                  type="button"
+                  disabled={!inviteEmail}
+                  loading={inviteSending}
+                  onClick={async () => {
+                    setInviteSending(true); setInviteError('');
+                    const res = await fetch('/api/email/invite', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
+                    });
+                    const data = await res.json();
+                    setInviteSending(false);
+                    if (!res.ok) { setInviteError(data.error ?? 'Failed to send'); return; }
+                    setInviteSent(inviteEmail);
+                  }}
+                >
+                  Send Invite
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 
