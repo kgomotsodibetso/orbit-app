@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import {
@@ -83,7 +83,7 @@ export default async function BookDetailPage({
       </div>
 
       {/* Main card */}
-      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
         <div className="flex gap-5">
           {/* Cover */}
           <div className="shrink-0 w-24 h-32 rounded-xl overflow-hidden bg-steel/10 flex items-center justify-center">
@@ -144,7 +144,7 @@ export default async function BookDetailPage({
       </div>
 
       {/* Metadata grid */}
-      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+      <div className="bg-white rounded-2xl border border-slate/10 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
         <h3 className="text-[10px] font-bold text-slate/30 uppercase tracking-widest mb-4">
           Book Information
         </h3>

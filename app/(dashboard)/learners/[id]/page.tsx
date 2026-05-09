@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, User, BookOpen, Clock, WarningCircle, Pencil } from '@phosphor-icons/react/ssr';
 import { createClient } from '@/lib/supabase/server';
@@ -129,8 +129,10 @@ export default async function LearnerProfilePage({
               const book = loan.books as unknown as { title: string; cover_url?: string | null; authors: string[] } | null;
               const isOverdue = loan.status === 'overdue';
               const dueDate = new Date(loan.due_date);
+              dueDate.setHours(0, 0, 0, 0);
               const today = new Date();
-              const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+              today.setHours(0, 0, 0, 0);
+              const daysUntilDue = Math.round((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
               return (
                 <div

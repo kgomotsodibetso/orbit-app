@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 export const dynamic = 'force-dynamic';
 
@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle } from '@phosphor-icons/react';
-import { createClient } from '@/lib/supabase/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
@@ -39,46 +38,30 @@ export default function AddLearnerPage() {
     setSaving(true);
     setError('');
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setError('Not authenticated'); setSaving(false); return; }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('institution_id')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    if (!profile) { setError('Profile not found'); setSaving(false); return; }
-
-    // Auto-generate member number: ORB-XXXX
-    const { count } = await supabase
-      .from('members')
-      .select('*', { count: 'exact', head: true })
-      .eq('institution_id', profile.institution_id);
-
-    const memberNumber = `ORB-${String((count ?? 0) + 1).padStart(4, '0')}`;
-
-    const { error: insertError } = await supabase.from('members').insert({
-      institution_id: profile.institution_id,
-      member_number: memberNumber,
-      full_name: form.full_name,
-      member_type: form.member_type,
-      grade: form.grade || null,
-      class_name: form.class_name || null,
-      guardian_name: form.guardian_name || null,
-      contact_phone: form.contact_phone || null,
-      contact_email: form.contact_email || null,
-      notes: form.notes || null,
+    const res = await fetch('/api/members', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        full_name:     form.full_name,
+        member_type:   form.member_type,
+        grade:         form.grade || null,
+        class_name:    form.class_name || null,
+        guardian_name: form.guardian_name || null,
+        contact_phone: form.contact_phone || null,
+        contact_email: form.contact_email || null,
+        notes:         form.notes || null,
+      }),
     });
 
     setSaving(false);
 
-    if (insertError) {
-      setError(insertError.message);
-    } else {
-      setNewMemberNumber(memberNumber);
+    if (res.ok) {
+      const data = await res.json();
+      setNewMemberNumber(data.member_number);
       setDone(true);
+    } else {
+      const data = await res.json();
+      setError(data.error ?? 'Failed to add member');
     }
   };
 

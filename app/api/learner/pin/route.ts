@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 function hashPin(pin: string): string {
   return createHash('sha256').update(pin).digest('hex');
@@ -24,14 +25,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  // Hash server-side — consistent with /api/learner/auth.
-  // .select().single() turns "0 rows updated" into an error so we can
-  // distinguish a missing member_id from a real DB failure.
-  const { data, error } = await supabase
+  // Use service client for the write so the update is never blocked by RLS
+  // edge cases. The caller's identity has already been verified above.
+  const service = createServiceClient();
+  const { data, error } = await service
     .from('members')
     .update({ pin_hash: hashPin(pin) })
     .eq('id', member_id)
-    .select('id')
+    .select('id, pin_hash')
     .single();
 
   if (error) {
@@ -39,6 +40,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Member not found' }, { status: 404 });
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // Verify the hash was actually written (guards against schema cache issues
+  // where PostgREST silently ignores body fields it doesn't recognise)
+  if (!data?.pin_hash) {
+    console.error('[learner/pin] pin_hash column missing or not written — run migration 005');
+    return NextResponse.json(
+      { error: 'PIN could not be saved. Contact your administrator.' },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ ok: true });

@@ -1,4 +1,4 @@
-import type { ElementType } from 'react';
+﻿import type { ElementType } from 'react';
 import Link from 'next/link';
 import {
   ChartBar,
@@ -85,18 +85,20 @@ export default async function ReportsPage() {
             badgeVariant="danger"
           />
           <ReportCard
-            href="/reports/stocktake"
+            href=""
             title="Loans Summary"
             description="Checkout and return activity for the current term, including overdue statistics."
-            badge="Term Report"
-            badgeVariant="steel"
+            badge="Coming Soon"
+            badgeVariant="neutral"
+            disabled
           />
           <ReportCard
-            href="/reports/stocktake"
+            href=""
             title="Assets Register"
             description="Full catalogue with acquisition dates, costs, and current condition for insurance purposes."
-            badge="Financial"
-            badgeVariant="golden"
+            badge="Coming Soon"
+            badgeVariant="neutral"
+            disabled
           />
         </div>
       </section>
@@ -233,13 +235,28 @@ function ReportCard({
   description,
   badge,
   badgeVariant,
+  disabled = false,
 }: {
   href: string;
   title: string;
   description: string;
   badge: string;
   badgeVariant: BadgeVariant;
+  disabled?: boolean;
 }) {
+  if (disabled) {
+    return (
+      <div className="block bg-white rounded-2xl border border-slate/10 p-5 opacity-50 cursor-not-allowed">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-slate">{title}</p>
+            <p className="text-xs text-slate/50 mt-1 leading-relaxed">{description}</p>
+          </div>
+          <Badge variant={badgeVariant}>{badge}</Badge>
+        </div>
+      </div>
+    );
+  }
   return (
     <Link
       href={href}
