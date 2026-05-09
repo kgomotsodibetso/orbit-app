@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import { createServiceClient } from '@/lib/supabase/service';
 
@@ -14,11 +14,16 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const { data: member } = await supabase
+  const { data: member, error: memberError } = await supabase
     .from('members')
     .select('id, full_name, pin_hash, is_active')
     .eq('member_number', member_number.toUpperCase().trim())
-    .single();
+    .maybeSingle();
+
+  if (memberError) {
+    console.error('[learner/auth] member lookup error:', memberError.message, memberError.code);
+    return NextResponse.json({ error: 'Login unavailable. Please try again.' }, { status: 500 });
+  }
 
   if (!member) {
     return NextResponse.json({ error: 'Member not found' }, { status: 401 });
@@ -42,6 +47,7 @@ export async function POST(request: NextRequest) {
   const response = NextResponse.json({ ok: true });
   response.cookies.set('orbit_learner_session', member.id, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 8, // 8 hours

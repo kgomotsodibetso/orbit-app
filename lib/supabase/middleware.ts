@@ -63,9 +63,14 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let user: any = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Auth service unavailable — treat as unauthenticated rather than crashing the request
+  }
 
   const isPublic =
     pathname.startsWith('/login') ||

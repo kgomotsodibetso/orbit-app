@@ -52,19 +52,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: loanError.message }, { status: 500 });
   }
 
-  // 3. Restore available_copies unless the book is marked lost
+  // 3. Restore available_copies unless the book is marked lost.
+  // Read current value then increment with an equality guard so two concurrent
+  // returns cannot double-count the same copy.
   if (!isLost) {
     const { data: book } = await service
       .from('books')
-      .select('available_copies')
+      .select('available_copies, total_copies')
       .eq('id', loan.book_id)
       .single();
 
     if (book) {
+      const next = book.available_copies + 1;
       await service
         .from('books')
-        .update({ available_copies: book.available_copies + 1 })
-        .eq('id', loan.book_id);
+        .update({ available_copies: next })
+        .eq('id', loan.book_id)
+        .eq('available_copies', book.available_copies); // optimistic lock
     }
   }
 

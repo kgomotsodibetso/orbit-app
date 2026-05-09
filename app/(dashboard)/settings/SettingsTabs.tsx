@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -10,7 +10,7 @@ import { OrbitMark } from '@/components/ui/OrbitLogo';
 import { createClient } from '@/lib/supabase/client';
 import type { InstitutionRow, ProfileRow } from '@/types/database';
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface Props {
   institution: InstitutionRow | null;
@@ -30,7 +30,7 @@ type InstitutionSettings = {
   logo_url?: string;
 };
 
-// ── Avatar helpers ────────────────────────────────────────────────────────────
+// â”€â”€ Avatar helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const AVATAR_COLORS = [
   { bg: '#4B8EBA', fg: 'white',    name: 'Steel'    },
@@ -50,7 +50,7 @@ function getInitials(name: string | null): string {
   return name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase();
 }
 
-// ── AvatarPicker ──────────────────────────────────────────────────────────────
+// â”€â”€ AvatarPicker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function AvatarPicker({
   initials,
@@ -89,13 +89,13 @@ function AvatarPicker({
             {initials}
           </div>
         )}
-        <div style={{ position: 'absolute', bottom: 0, right: 0, width: 26, height: 26, borderRadius: '50%', background: '#2C3A47', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: 'white', border: '2px solid white' }}>✎</div>
+        <div style={{ position: 'absolute', bottom: 0, right: 0, width: 26, height: 26, borderRadius: '50%', background: '#2C3A47', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: 'white', border: '2px solid white' }}>âœŽ</div>
       </div>
 
       <div style={{ display: 'flex', gap: 8 }}>
         <Button size="sm" variant="secondary" type="button" onClick={() => setOpen(o => !o)}>Change Colour</Button>
         <Button size="sm" variant="secondary" type="button" loading={uploading} onClick={() => fileRef.current?.click()}>
-          {uploading ? 'Uploading…' : 'Upload Photo'}
+          {uploading ? 'Uploadingâ€¦' : 'Upload Photo'}
         </Button>
         <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={handleFile} />
       </div>
@@ -119,7 +119,7 @@ function AvatarPicker({
   );
 }
 
-// ── Toggle ────────────────────────────────────────────────────────────────────
+// â”€â”€ Toggle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -136,7 +136,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
   );
 }
 
-// ── NotifRow ──────────────────────────────────────────────────────────────────
+// â”€â”€ NotifRow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function NotifRow({ label, desc, value, onChange }: { label: string; desc: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -150,7 +150,7 @@ function NotifRow({ label, desc, value, onChange }: { label: string; desc: strin
   );
 }
 
-// ── AvatarCircle ──────────────────────────────────────────────────────────────
+// â”€â”€ AvatarCircle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function AvatarCircle({ name, size = 40 }: { name: string; size?: number }) {
   const ini = name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase();
@@ -163,7 +163,7 @@ function AvatarCircle({ name, size = 40 }: { name: string; size?: number }) {
   );
 }
 
-// ── Modal ─────────────────────────────────────────────────────────────────────
+// â”€â”€ Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Modal({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
   if (!open) return null;
@@ -176,7 +176,7 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
       <div className="bg-white w-full max-w-md flex flex-col rounded-t-3xl sm:rounded-2xl shadow-2xl" style={{ maxHeight: '90vh' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate/10 shrink-0">
           <h2 className="text-base font-bold text-slate">{title}</h2>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-slate/40 hover:text-slate hover:bg-slate/8 transition-colors text-xl border-0 bg-transparent cursor-pointer">×</button>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-slate/40 hover:text-slate hover:bg-slate/8 transition-colors text-xl border-0 bg-transparent cursor-pointer">Ã—</button>
         </div>
         <div className="overflow-y-auto flex-1 px-6 py-5">{children}</div>
       </div>
@@ -184,37 +184,37 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
   );
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
+// â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function useSimpleToast() {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const show = (text: string, ok = true) => { setMsg({ text, ok }); setTimeout(() => setMsg(null), 2800); };
   const el = msg ? (
     <div className={`fixed bottom-20 right-4 z-50 px-4 py-3 rounded-2xl text-sm font-bold shadow-xl pointer-events-none ${msg.ok ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
-      {msg.ok ? '✓' : '✕'} {msg.text}
+      {msg.ok ? 'âœ“' : 'âœ•'} {msg.text}
     </div>
   ) : null;
   return { show, el };
 }
 
-// ── SettingsTabs ──────────────────────────────────────────────────────────────
+// â”€â”€ SettingsTabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function SettingsTabs({ institution, profile, userEmail, bookCount, memberCount, tierInfo }: Props) {
   const router = useRouter();
   const toast = useSimpleToast();
 
   const TABS = [
-    { id: 'profile',       label: 'Profile',      icon: '👤' },
-    { id: 'school',        label: 'School',        icon: '🏫' },
-    { id: 'notifications', label: 'Notifications', icon: '🔔' },
-    { id: 'appearance',    label: 'Appearance',    icon: '🎨' },
-    { id: 'team',          label: 'Team',          icon: '👥' },
+    { id: 'profile',       label: 'Profile',      icon: 'ðŸ‘¤' },
+    { id: 'school',        label: 'School',        icon: 'ðŸ«' },
+    { id: 'notifications', label: 'Notifications', icon: 'ðŸ””' },
+    { id: 'appearance',    label: 'Appearance',    icon: 'ðŸŽ¨' },
+    { id: 'team',          label: 'Team',          icon: 'ðŸ‘¥' },
   ] as const;
 
   type TabId = (typeof TABS)[number]['id'];
   const [tab, setTab] = useState<TabId>('profile');
 
-  // ── Profile state ────────────────────────────────────────────────────────
+  // â”€â”€ Profile state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const nameParts = (profile?.full_name ?? '').split(' ');
   const [firstName,       setFirstName]       = useState(nameParts[0] ?? '');
   const [lastName,        setLastName]        = useState(nameParts.slice(1).join(' ') ?? '');
@@ -228,7 +228,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
   const [avatarUploading, setAvatarUploading] = useState(false);
   const initials = getInitials((`${firstName} ${lastName}`.trim()) || (profile?.full_name ?? '?'));
 
-  // Load bio from localStorage after mount (no DB column — saved per device)
+  // Load bio from localStorage after mount (no DB column â€” saved per device)
   useEffect(() => {
     if (profile?.id) {
       setBio(localStorage.getItem(`orbit_bio_${profile.id}`) ?? '');
@@ -326,7 +326,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     router.push('/login');
   };
 
-  // ── School state ─────────────────────────────────────────────────────────
+  // â”€â”€ School state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const institutionSettings = (institution?.settings ?? {}) as InstitutionSettings;
   const [schoolName,      setSchoolName]      = useState(institution?.name ?? '');
   const [contactEmail,    setContactEmail]    = useState(institution?.contact_email ?? '');
@@ -396,7 +396,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     else { setSchoolSaved(true); toast.show('School settings saved'); setTimeout(() => setSchoolSaved(false), 3000); router.refresh(); }
   };
 
-  // ── Notifications state (persisted in institution.settings.notifications) ─
+  // â”€â”€ Notifications state (persisted in institution.settings.notifications) â”€
   const savedNotifs = (institutionSettings as Record<string, unknown>).notifications as Record<string, boolean> | undefined;
   const [notifs, setNotifs] = useState({
     smsOverdue:         savedNotifs?.smsOverdue         ?? true,
@@ -424,11 +424,11 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
       }),
     });
     setNotifSaving(false);
-    if (res.ok) { toast.show('Notification preferences saved'); }
+    if (res.ok) { toast.show('Notification preferences saved'); router.refresh(); }
     else { toast.show('Save failed', false); }
   };
 
-  // ── Appearance state — loaded from institution.settings.display_prefs ────
+  // â”€â”€ Appearance state â€” loaded from institution.settings.display_prefs â”€â”€â”€â”€
   type Density = 'compact' | 'comfortable' | 'spacious';
   const savedPrefs = (institutionSettings as Record<string, unknown>).display_prefs as Record<string, string | boolean> | undefined;
   const [accentColor,   setAccentColor]   = useState<string>(String(savedPrefs?.accentColor ?? 'steel'));
@@ -462,6 +462,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     setAppearSaving(false);
     if (res.ok) {
       toast.show('Appearance preferences saved');
+      router.refresh();
       // Dispatch event so DashboardShell updates without page reload
       window.dispatchEvent(new CustomEvent('orbit-prefs-changed', { detail: prefs }));
     } else {
@@ -469,7 +470,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
     }
   };
 
-  // ── Team state ───────────────────────────────────────────────────────────
+  // â”€â”€ Team state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   type TeamMember = {
     id: string;
     full_name: string;
@@ -547,7 +548,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         ))}
       </div>
 
-      {/* ════ PROFILE ════ */}
+      {/* â•â•â•â• PROFILE â•â•â•â• */}
       {tab === 'profile' && (
         <div className="flex flex-col md:flex-row gap-5 items-start" style={{ maxWidth: 760 }}>
           {/* Avatar card */}
@@ -567,8 +568,8 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
             </div>
             <div style={{ width: '100%', height: 1, background: 'rgba(44,58,71,0.07)', margin: '16px 0' }} />
             <div style={{ width: '100%', fontSize: 12, color: 'rgba(44,58,71,0.5)', display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span>✉</span><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{email}</span></div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span>📞</span><span>{phone || '—'}</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span>âœ‰</span><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{email}</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span>ðŸ“ž</span><span>{phone || 'â€”'}</span></div>
             </div>
           </div>
 
@@ -595,7 +596,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                 <textarea
                   value={bio}
                   onChange={e => setBio(e.target.value.slice(0, 200))}
-                  placeholder="Tell us about yourself…"
+                  placeholder="Tell us about yourselfâ€¦"
                   rows={3}
                   maxLength={200}
                   className="w-full rounded-xl border border-slate/20 px-4 py-2.5 text-sm text-slate resize-y focus:outline-none focus:ring-2 focus:ring-steel focus:border-transparent"
@@ -615,7 +616,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                     type={showCurrentPw ? 'text' : 'password'}
                     value={currentPw}
                     onChange={e => setCurrentPw(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                     rightElement={
                       <button type="button" onClick={() => setShowCurrentPw(v => !v)} className="text-slate/40 hover:text-slate transition-colors" aria-label={showCurrentPw ? 'Hide password' : 'Show password'}>
                         {showCurrentPw ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
@@ -664,7 +665,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         </div>
       )}
 
-      {/* ════ SCHOOL ════ */}
+      {/* â•â•â•â• SCHOOL â•â•â•â• */}
       {tab === 'school' && (
         <div style={{ maxWidth: 620 }}>
           {/* School logo card */}
@@ -682,9 +683,9 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               </div>
 
               <div style={{ flex: 1, minWidth: 200 }}>
-                <p style={{ fontSize: 15, fontWeight: 800, color: '#2C3A47' }}>{institution?.name ?? '—'}</p>
+                <p style={{ fontSize: 15, fontWeight: 800, color: '#2C3A47' }}>{institution?.name ?? 'â€”'}</p>
                 <p style={{ fontSize: 13, color: 'rgba(44,58,71,0.5)', marginTop: 2, marginBottom: 14 }}>
-                  {institution?.province}{institution?.province && institution?.type ? ' · ' : ''}{institution?.type ? `${institution.type} School` : ''}
+                  {institution?.province}{institution?.province && institution?.type ? ' Â· ' : ''}{institution?.type ? `${institution.type} School` : ''}
                 </p>
 
                 {/* Upload button */}
@@ -695,7 +696,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                     loading={logoUploading}
                     onClick={() => logoFileRef.current?.click()}
                   >
-                    {logoUploading ? 'Uploading…' : logoPreview ? 'Change Logo' : 'Upload Logo'}
+                    {logoUploading ? 'Uploadingâ€¦' : logoPreview ? 'Change Logo' : 'Upload Logo'}
                   </Button>
                   {logoPreview && (
                     <Button
@@ -730,7 +731,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                   placeholder="https://yourschool.co.za/logo.png"
                 />
                 <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', marginTop: 4 }}>
-                  PNG, JPG, WebP or SVG · max 5 MB
+                  PNG, JPG, WebP or SVG Â· max 5 MB
                 </p>
               </div>
             </div>
@@ -746,11 +747,11 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">Province</p>
-                  <p className="text-sm font-medium text-slate">{institution?.province ?? '—'}</p>
+                  <p className="text-sm font-medium text-slate">{institution?.province ?? 'â€”'}</p>
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-slate/40 uppercase tracking-widest mb-1">School Type</p>
-                  <p className="text-sm font-medium text-slate capitalize">{institution?.type ?? '—'}</p>
+                  <p className="text-sm font-medium text-slate capitalize">{institution?.type ?? 'â€”'}</p>
                 </div>
               </div>
 
@@ -799,7 +800,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               <div className="flex items-center justify-between">
                 <p className="text-sm text-slate/60">Status</p>
                 <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border capitalize ${institution?.subscription_status === 'active' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
-                  {institution?.subscription_status ?? '—'}
+                  {institution?.subscription_status ?? 'â€”'}
                 </span>
               </div>
               <div className="border-t border-slate/10 pt-4 grid grid-cols-2 gap-4">
@@ -807,7 +808,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                   <p className="text-xs text-slate/40 mb-1">Books used</p>
                   <div className="flex items-end gap-1.5">
                     <span className="text-xl font-bold text-slate">{bookCount}</span>
-                    <span className="text-sm text-slate/40 mb-0.5">/ {institution?.max_books ?? '—'}</span>
+                    <span className="text-sm text-slate/40 mb-0.5">/ {institution?.max_books ?? 'â€”'}</span>
                   </div>
                   <div className="mt-1.5 h-1.5 rounded-full bg-slate/10 overflow-hidden">
                     <div className="h-full rounded-full bg-steel transition-all" style={{ width: institution?.max_books ? `${Math.min(100, (bookCount / institution.max_books) * 100)}%` : '0%' }} />
@@ -817,7 +818,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                   <p className="text-xs text-slate/40 mb-1">Members used</p>
                   <div className="flex items-end gap-1.5">
                     <span className="text-xl font-bold text-slate">{memberCount}</span>
-                    <span className="text-sm text-slate/40 mb-0.5">/ {institution?.max_members ?? '—'}</span>
+                    <span className="text-sm text-slate/40 mb-0.5">/ {institution?.max_members ?? 'â€”'}</span>
                   </div>
                   <div className="mt-1.5 h-1.5 rounded-full bg-slate/10 overflow-hidden">
                     <div className="h-full rounded-full bg-lavender transition-all" style={{ width: institution?.max_members ? `${Math.min(100, (memberCount / institution.max_members) * 100)}%` : '0%' }} />
@@ -829,7 +830,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         </div>
       )}
 
-      {/* ════ NOTIFICATIONS ════ */}
+      {/* â•â•â•â• NOTIFICATIONS â•â•â•â• */}
       {tab === 'notifications' && (
         <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, maxWidth: 560 }}>
           <h2 style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47', marginBottom: 4 }}>Notification Preferences</h2>
@@ -855,7 +856,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         </div>
       )}
 
-      {/* ════ APPEARANCE ════ */}
+      {/* â•â•â•â• APPEARANCE â•â•â•â• */}
       {tab === 'appearance' && (
         <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', padding: 24, maxWidth: 520 }}>
           <h2 style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47', marginBottom: 18 }}>Display Preferences</h2>
@@ -868,7 +869,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                 <button key={ac.k} type="button" title={ac.l}
                   onClick={() => setAccentColor(ac.k)}
                   style={{ width: 36, height: 36, borderRadius: '50%', background: ac.c, border: accentColor === ac.k ? '3px solid #2C3A47' : '2px solid rgba(44,58,71,0.1)', cursor: 'pointer', position: 'relative', transition: 'all 0.12s' }}>
-                  {accentColor === ac.k && <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: 'white' }}>✓</span>}
+                  {accentColor === ac.k && <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: 'white' }}>âœ“</span>}
                 </button>
               ))}
             </div>
@@ -910,7 +911,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         </div>
       )}
 
-      {/* ════ TEAM ════ */}
+      {/* â•â•â•â• TEAM â•â•â•â• */}
       {tab === 'team' && (
         <div style={{ maxWidth: 600 }}>
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid rgba(44,58,71,0.08)', overflow: 'hidden', marginBottom: 16 }}>
@@ -918,14 +919,14 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
               <div>
                 <p style={{ fontSize: 14, fontWeight: 800, color: '#2C3A47' }}>Staff Members</p>
                 <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 1 }}>
-                  {teamLoading ? 'Loading…' : `${team.length} member${team.length !== 1 ? 's' : ''}`}
+                  {teamLoading ? 'Loadingâ€¦' : `${team.length} member${team.length !== 1 ? 's' : ''}`}
                 </p>
               </div>
               <Button size="sm" type="button" onClick={() => { setShowInvite(true); setInviteSent(''); setInviteError(''); }}>+ Invite Staff</Button>
             </div>
 
             {teamLoading && (
-              <div style={{ padding: '24px 20px', textAlign: 'center', color: 'rgba(44,58,71,0.4)', fontSize: 13 }}>Loading team…</div>
+              <div style={{ padding: '24px 20px', textAlign: 'center', color: 'rgba(44,58,71,0.4)', fontSize: 13 }}>Loading teamâ€¦</div>
             )}
 
             {teamError && (
@@ -946,7 +947,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
                     <p style={{ fontSize: 13, fontWeight: 700, color: '#2C3A47' }}>{member.full_name}</p>
                     <Badge variant={member.is_active ? 'steel' : 'neutral'}>{member.is_active ? 'Active' : 'Inactive'}</Badge>
                   </div>
-                  <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{member.role.replace('_', ' ')}</p>
+                  <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.5)', marginTop: 2, textTransform: 'capitalize' }}>{member.role.replace(/_/g, ' ')}</p>
                   <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.4)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{member.email}</p>
                   {member.last_login_at && (
                     <p style={{ fontSize: 11, color: 'rgba(44,58,71,0.3)', marginTop: 1 }}>
@@ -968,8 +969,8 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
           <div style={{ background: 'rgba(75,142,186,0.06)', borderRadius: 16, padding: '16px 20px', border: '1px solid rgba(75,142,186,0.15)' }}>
             <p style={{ fontSize: 12, fontWeight: 800, color: '#4B8EBA', marginBottom: 10 }}>Role Permissions</p>
             {[
-              { role: 'Administrator',  perms: 'Full access — settings, team, reports, all data',              v: 'golden'  },
-              { role: 'Head Librarian', perms: 'All library functions — add books, manage loans, view reports', v: 'steel'   },
+              { role: 'Administrator',  perms: 'Full access â€” settings, team, reports, all data',              v: 'golden'  },
+              { role: 'Head Librarian', perms: 'All library functions â€” add books, manage loans, view reports', v: 'steel'   },
               { role: 'Librarian',      perms: 'Check in/out, manage catalogue, view learners',                v: 'neutral' },
               { role: 'Volunteer',      perms: 'Check in/out books only',                                       v: 'neutral' },
             ].map(r => (
@@ -987,7 +988,7 @@ export default function SettingsTabs({ institution, profile, userEmail, bookCoun
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {inviteSent ? (
             <div style={{ padding: '20px 16px', background: 'rgba(34,197,94,0.08)', borderRadius: 12, border: '1px solid rgba(34,197,94,0.2)', textAlign: 'center' }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>Invite sent ✓</p>
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>Invite sent âœ“</p>
               <p style={{ fontSize: 12, color: 'rgba(44,58,71,0.6)', marginTop: 4 }}>
                 An invitation email has been sent to <strong>{inviteSent}</strong>.<br />
                 They will appear here once they sign up.
