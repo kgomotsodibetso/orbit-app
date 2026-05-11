@@ -1,15 +1,33 @@
-import type { NextConfig } from "next";
+﻿import type { NextConfig } from "next";
 // @ts-expect-error — next-pwa has no type declarations
 import withPWA from "next-pwa";
 
+// Static security headers applied to every route via Next.js config.
+// Content-Security-Policy is intentionally absent here — it is generated
+// per-request in proxy.ts (middleware) so each response carries a unique
+// nonce, which allows us to drop 'unsafe-inline' from script-src.
+const staticSecurityHeaders = [
+  { key: 'X-DNS-Prefetch-Control',  value: 'on' },
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  { key: 'X-Frame-Options',         value: 'SAMEORIGIN' },
+  { key: 'X-Content-Type-Options',  value: 'nosniff' },
+  { key: 'Referrer-Policy',         value: 'strict-origin-when-cross-origin' },
+  { key: 'Permissions-Policy',      value: 'camera=(self), microphone=(), geolocation=(), payment=()' },
+];
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: staticSecurityHeaders,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
-      // Open Library covers (from ISBN lookup API)
       { protocol: 'https', hostname: 'covers.openlibrary.org' },
-      // Google Books thumbnails
       { protocol: 'https', hostname: 'books.google.com' },
-      // Supabase Storage (for user-uploaded covers)
       { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: '*.supabase.in' },
     ],
@@ -21,29 +39,22 @@ export default withPWA({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
-  // Don't precache Next.js internals — let the network handle them
   buildExcludes: [/middleware-manifest\.json$/, /app-build-manifest\.json$/],
   runtimeCaching: [
-    // API routes — always network (never cache, must be fresh)
     {
       urlPattern: /^https?.*\/api\//,
       handler: 'NetworkOnly',
     },
-    // Static assets only — cache first, long TTL
     {
       urlPattern: /\.(?:png|svg|jpg|jpeg|webp|gif|ico|woff2?)$/i,
       handler: 'CacheFirst',
       options: { cacheName: 'static-assets', expiration: { maxEntries: 100, maxAgeSeconds: 2592000 } },
     },
-    // JS/CSS bundles — stale-while-revalidate (serve cache immediately, update in bg)
     {
       urlPattern: /\/_next\/static\//,
       handler: 'StaleWhileRevalidate',
       options: { cacheName: 'next-static' },
     },
-    // Page HTML — network only so React always hydrates fresh markup.
-    // Caching page HTML caused the service worker to serve stale rendered HTML
-    // which delayed hydration and made buttons require multiple clicks.
     {
       urlPattern: /^https?:\/\/.+\/(?:[^.]*)?$/,
       handler: 'NetworkOnly',

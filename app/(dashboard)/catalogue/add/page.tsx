@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 export const dynamic = 'force-dynamic';
 
@@ -128,7 +128,7 @@ export default function AddBookPage() {
             Looking up ISBN…
           </p>
         )}
-        {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+        {error && <p role="alert" className="text-sm text-red-500 mt-2">{error}</p>}
       </div>
 
       {/* Form */}

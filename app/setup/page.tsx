@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -79,7 +79,7 @@ export default function SetupPage() {
         <div className="bg-white rounded-3xl shadow-xl p-8">
           {error && (
             <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
-              <p className="text-sm text-red-600">{error}</p>
+              <p role="alert" className="text-sm text-red-600">{error}</p>
             </div>
           )}
 

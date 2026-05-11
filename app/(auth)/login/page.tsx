@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -74,19 +74,19 @@ function LoginPageInner() {
 
           {oauthError === 'oauth_failed' && (
             <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
-              <p className="text-sm text-red-600">Google sign-in failed. Please try again.</p>
+              <p role="alert" className="text-sm text-red-600">Google sign-in failed. Please try again.</p>
             </div>
           )}
 
           {oauthError === 'setup_failed' && (
             <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
-              <p className="text-sm text-red-600">Account created but setup failed. Please sign in again to retry.</p>
+              <p role="alert" className="text-sm text-red-600">Account created but setup failed. Please sign in again to retry.</p>
             </div>
           )}
 
           {error && (
             <div className="mb-4 px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
-              <p className="text-sm text-red-600">{error}</p>
+              <p role="alert" className="text-sm text-red-600">{error}</p>
             </div>
           )}
 

@@ -1,0 +1,34 @@
+﻿# robots.txt for Orbit Tech
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+
+# Block all admin and librarian dashboard routes
+Disallow: /settings
+Disallow: /catalogue/add
+Disallow: /catalogue/*/edit
+Disallow: /learners/new
+Disallow: /learners/*/edit
+Disallow: /loans/checkout
+Disallow: /loans/return
+Disallow: /reports/stocktake
+Disallow: /onboarding
+Disallow: /setup
+Disallow: /admin
+
+# Block all API routes
+Disallow: /api/
+
+# Block Next.js internals
+Disallow: /_next/
+
+# Learner portal login is public but the portal itself is private
+Disallow: /learner/
+
+# Allow the learner login page so users can find it
+Allow: /learner/login
+
+# Allow public-facing pages
+Allow: /
+
+Sitemap: https://orbittech.app/sitemap.xml

@@ -189,11 +189,21 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
 function useSimpleToast() {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const show = (text: string, ok = true) => { setMsg({ text, ok }); setTimeout(() => setMsg(null), 2800); };
-  const el = msg ? (
-    <div className={`fixed bottom-20 right-4 z-50 px-4 py-3 rounded-2xl text-sm font-bold shadow-xl pointer-events-none ${msg.ok ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+  // Always-present wrapper so screen readers detect content changes reliably.
+  const el = (
+    <div
+      role={msg?.ok === false ? 'alert' : 'status'}
+      aria-live={msg?.ok === false ? 'assertive' : 'polite'}
+      aria-atomic="true"
+      className="fixed bottom-20 right-4 z-50 pointer-events-none"
+    >
+      {msg && (
+        <div className={`px-4 py-3 rounded-2xl text-sm font-bold shadow-xl ${msg.ok ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
       {msg.ok ? 'âœ“' : 'âœ•'} {msg.text}
+        </div>
+      )}
     </div>
-  ) : null;
+  );
   return { show, el };
 }
 
