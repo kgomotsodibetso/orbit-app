@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 export const dynamic = 'force-dynamic';
 
@@ -149,7 +149,7 @@ export default function EditMemberPage({
 
       {error && (
         <div className="mb-4 px-4 py-3 bg-red-50 rounded-xl border border-red-100">
-          <p className="text-sm text-red-600">{error}</p>
+          <p role="alert" className="text-sm text-red-600">{error}</p>
         </div>
       )}
 

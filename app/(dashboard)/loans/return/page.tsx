@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 export const dynamic = 'force-dynamic';
 
@@ -87,7 +87,7 @@ export default function ReturnPage() {
         <h1 className="text-3xl font-bold text-slate">Return Book</h1>
       </div>
 
-      {error && <p className="text-sm text-red-500 mb-4 bg-red-50 rounded-xl px-4 py-3">{error}</p>}
+      {error && <p role="alert" className="text-sm text-red-500 mb-4 bg-red-50 rounded-xl px-4 py-3">{error}</p>}
 
       {step === 'scan' && (
         <div className="space-y-4">

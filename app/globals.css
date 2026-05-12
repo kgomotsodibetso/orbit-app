@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 /* =====================================================
    Orbit Tech Design System
@@ -128,4 +128,70 @@ body {
 
 .scan-line {
   animation: scan-line 2.4s ease-in-out infinite;
+}
+
+
+/* =====================================================
+   Print stylesheet
+   Strips chrome, navigation and interactive UI so the
+   loans table / reports print cleanly on A4.
+   ===================================================== */
+
+@media print {
+  /* Hide nav, sidebar, action buttons and toasts */
+  nav,
+  aside,
+  [data-sidebar],
+  .fixed,
+  button:not([data-print-visible]),
+  a[href]:not([data-print-visible]) {
+    display: none !important;
+  }
+
+  /* Reset backgrounds — save ink */
+  body,
+  main,
+  [class*="bg-"] {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Full-width layout */
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  main,
+  .max-w-5xl,
+  .max-w-3xl,
+  .max-w-2xl {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Tables: keep borders visible */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    font-size: 10pt;
+  }
+
+  /* Avoid breaking rows or stat cards across pages */
+  tr, .rounded-2xl {
+    page-break-inside: avoid;
+  }
+
+  /* Show URLs for links when printing */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #555;
+  }
 }
